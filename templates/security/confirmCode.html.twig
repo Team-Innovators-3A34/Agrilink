@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Elomoas - Online Course and LMS HTML Template</title>
+
+    <link rel="stylesheet" href="css/themify-icons.css" />
+    <link rel="stylesheet" href="css/feather.css" />
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* From Uiverse.io by vinodjangid07 */
+      .otp-Form {
+        width: 230px;
+        height: 300px;
+        background-color: rgb(255, 255, 255);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 30px;
+        gap: 20px;
+        position: relative;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.082);
+        border-radius: 15px;
+      }
+
+      .mainHeading {
+        font-size: 1.1em;
+        color: rgb(15, 15, 15);
+        font-weight: 700;
+      }
+
+      .otpSubheading {
+        font-size: 0.7em;
+        color: black;
+        line-height: 17px;
+        text-align: center;
+      }
+
+      .inputContainer {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .otp-input {
+        background-color: rgb(228, 228, 228);
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        border: none;
+        border-radius: 7px;
+        caret-color: rgb(127, 129, 255);
+        color: rgb(44, 44, 44);
+        outline: none;
+        font-weight: 600;
+      }
+
+      .otp-input:focus,
+      .otp-input:valid {
+        background-color: rgba(127, 129, 255, 0.199);
+        transition-duration: 0.3s;
+      }
+
+      .verifyButton {
+        width: 100%;
+        height: 30px;
+        border: none;
+        background-color: rgb(127, 129, 255);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 10px;
+        transition-duration: 0.2s;
+      }
+
+      .verifyButton:hover {
+        background-color: rgb(144, 145, 255);
+        transition-duration: 0.2s;
+      }
+
+      .exitBtn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.171);
+        background-color: rgb(255, 255, 255);
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        border: none;
+        color: black;
+        font-size: 1.1em;
+        cursor: pointer;
+      }
+
+      .resendNote {
+        font-size: 0.7em;
+        color: black;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+      }
+
+      .resendBtn {
+        background-color: transparent;
+        border: none;
+        color: rgb(127, 129, 255);
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body class="color-theme-blue">
+    <div class="preloader"></div>
+
+    <div class="main-wrap">
+      <div class="nav-header bg-transparent shadow-none border-0">
+        <div class="nav-top w-100">
+          <a href="index.html"
+            ><i class="feather-zap text-success display1-size me-2 ms-0"></i
+            ><span
+              class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0"
+              >Sociala.
+            </span>
+          </a>
+          <a href="#" class="mob-menu ms-auto me-2 chat-active-btn"
+            ><i
+              class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"
+            ></i
+          ></a>
+          <a href="default-video.html" class="mob-menu me-2"
+            ><i
+              class="feather-video text-grey-900 font-sm btn-round-md bg-greylight"
+            ></i
+          ></a>
+          <a href="#" class="me-2 menu-search-icon mob-menu"
+            ><i
+              class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"
+            ></i
+          ></a>
+          <button class="nav-menu me-0 ms-2"></button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div
+          class="col-xl-6 d-none d-xl-block p-0 vh-100 bg-image-cover bg-no-repeat"
+          style="background-image: url(images/validation_acc.png)"
+        ></div>
+        <div
+          class="col-xl-5 vh-100 align-items-center d-flex bg-white rounded-3 overflow-hidden"
+          style="margin-left: 50px"
+        >
+          <div class="card shadow-none border-0 ms-auto me-auto login-card">
+            <div class="card-body rounded-0 text-left">
+              <h2
+                style="text-align: center"
+                class="fw-700 display1-size display2-md-size mb-4"
+              >
+                Account Validation
+              </h2>
+              <p
+                style="
+                  color: grey;
+                  font-size: 1em;
+                  text-align: center;
+                  margin-bottom: 50px;
+                  margin-top: -10px;
+                "
+              >
+                We have sent a code to your email. Please enter it below to
+                validate your account.
+              </p>
+              <form
+                action="{{ path('app_verify_code_validation') }}"
+                method="POST"
+              >
+                <div class="inputContainer" style="margin-bottom: 15px">
+                  <input
+                    required="required"
+                    maxlength="1"
+                    type="text"
+                    class="otp-input"
+                    id="otp-input1"
+                    name="otp1"
+                  />
+                  <input
+                    required="required"
+                    maxlength="1"
+                    type="text"
+                    class="otp-input"
+                    id="otp-input2"
+                    name="otp2"
+                  />
+                  <input
+                    required="required"
+                    maxlength="1"
+                    type="text"
+                    class="otp-input"
+                    id="otp-input3"
+                    name="otp3"
+                  />
+                  <input
+                    required="required"
+                    maxlength="1"
+                    type="text"
+                    class="otp-input"
+                    id="otp-input4"
+                    name="otp4"
+                  />
+                </div>
+                {% for message in app.flashes('error') %}
+                <div class="alert alert-danger" style="margin-top: 40px">
+                  {{ message }}
+                </div>
+                {% endfor %}
+                <button
+                  style="margin-top: 5px"
+                  type="submit"
+                  class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0"
+                >
+                  Validate Account
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/plugin.js"></script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>
