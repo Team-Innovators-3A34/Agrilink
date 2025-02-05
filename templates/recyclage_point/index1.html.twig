@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RecyclagePoint index{% endblock %}
+
+{% block body %}
+    <h1>RecyclagePoint index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>MaxCapacite</th>
+                <th>Adresse</th>
+                <th>Longitude</th>
+                <th>Latitude</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for recyclage_point in recyclage_points %}
+            <tr>
+                <td>{{ recyclage_point.id }}</td>
+                <td>{{ recyclage_point.Name }}</td>
+                <td>{{ recyclage_point.MaxCapacite }}</td>
+                <td>{{ recyclage_point.adresse }}</td>
+                <td>{{ recyclage_point.Longitude }}</td>
+                <td>{{ recyclage_point.Latitude }}</td>
+                <td>
+                    <a href="{{ path('app_recyclage_point_show', {'id': recyclage_point.id}) }}">show</a>
+                    <a href="{{ path('app_recyclage_point_edit', {'id': recyclage_point.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_recyclage_point_new') }}">Create new</a>
+{% endblock %}

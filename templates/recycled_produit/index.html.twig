@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+{% block title %}Recycling Product{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+{% endblock %}
+
+{% block body_class %}color-theme-blue mont-font{% endblock %}
+
+{% block body %}
+    <div class="preloader"></div>
+    <div class="main-wrapper">
+        <div class="main-content bg-white right-chat-active">
+            <div class="middle-sidebar-bottom">
+                <div class="middle-sidebar-left">
+                    <div class="row">
+                        <div class="col-xl-12 mb-4">
+                            <div class="row">
+                                <div class="col-lg-12 mb-3">
+                                    <div class="card p-lg-5 p-4 bg-primary rounded-3 shadow-xss bg-pattern border-0 overflow-hidden">
+                                        <div class="bg-pattern-div"></div>
+                                        <h2 class="display2-size display2-md-size fw-700 text-white mb-0 mt-0">Recycle</h2>
+                                    </div>
+                                </div>                                 
+                            </div>
+                            <div class="row">
+                             <div class="col-sm-12">
+                                    <div class=" p-4 mb-5">
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6">
+                                    <div class="page-title">
+                                        <h4 class="mont-font fw-600 font-md mb-lg-5 mb-4">Product Details</h4>
+                                        {{ form_start(form, {'action': path('app_recyced_produit_new')}) }}
+                                        <div class="row">
+                                            <div class="col-lg-6 mb-3">
+    <div class="form-group">
+        <label class="mont-font fw-600 font-xssss">Product Name</label>
+        {{ form_widget(form.ProductName, {'attr': {'class': 'form-control'}}) }}
+    </div>
+</div>
+<div class="col-lg-6 mb-3">
+    <div class="form-group">
+        <label class="mont-font fw-600 font-xssss">Category</label>
+        {{ form_widget(form.Categorie, {'attr': {'class': 'form-control'}}) }}
+    </div>
+</div>
+<div class="col-lg-6 mb-3">
+    <div class="form-group">
+        <label class="mont-font fw-600 font-xssss">Quantity</label>
+        {{ form_widget(form.quantity, {'attr': {'class': 'form-control'}}) }}
+    </div>
+</div>
+<div class="col-lg-6 mb-3">
+    <div class="form-group">
+        <label class="mont-font fw-600 font-xssss">Description</label>
+        {{ form_widget(form.Description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+</div>
+<div class="col-lg-6 mb-3">
+    <div class="form-group">
+        <label class="mont-font fw-600 font-xssss">Recycling Method</label>
+        {{ form_widget(form.RecyclingMethod, {'attr': {'class': 'form-control'}}) }}
+    </div>
+</div>
+<div class="col-lg-6 mb-3">
+    <div class="form-group">
+        <label class="mont-font fw-600 font-xssss">Material Type</label>
+        {{ form_widget(form.MaterialType, {'attr': {'class': 'form-control'}}) }}
+    </div>
+</div>
+
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <button type="submit" class="btn btn-primary">Add Product</button>
+                                        </div>
+                                        {{ form_end(form) }}
+                                    </div>
+                                </div>
+                                <div class="col-xl-5 offset-xl-1 col-lg-6">
+                                    <div class="order-details">
+                                        <h4 class="mont-font fw-600 font-md mb-5">All Products</h4>
+                                        <div class="table-content table-responsive mb-5 card border-0 bg-greyblue p-lg-5 p-4">
+                                            <table class="table order-table order-table-2 mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="border-0">Product</th>
+                                                        <th class="text-right border-0">Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class="text-grey-500 fw-500 font-xsss">Aliquam lobortis est <strong><span>✕</span>1</strong></th>
+                                                        <td class="text-right text-grey-500 fw-500 font-xsss">$80.00</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-grey-500 fw-500 font-xsss">Auctor gravida enim <strong><span>✕</span>1</strong></th>
+                                                        <td class="text-right text-grey-500 fw-500 font-xsss">$60.00</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="cart-subtotal">
+                                                        <th>Subtotal</th>
+                                                        <td class="text-right text-grey-700 font-xsss fw-700">$56.00</td>
+                                                    </tr>
+                                                    <tr class="shipping">
+                                                        <th>Shipping</th>
+                                                        <td class="text-right">
+                                                            <span class="text-grey-700 font-xsss fw-700">Flat Rate; $20.00</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="order-total">
+                                                        <th>Order Total</th>
+                                                        <td class="text-right text-grey-700 font-xsss fw-700">
+                                                            <span class="order-total-ammount">$56.00</span>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="card shadow-none border-0">
+                                            <a href="#" class="w-100 p-3 mt-3 font-xsss text-center text-white bg-current rounded-3 text-uppercase fw-600 ls-3">Place Order</a>    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/plugin.js') }}"></script>
+    <script src="{{ asset('js/scripts.js') }}"></script>
+{% endblock %}

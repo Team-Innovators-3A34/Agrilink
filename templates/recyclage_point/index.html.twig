@@ -1,0 +1,441 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recycling Points{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* Ensure modal and map layout are correct */
+        .modal-lg {
+            max-width: 90%;
+        }
+
+        #map, #mainMap {
+            height: 100%;
+            width: 100%;
+            border-radius: 10px;
+        }
+        .recyclage-point {
+    transition: opacity 0.3s ease;
+}
+
+.recyclage-point[style="display: none;"] {
+    opacity: 0;
+}
+
+    </style>
+{% endblock %}
+
+{% block body_class %}color-theme-blue mont-font{% endblock %}
+
+{% block body %}
+    <div class="preloader"></div>
+    <div class="main-wrapper">
+        <div class="main-content bg-lightblue theme-dark-bg right-chat-active">
+            <div class="middle-sidebar-bottom">
+                <div class="middle-sidebar-left pe-0 ms-0 me-0" style="max-width: 100%;">
+                    <div class="row">
+                        <div class="col-xl-6 chat-left scroll-bar">
+                            <div class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3">
+                                <div class="card-body d-flex align-items-center p-0">
+                                    <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">Recycling Points</h2>                          
+                                   <div class="search-form-2 ms-auto">
+    <i class="ti-search font-xss"></i>
+    <input type="text" id="searchInput" class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0" placeholder="Search here.">
+</div>
+
+                                </div>
+                            </div>
+                            <div id="recyclagePointsList">
+                            {% for point in recyclage_points %}
+                               
+                             <div class="card d-block w-100 border-0 mb-3 shadow-xss bg-white rounded-3 p-4">
+    <h4 class="font-xss fw-700 text-grey-900 mb-3 pe-4">{{ point.name }}</h4>
+    <h5 class="font-xssss mb-2 text-grey-500 fw-600">
+        <span class="text-grey-900 font-xssss">Adresse: </span> {{ point.adresse }}
+    </h5>
+    <h5 class="font-xssss mb-2 text-grey-500 fw-600">
+        <span class="text-grey-900 font-xssss">Capacity: </span> {{ point.MaxCapacite }}
+    </h5>
+    <div class="d-flex align-items-center">
+        <a href="#" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editRecyclagePointModal{{ point.id }}">Edit</a>
+        
+        <!-- View Button -->
+                <button class="btn btn-sm btn-info me-2" onclick="viewOnMap({{ point.latitude }}, {{ point.longitude }}, '{{ point.name }}', '{{ point.adresse }}')">View</button>
+        <a href="{{ path('app_recycled_produit', {'id': point.id}) }}" class="btn btn-sm btn-success me-2">
+</a>
+
+
+                <form method="post" action="{{ path('app_recyclage_point_delete', {'id': point.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ point.id) }}">
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </div>
+                </div>
+
+
+                                <!-- Edit Modal for Each Recycling Point -->
+                             <div class="modal fade" id="editRecyclagePointModal{{ point.id }}" tabindex="-1" aria-labelledby="editRecyclagePointModalLabel{{ point.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editRecyclagePointModalLabel{{ point.id }}">Edit Recycling Point</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{ form_start(edit_forms[point.id], {'action': path('app_recyclage_point_edit', {'id': point.id})}) }}
+                                                    <div class="row">
+                                                        <div class="col-lg-6 mb-3">
+                                                            <div class="form-group">
+                                                                <label class="mont-font fw-600 font-xsss">Name</label>
+                                                                {{ form_widget(edit_forms[point.id].Name, {'attr': {'class': 'form-control'}}) }}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 mb-3">
+                                                            <div class="form-group">
+                                                                <label class="mont-font fw-600 font-xsss">Capacity</label>
+                                                                {{ form_widget(edit_forms[point.id].MaxCapacite, {'attr': {'class': 'form-control'}}) }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-lg-6 mb-3">
+                                                            <div class="form-group">
+                                                                <label class="mont-font fw-600 font-xsss">Address</label>
+                                                                {{ form_widget(edit_forms[point.id].adresse, {'attr': {'class': 'form-control'}}) }}
+                                                            </div>
+                                                        </div>
+{# 
+                                                        <div class="col-lg-6 mb-3">
+                                                            <div class="form-group">
+                                                                <label class="mont-font fw-600 font-xsss">Latitude</label>
+                                                                    {{ form_widget(edit_forms[point.id].Latitude, {'attr': {'class': 'form-control', 'id': 'latitude_edit_' ~ point.id, 'type': 'hidden'}}) }}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-6 mb-3">
+                                                            <div class="form-group">
+                                                                <label class="mont-font fw-600 font-xsss">Longitude</label>
+                                                                {{ form_widget(edit_forms[point.id].Longitude, {'attr': {'class': 'form-control', 'id': 'longitude_edit_'~ point.id, 'type': 'hidden'}}) }}
+                                                            </div>
+                                                        </div> #}
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-lg-12 mb-3">
+                                                            <div id="map_{{ point.id }}" style="height: 400px;"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12 mb-0 mt-2 ps-0 text-center">
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                {{ form_end(edit_forms[point.id]) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Edit Modal for Each Recycling Point -->
+
+                            {% else %}
+                                <p>No recycling points found.</p>
+                            {% endfor %}
+                                </div>
+
+                            <!-- Button to trigger the modal for adding a new Recycling Point -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recyclagePointModal">
+                                Add Recycling Point
+                            </button>
+                              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#manageTypesModal">
+                                        Manage Types
+                                    </button>
+                        </div>
+
+                        <div class="col-xl-6 ps-0 d-none d-xl-block">
+                            <div class="card w-100 border-0 shadow-none rounded-3 border-0 mb-4 overflow-hidden">
+                                <!-- Main map here -->
+                                <div id="mainMap" class="rounded-3" style="height: 86vh;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ <div class="modal fade" id="test" tabindex="-1" aria-labelledby="recyclagePointModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="fw-700 modal-title mb-0 mt-0 font-md text-grey-900" id="recyclagePointModalLabel">Add Recycling Point</h2>
+         </div>
+            </div>
+        </div>
+    </div>         
+
+    <!-- Modal for adding a new Recycling Point -->
+    <div class="modal fade" id="recyclagePointModal" tabindex="-1" aria-labelledby="recyclagePointModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="fw-700 modal-title mb-0 mt-0 font-md text-grey-900" id="recyclagePointModalLabel">Add Recycling Point</h2>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            <div class="modal-body">
+    {{ form_start(form, {'action': path('app_recyclage_point_new')}) }}
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <div class="form-group">
+                    <label class="mont-font fw-600 font-xsss">Name</label>
+                    {{ form_widget(form.Name, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-3">
+                <div class="form-group">
+                    <label class="mont-font fw-600 font-xsss">Capacity</label>
+                    {{ form_widget(form.MaxCapacite, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <div class="form-group">
+                    <label class="mont-font fw-600 font-xsss">Address</label>
+                    {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <!-- Hidden inputs for latitude and longitude -->
+            <input type="hidden" id="latitude" name="latitude" />
+            <input type="hidden" id="longitude" name="longitude" />
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <div class="form-group">
+                    <label class="mont-font fw-600 font-xsss">Types</label>
+                    {{ form_widget(form.Types, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="row">
+            <div class="col-lg-12 mb-3">
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 mb-0 mt-2 ps-0 text-center">
+            <button type="submit" class="btn btn-primary">Confirm</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    {{ form_end(form) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--- hetheya modal taa types -->
+
+    <div class="modal fade" id="manageTypesModal" tabindex="-1" aria-labelledby="manageTypesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                  <h2 class="fw-700 modal-title mb-0 mt-0 font-md text-grey-900" id="manageTypesModalLabel">Manage Types</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- List Existing Types -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Type Name</th>
+                            <th>Type Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for type in types %}
+                            <tr>
+                                <td>{{ type.name }}</td>
+                                <td>{{ type.description }}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editTypeModal{{ type.id }}">Edit</button>
+                                    <form method="post" action="{{ path('app_type_delete', {'id': type.id}) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this type?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ type.id) }}">
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <!-- Edit Type Modal -->
+                            <div class="modal fade" id="editTypeModal{{ type.id }}" tabindex="-1" aria-labelledby="editTypeModalLabel{{ type.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editTypeModalLabel{{ type.id }}">Edit Type</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{ form_start(edit_forms_type[type.id], {'action': path('app_type_edit', {'id': type.id})}) }}
+                                                <div class="form-group">
+                                                    <label class="mont-font fw-600 font-xsss">Type Name</label>
+                                                    {{ form_widget(edit_forms_type[type.id].name, {'attr': {'class': 'form-control'}}) }}
+                                                </div>
+                                                <div class="text-center mt-3">
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                                </div>
+                                            {{ form_end(edit_forms_type[type.id]) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Add New Type Form -->
+                 <h2 class="fw-700 modal-title mb-0 mt-0 font-md text-grey-900" > Add New Type</h2>
+               
+                {{ form_start(form_type, {'action': path('app_type_new')}) }}
+                            <div class="form-group row">
+                            <div class="col-md-6">
+                                <label class="mont-font fw-600 font-xsss">Type Name</label>
+                                {{ form_widget(form_type.name, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="mont-font fw-600 font-xsss">Type Description</label>
+                                {{ form_widget(form_type.description, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                                </div>
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary">Add Type</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+
+                    </div>
+                {{ form_end(form_type) }}
+            </div>
+        </div>
+    </div>
+</div>
+    <!--- hetheya modal taa types -->
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/plugin.js') }}"></script>
+    <script src="{{ asset('js/scripts.js') }}"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+// Initialize global variables for each map
+var mainMap, addMap, editMap;
+
+// Function to initialize the map (takes a mapId and default lat/lng)
+function initializeMap(mapId, defaultLat = 36.8065, defaultLng = 10.1815, isMarkerEnabled = true) {
+    var map = L.map(mapId).setView([defaultLat, defaultLng], 13);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Handle map clicks to place markers, only if isMarkerEnabled is true
+    var marker = null;
+    if (isMarkerEnabled) {
+        map.on('click', function (e) {
+            if (marker) {
+                map.removeLayer(marker); // Remove the previous marker
+            }
+            marker = L.marker(e.latlng).addTo(map);
+            // Update the fields with the new coordinates when the map is clicked
+            updateFields(e.latlng.lat, e.latlng.lng);
+        });
+    }
+
+    return map;
+}
+
+// Function to update the latitude and longitude fields
+function updateFields(latitude, longitude) {
+    // Update the latitude and longitude fields with the new values
+    document.getElementById('latitude').value = latitude;
+    document.getElementById('longitude').value = longitude;
+}
+
+// Initialize the maps once the document is fully loaded
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // Initialize the main map without marker functionality
+    mainMap = initializeMap('mainMap', 36.8065, 10.1815, false); // No marker in the main map
+
+    // Handle modal showing and initializing the add modal map
+    var addModal = document.getElementById('recyclagePointModal');
+    if (addModal) {
+        addModal.addEventListener('shown.bs.modal', function () {
+            if (!addMap) {
+                // Initialize the map inside the add modal with marker functionality
+                addMap = initializeMap('map', 36.8065, 10.1815, true);
+            }
+            // Invalidate size to ensure proper rendering when modal is shown
+            addMap.invalidateSize();
+        });
+    }
+
+    // Handle modal showing and initializing the edit modal map
+    var editModal = document.getElementById('editRecyclagePointModal');
+ 
+  if (editModal) {
+       editModal.classList.add('show');
+    editModal.style.display = 'block'; // Manually show the modal
+
+    editModal.addEventListener('shown.bs.modal', function () {
+        if (!editMap) {
+            // Initialize the map inside the edit modal with marker functionality
+            editMap = initializeMap('map_' + point.id, 36.8065, 10.1815, true);
+        }
+        // Invalidate size to ensure proper rendering when modal is shown
+        editMap.invalidateSize();
+    });
+    }
+    // Adding markers dynamically for each recyclage point on the main map
+    {% for point in recyclage_points %}
+        var marker = L.marker([{{ point.latitude }}, {{ point.longitude }}]).addTo(mainMap)
+            .bindPopup('<b>{{ point.name }}</b><br>{{ point.adresse }}');
+    {% endfor %}
+});
+
+// Function to view a recyclage point on the main map (focus the map and show a popup)
+function viewOnMap(lat, lng, name, adresse) {
+    console.log("Lat:", lat, "Lng:", lng, "Name:", name, "Adresse:", adresse);
+
+    if (mainMap) { // Ensure mainMap is initialized
+        mainMap.setView([lat, lng], 15); // Focus on the clicked point with zoom level 15
+        L.popup()
+            .setLatLng([lat, lng])
+            .setContent('<b>' + name + '</b><br>' + adresse)
+            .openOn(mainMap); // Open the popup on the map
+    } else {
+        console.error("Map not initialized or mainMap is undefined.");
+    }
+}
+// Get reference to the input element
+// Get references to the search input and the container with the recycling points
+// Get references to the search input and the container with the recycling points
+
+
+
+</script>
+
+
+{% endblock %}

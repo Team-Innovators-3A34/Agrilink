@@ -1,0 +1,49 @@
+<div class="modal fade" id="editRecyclagePointModal" tabindex="-1" aria-labelledby="editRecyclagePointModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editRecyclagePointModalLabel">Edit Recycling Point</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ form_start(edit_form, {'action': path('app_recyclage_point_edit', {'id': 0})}) }} <!-- Dynamic action -->
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <div class="form-group">
+                                <label class="mont-font fw-600 font-xsss">Name</label>
+                                {{ form_widget(edit_form.Name, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-3">
+                            <div class="form-group">
+                                <label class="mont-font fw-600 font-xsss">Capacity</label>
+                                {{ form_widget(edit_form.MaxCapacite, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <div class="form-group">
+                                <label class="mont-font fw-600 font-xsss">Address</label>
+                                {{ form_widget(edit_form.adresse, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                            <div id="map" style="height: 400px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 mb-0 mt-2 ps-0 text-center">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                {{ form_end(edit_form) }}
+            </div>
+        </div>
+    </div>
+</div>

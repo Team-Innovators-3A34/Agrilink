@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add New Recycling Point{% endblock %}
+
+{% block body %}
+    <h1>Add a New Recycling Point</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.capacity) }}
+        {{ form_row(form.address) }}
+        <div id="map" style="height: 400px;"></div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var map = L.map('map').setView([36.8065, 10.1815], 13); // Example location
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+        });
+    </script>
+{% endblock %}
