@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Catégories{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0">
+                <!-- Header -->
+                <div class="card-header bg-dark text-white text-center py-4">
+                    <h3 class="mb-1">Liste des Catégories</h3>
+                    <p class="mb-0">Gérez vos catégories ci-dessous</p>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-4">
+                    <!-- Add Category Button -->
+                    <div class="d-flex justify-content-between mb-4">
+                        <h5 class="font-weight-bold mb-0">Vos Catégories</h5>
+                        <a href="{{ path('add_categorie') }}" class="btn btn-primary">
+                            <i class="fas fa-plus mr-2"></i> Ajouter une Catégorie
+                        </a>
+                    </div>
+
+                    <!-- Categories Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="bg-light text-uppercase text-center">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for categorie in cat %}
+                                    <tr>
+                                        <td>{{ categorie.nom }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ path('edit_categorie', { 'id': categorie.id }) }}" class="btn btn-success btn-sm">
+                                                <i class="fas fa-edit"></i> Modifier
+                                            </a>
+                                            <a href="{{ path('delete_categorie', { 'id': categorie.id }) }}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')">
+                                                <i class="fas fa-trash-alt"></i> Supprimer
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="2" class="text-center text-muted">Aucune catégorie trouvée.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

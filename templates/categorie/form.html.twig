@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Category{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card border-0 shadow-sm">
+                <!-- Header -->
+                <div class="card-header bg-dark text-white text-center py-4">
+                    <h3 class="mb-1">Category Management</h3>
+                    <p class="mb-0">Add or edit your categories effortlessly</p>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-4">
+                    {{ form_start(form, { attr: { 'class': 'needs-validation', 'novalidate': 'novalidate' } }) }}
+
+                    <!-- Name Field -->
+                    <div class="form-group mb-4">
+                        <label for="{{ form.nom.vars.id }}" class="font-weight-bold text-uppercase">Name</label>
+                        <div class="input-group">
+                            {{ form_widget(form.nom, { 'attr': {'class': 'form-control', 'placeholder': 'Enter category name'} }) }}
+                        </div>
+                        <small class="text-muted">Provide a unique and descriptive category name.</small>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-block py-2">
+                            Confirm
+                        </button>
+                        <a href="{{ path('display_categorie') }}" class="btn btn-link mt-3 text-muted">Cancel</a>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles -->
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: #333;
+        color: #fff;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .form-control {
+        border-radius: 5px;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .btn-link {
+        text-decoration: none;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .btn-link:hover {
+        text-decoration: underline;
+        color: #333;
+    }
+</style>
+{% endblock %}
