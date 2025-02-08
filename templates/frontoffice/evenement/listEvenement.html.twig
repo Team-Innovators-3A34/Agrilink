@@ -1,0 +1,224 @@
+{% extends "frontOffice/base.html.twig" %} {% block title %} Event List {%
+endblock %} {% block content %}
+
+<!-- Include Leaflet CSS and JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<style>
+  #map {
+    position: sticky;
+    top: 0;
+    height: 400px;
+    width: 100%;
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 200px; /* Set a fixed height for all images */
+    object-fit: cover; /* Ensures the image fills the area without distortion */
+    border-radius: 8px; /* Optional: to match your current rounded design */
+  }
+
+  /* Button styles for applying (Green) */
+  .bg-success {
+    background-color: #28a745 !important; /* Green color */
+    border-color: #28a745;
+  }
+
+  /* Button styles for disabled (Blue) */
+  .bg-primary {
+    background-color: #007bff !important; /* Blue color */
+    border-color: #007bff;
+  }
+
+  /* Optional: Disabled style with opacity */
+  .bg-primary:disabled {
+    opacity: 0.65; /* Optional: Make the disabled button look slightly faded */
+    pointer-events: none; /* Prevent clicking when disabled */
+  }
+</style>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- main content -->
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      <div class="row">
+        <div class="col-xl-12">
+          <!-- Map Container -->
+          <div
+            class="card w-100 border-0 shadow-none rounded-xxl border-0 mb-3 overflow-hidden"
+          >
+            <div id="map" style="height: 400px"></div>
+            <script type="text/javascript">
+              // Initialize the map and set its view to a default center and zoom level
+              var map = L.map('map').setView([36.752088, 10.206822], 6);
+
+              // Add OpenStreetMap tiles
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                  maxZoom: 19,
+                  attribution: '© OpenStreetMap'
+              }).addTo(map);
+
+              // Build an array of markers using dynamic event data from Twig
+              var eventsMarkers = [
+                  {% for event in events %}
+                  {
+                      lat: {{ event.latitude + 0 }},
+                      lng: {{ event.longitude + 0 }},
+                      nom: "{{ event.nom|escape('js') }}",
+                      adresse: "{{ event.adresse|escape('js') }}"
+                  }{% if not loop.last %},{% endif %}
+                  {% endfor %}
+              ];
+
+              // Loop through the eventsMarkers array and add a marker for each event
+              eventsMarkers.forEach(function(markerData) {
+                  var marker = L.marker([markerData.lat, markerData.lng]).addTo(map);
+                  // Bind a popup to the marker with the event name and address
+                  marker.bindPopup("<b>" + markerData.nom + "</b><br>" + markerData.adresse);
+              });
+            </script>
+          </div>
+
+          <!-- Dynamic Event Cards -->
+          <div class="row">
+            {% for event in events %}
+            <div class="col-lg-4 col-md-6 pe-2 ps-2">
+              <div
+                class="card p-3 bg-white w-100 hover-card border-0 shadow-xss rounded-xxl mb-3 overflow-hidden"
+              >
+                <div class="card-image w-100">
+                  <img
+                    src="{{ asset('uploads/images/' ~ event.image) }}"
+                    alt="{{ event.nom }}"
+                    class="w-100 rounded-3"
+                  />
+                </div>
+                <div class="card-body d-flex ps-0 pe-0 pb-0">
+                  <div
+                    class="bg-greylight me-3 p-3 border-light-md rounded-xxl"
+                  >
+                    <h4 class="fw-700 font-lg ls-3 text-grey-900 mb-0">
+                      <span
+                        class="ls-3 d-block font-xsss text-grey-500 fw-500"
+                        >{{ event.date|date('M') }}</span
+                      >
+                      {{ event.date|date('d') }}
+                    </h4>
+                  </div>
+                  <h2 class="fw-700 lh-3 font-xss">
+                    {{ event.nom }}
+                    <span
+                      class="d-flex font-xssss fw-500 mt-2 lh-3 text-grey-500"
+                    >
+                      <i class="ti-location-pin me-1"></i> {{ event.adresse }}
+                    </span>
+                  </h2>
+                </div>
+                <div class="card-body p-0">
+                  <button
+                    id="apply-btn-{{ event.id }}"
+                    type="button"
+                    data-event-id="{{ event.id }}"
+                    data-nbr-places="{{ event.getNbrPlaces() }}"
+                    {%
+                    if
+                    event.getParticipants().contains(app.user)
+                    %}
+                    class="font-xsssss fw-700 ps-3 pe-3 lh-32 float-right mt-4 text-uppercase rounded-3 ls-2 bg-success d-inline-block text-white me-1 apply-btn"
+                    disabled
+                    aria-disabled="true"
+                    title="You are already participating in this event."
+                    {%
+                    else
+                    %}
+                    class="font-xsssss fw-700 ps-3 pe-3 lh-32 float-right mt-4 text-uppercase rounded-3 ls-2 bg-primary d-inline-block text-white me-1 apply-btn"
+                    {%
+                    endif
+                    %}
+                  >
+                    {% if event.getParticipants().contains(app.user) %} Already
+                    In {% else %} Apply {% endif %}
+                  </button>
+
+                  <span
+                    class="nbr-places text-muted"
+                    id="nbr-places-{{ event.id }}"
+                  >
+                    {{ event.getNbrPlaces() }} places available
+                  </span>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- main content -->
+
+<script>
+  document.querySelectorAll(".apply-btn").forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default behavior of the link
+
+      // Extract event ID and current number of places
+      const eventId = this.getAttribute("data-event-id");
+      let nbrPlaces = parseInt(this.getAttribute("data-nbr-places"));
+
+      // Check if there are available places
+      if (nbrPlaces > 0) {
+        // Decrement nbr_places
+        nbrPlaces--;
+
+        // Update the UI
+        this.setAttribute("data-nbr-places", nbrPlaces);
+        document.getElementById(
+          `nbr-places-${eventId}`
+        ).textContent = `${nbrPlaces} places available`;
+
+        // Disable the button if no places are left
+        if (nbrPlaces === 0) {
+          this.disabled = true;
+          this.textContent = "No places left"; // Update button text
+          this.classList.remove("bg-primary"); // Remove the default 'apply' style
+          this.classList.add("bg-danger"); // Optional: change button style
+        }
+
+        // Change button to "Already applied" state
+        this.disabled = true;
+        this.textContent = "Already In"; // Change button text to show user has applied
+        this.classList.remove("bg-primary"); // Remove the initial 'apply' style
+        this.classList.add("bg-success"); // Apply the success (green) style when disabled
+
+        // Send an AJAX request to the server to update the database
+        fetch(`/update-event-places/${eventId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // To identify it as an AJAX request
+          },
+          body: JSON.stringify({ nbr_places: nbrPlaces }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to update places.");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Places updated successfully:", data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      } else {
+        alert("No places available for this event.");
+      }
+    });
+  });
+</script>
+
+{% endblock %}

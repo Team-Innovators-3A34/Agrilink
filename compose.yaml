@@ -1,20 +1,50 @@
-
 services:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
+      # Change the password in production for security
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
       POSTGRES_USER: ${POSTGRES_USER:-app}
     volumes:
       - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # Uncomment the next line to use a bind-mounted host directory instead of a Docker volume
       # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
+
+  ###> symfony/mercure-bundle ###
+  mercure:
+    image: dunglas/mercure
+    restart: unless-stopped
+    environment:
+      # Uncomment the following line to disable HTTPS in development
+      SERVER_NAME: ':80'
+      MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
+      # Allow all origins for CORS; use "*" for development only
+      MERCURE_EXTRA_DIRECTIVES: |
+        cors_origins http://127.0.0.1:8000
+    # Enable development mode with the dev Caddyfile configuration
+    command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    ports:
+      - "80" # Expose Mercure on port 3000
+    volumes:
+      - mercure_data:/data
+      - mercure_config:/config
+  ###< symfony/mercure-bundle ###
 
 volumes:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database_data:
-###< doctrine/doctrine-bundle ###
+  ###< doctrine/doctrine-bundle ###
+
+  ###> symfony/mercure-bundle ###
+  mercure_data:
+  mercure_config:
+  ###< symfony/mercure-bundle ###
