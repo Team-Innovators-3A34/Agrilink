@@ -5,6 +5,14 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
+    images_directory: '%kernel.project_dir%/public/uploads/images'
+    upload_directory: '%kernel.project_dir%/public/uploads/images'
+
+    emailjs_user_id: 'Kybc6CC3zhx6moGgjNfVN'  # Remplacez par votre user_id
+    emailjs_service_id: 'service_v50ujxu'  # Remplacez par votre service_id
+    emailjs_template_id: 'template_ijb1i6x'  # Remplacez par votre template_id
+
+     
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -21,4 +29,13 @@ services:
             - '../src/Kernel.php'
 
     # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+
+
+
+    App\Service\EmailJSService:
+        arguments:
+            $userId: '%emailjs_user_id%'
+            $serviceId: '%emailjs_service_id%'
+            $templateId: '%emailjs_template_id%'
+
+ 

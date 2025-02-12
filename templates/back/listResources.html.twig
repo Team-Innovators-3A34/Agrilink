@@ -1,0 +1,62 @@
+{% extends 'back/base.html.twig'%}
+{% block content %}
+<div class="col-lg-12">
+    <div class="table-responsive rounded mb-3">
+    <table class="data-table table mb-0 tbl-server-info">
+        <thead class="bg-white text-uppercase">
+            <tr class="ligth ligth-data">
+                <th>
+                    <div class="checkbox d-inline-block">
+                        <input type="checkbox" class="checkbox-input" id="checkbox1">
+                        <label for="checkbox1" class="mb-0"></label>
+                    </div>
+                </th>
+                <th>Images</th>
+                <th>Type ressource</th>
+                <th>Description</th>
+                <th>status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class="ligth-body">
+            {% for ressource in ressources %}
+            <tr>
+                <td>
+                    <div class="checkbox d-inline-block">
+                        <input type="checkbox" class="checkbox-input" id="checkbox2">
+                        <label for="checkbox2" class="mb-0"></label>
+                    </div>
+                </td>
+                <td> 
+                    {% if ressource.image %}
+                    <img src="{{ asset('uploads/images/' ~ ressource.image) }}" alt="Image de la ressource" 
+                         style="width: 100%; height: auto; max-width:100px; max-height: 100px; object-fit: cover;">
+                    {% else %}
+                    <p>No image available</p>
+                    {% endif %}
+                </td>
+                <td>{{ ressource.type }}</td>
+                <td>{{ ressource.description }}</td>
+                <td>{{ ressource.status }}</td>
+               
+                <td>
+                    <div class="d-flex align-items-center list-action">
+                       
+                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
+                            href="#"><i class="ri-pencil-line mr-0"></i></a>
+                            <form method="POST" action="{{ path('app_resourcedelete', {id: ressource.id}) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?');">
+                                <button type="submit" class="badge bg-warning border-0" data-toggle="tooltip" data-placement="top" title="Delete">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </form>
+                    </div>
+                </td>
+            </tr>
+           
+               
+          {% endfor %} 
+        </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}

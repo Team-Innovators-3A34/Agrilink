@@ -1,0 +1,23 @@
+{%extends 'base.html.twig'%}
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-4 shadow-lg" style="width: 50rem;">
+        <!-- Image d'illustration -->
+        <div class="text-center mb-4">
+            <img src="{{ asset('images/ressource.jpg') }}" alt="Illustration" class="img-fluid" style="max-height: 200px;">
+        </div>
+ <h1>Modifier la ressource</h1>
+
+    {# Affichage du formulaire #}
+    {{ form_start(form) }}
+        {{ form_row(form.owner_id_id) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.status) }}
+        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+    {{ form_end(form) }}
+    </div>
+</div>
+
+
+{% endblock %}
