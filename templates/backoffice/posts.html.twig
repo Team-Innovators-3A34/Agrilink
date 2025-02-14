@@ -1,0 +1,163 @@
+{% extends 'backoffice/base.html.twig' %}
+
+ {% block title %}Admin - Posts Management{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .table-actions {
+            white-space: nowrap;
+        }
+        .comment-preview {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="h4">Posts Management</h2>
+        </div>
+        <div class="col text-end">
+            <a href="{{ path('app_posts_new') }}" class="btn btn-primary">Add New Post</a>
+        </div>
+    </div>
+
+    {# Posts Table #}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Description</th>
+                            <th>Created</th>
+                            <th>Comments</th>
+                            <th>Likes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                            <tr>
+                                <td>{{ post.id }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="../assets/images/user-8.png" alt="user" 
+                                             class="rounded-circle me-2" style="width: 30px; height: 30px;">
+                                        {{ post.userIdId }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        {{ post.description }}
+                                    </div>
+                                </td>
+                                <td>{{ post.createdAt|ago }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-info" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#comments-{{ post.id }}">
+                                        {{ post.comments|length }} Comments
+                                    </button>
+                                </td>
+                                <td>2.8K</td>
+                                <td class="table-actions">
+                                    <a href="{{ path('app_posts_edit', {'id': post.id}) }}" 
+                                       class="btn btn-sm btn-primary me-2">
+                                        <i class="feather-edit-2"></i>
+                                    </a>
+                                    <form method="post" 
+                                          action="{{ path('app_posts_delete', {'id': post.id}) }}" 
+                                          style="display: inline-block" 
+                                          onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="feather-trash-2"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {# Collapsible Comments Section #}
+                            <tr class="collapse" id="comments-{{ post.id }}">
+                                <td colspan="7" class="bg-light">
+                                    <div class="p-3">
+                                        <h6 class="mb-3">Comments</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>User</th>
+                                                        <th>Comment</th>
+                                                        <th>Created</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for comment in post.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
+                                                        <tr>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <img src="../assets/images/user-8.png" alt="user" 
+                                                                         class="rounded-circle me-2" style="width: 25px; height: 25px;">
+                                                                    User
+                                                                </div>
+                                                            </td>
+                                                            <td>{{ comment.content }}</td>
+                                                            <td>{{ comment.createdAt|date('Y-m-d H:i:s') }}</td>
+                                                            <td class="table-actions">
+                                                                <a href="{{ path('app_comment_edit', {'id': comment.id}) }}" 
+                                                                   class="btn btn-sm btn-outline-primary me-2">
+                                                                    <i class="feather-edit-2"></i>
+                                                                </a>
+                                                                <form method="post" 
+                                                                      action="{{ path('app_comment_delete', {'id': comment.id}) }}" 
+                                                                      style="display: inline-block" 
+                                                                      onsubmit="return confirm('Delete this comment?');">
+                                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                        <i class="feather-trash-2"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+{% endblock %}

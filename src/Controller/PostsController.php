@@ -13,6 +13,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PostsController extends AbstractController 
 {
+    private $postsRepository;
+
+    public function __construct(PostsRepository $postsRepository)
+    {
+        $this->postsRepository = $postsRepository;
+    }
+    
     #[Route('/posts', name: 'app_posts')]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -86,10 +93,39 @@ final class PostsController extends AbstractController
         return $this->redirectToRoute('app_posts');
     }
 
-   /*  #[Route('/backoffice', name: 'app_backoffice')]
+    #[Route('/backoffice', name: 'app_backoffice')]
 public function backoffice(): Response
 {
-    return $this->render('backoffice/base.html.twig');
+$posts = $this->postsRepository->findAll();  // Get all posts
+        
+// Add these debugging lines
+dump("Number of posts fetched: " . count($posts));
+foreach ($posts as $post) {
+    dump("Post ID: " . $post->getId());
+    dump("Number of comments: " . count($post->getComments()));
 }
- */
+
+return $this->render('backoffice/base.html.twig', [
+    'posts' => $posts  // Pass posts to the template
+]);
+}
+
+#[Route('/admin/posts2', name: 'app_admin_posts')]
+public function adminposts(): Response
+{
+$posts = $this->postsRepository->findAll();  // Get all posts
+        
+
+// Add these debugging lines
+dump("Number of posts fetched: " . count($posts));
+foreach ($posts as $post) {
+    dump("Post ID: " . $post->getId());
+    dump("Number of comments: " . count($post->getComments()));
+}
+
+return $this->render('backoffice/base.html.twig', [
+    'posts' => $posts  // Pass posts to the template
+]);
+}
+
 }

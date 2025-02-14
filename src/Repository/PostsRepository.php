@@ -16,6 +16,7 @@ class PostsRepository extends ServiceEntityRepository
         parent::__construct($registry, Posts::class);
     }
 
+    
     //    /**
     //     * @return Posts[] Returns an array of Posts objects
     //     */
