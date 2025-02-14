@@ -77,9 +77,12 @@ final class ResourceController extends AbstractController
 
         $entityManager->persist($resource);
         $entityManager->flush();
-        return new Response('ajouté avec succés!');
+       // return new Response('ajouté avec succés!');
         $this->addFlash('success', 'Ressource ajoutée avec succès !');
-       
+   
+
+         // Redirection vers la liste après succès
+         return $this->redirectToRoute('app_resourcelist');
     }
 
     return $this->render('resource/index.html.twig', [
@@ -101,6 +104,11 @@ public function updateResource(Request $request, Ressources $resource ,EntityMan
        // Enregistrer les changements
        $entityManager->persist($resource);
        $entityManager->flush();
+       $this->addFlash('success', 'Ressource modifiéeavec succès !');
+   
+
+       // Redirection vers la liste après succès
+       return $this->redirectToRoute('app_resourcelist');
 
       
    }

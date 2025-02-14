@@ -41,6 +41,21 @@ class Demandes
 
     private ?string $message = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    public ?string $propositon = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $reponse = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nomdemandeur = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nomowner = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $priorite = null;
+
    
 
     public function getIdR(): ?int
@@ -123,6 +138,66 @@ class Demandes
     public function setDemandeId(int $demande_id): static
     {
         $this->demande_id = $demande_id;
+
+        return $this;
+    }
+
+    public function getPropositon(): ?string
+    {
+        return $this->propositon;
+    }
+
+    public function setPropositon(?string $propositon): static
+    {
+        $this->propositon = $propositon;
+
+        return $this;
+    }
+
+    public function getReponse(): ?string
+    {
+        return $this->reponse;
+    }
+
+    public function setReponse(?string $reponse): static
+    {
+        $this->reponse = $reponse;
+
+        return $this;
+    }
+
+    public function getNomdemandeur(): ?string
+    {
+        return $this->nomdemandeur;
+    }
+
+    public function setNomdemandeur(?string $nomdemandeur): static
+    {
+        $this->nomdemandeur = $nomdemandeur;
+
+        return $this;
+    }
+
+    public function getNomowner(): ?string
+    {
+        return $this->nomowner;
+    }
+
+    public function setNomowner(?string $nomowner): static
+    {
+        $this->nomowner = $nomowner;
+
+        return $this;
+    }
+
+    public function getPriorite(): ?string
+    {
+        return $this->priorite;
+    }
+
+    public function setPriorite(string $priorite): static
+    {
+        $this->priorite = $priorite;
 
         return $this;
     }

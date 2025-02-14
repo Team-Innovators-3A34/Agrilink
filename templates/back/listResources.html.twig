@@ -1,6 +1,19 @@
 {% extends 'back/base.html.twig'%}
 {% block content %}
 <div class="col-lg-12">
+    <form method="GET" action="{{ path('app_resourceback') }}">
+        <label for="owner_id_id">Filtrer par ID propriétaire :</label>
+        <input type="text" name="owner_id_id" id="owner_id_id" value="{{ app.request.query.get('owner_id_id') }}">
+    
+        <label for="type">Filtrer par type de ressource :</label>
+        <select name="type" id="type">
+            <option value="">-- Sélectionner --</option>
+            <option value="terrain" {% if app.request.query.get('type') == 'terrain' %}selected{% endif %}>terrain</option>
+            <option value="materiel" {% if app.request.query.get('type') == 'materiel' %}selected{% endif %}>materiel</option>
+        </select>
+    
+        <button type="submit">Filtrer</button>
+    </form>
     <div class="table-responsive rounded mb-3">
     <table class="data-table table mb-0 tbl-server-info">
         <thead class="bg-white text-uppercase">
@@ -11,9 +24,10 @@
                         <label for="checkbox1" class="mb-0"></label>
                     </div>
                 </th>
+                <th>Nom du ressource</th>
                 <th>Images</th>
                 <th>Type ressource</th>
-                <th>Description</th>
+                <th>Détails</th>
                 <th>status</th>
                 <th>Action</th>
             </tr>
@@ -27,6 +41,7 @@
                         <label for="checkbox2" class="mb-0"></label>
                     </div>
                 </td>
+                <td>{{ ressource.getNameR}}</td>
                 <td> 
                     {% if ressource.image %}
                     <img src="{{ asset('uploads/images/' ~ ressource.image) }}" alt="Image de la ressource" 
@@ -36,14 +51,19 @@
                     {% endif %}
                 </td>
                 <td>{{ ressource.type }}</td>
-                <td>{{ ressource.description }}</td>
+
+                <td>   
+                    <button class="btn btn-info" data-toggle="modal" data-target="#resourceDetailsModal{{ ressource.id }}">
+                       Voir Détails
+                    </button>
+                </td>
+
                 <td>{{ ressource.status }}</td>
                
                 <td>
                     <div class="d-flex align-items-center list-action">
                        
-                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"
-                            href="#"><i class="ri-pencil-line mr-0"></i></a>
+                      
                             <form method="POST" action="{{ path('app_resourcedelete', {id: ressource.id}) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?');">
                                 <button type="submit" class="badge bg-warning border-0" data-toggle="tooltip" data-placement="top" title="Delete">
                                     <i class="ri-delete-bin-line"></i>
@@ -52,7 +72,28 @@
                     </div>
                 </td>
             </tr>
-           
+            <div class="modal fade" id="resourceDetailsModal{{ ressource.id }}" tabindex="-1" role="dialog" aria-labelledby="resourceDetailsModalLabel{{ ressource.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="resourceDetailsModalLabel{{ ressource.id }}">Détails de la ressource</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Superficie:</strong> {{ ressource.superficie }}</p>
+                            <p><strong>Prix Location:</strong> {{ ressource.getPrixLocation }}</p>
+                            <p><strong>Marque:</strong> {{ ressource.marque }}</p>
+                            <p><strong>Adresse:</strong> {{ ressource.adresse }}</p>
+                            <p><strong>Description:</strong> {{ ressource.description }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
                
           {% endfor %} 
         </tbody>

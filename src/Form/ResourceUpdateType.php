@@ -61,6 +61,37 @@ class ResourceUpdateType extends AbstractType
                 'class' => 'form-control', // Applique la classe CSS au champ status
             ],
         ])
+        ->add('adresse', TextType::class, [
+            'required' => true,
+            'label' => 'Adresse',
+            'attr' => [
+                'class' => 'form-control', 
+            ],
+        ])
+        
+        ->add('marque', TextType::class, [
+            'required' => true,
+            'label' => 'La marque ',
+            'attr' => [
+                'class' => 'form-control', 
+            ],
+        ])
+        ->add('prix_location', TextType::class, [
+            'required' => true,
+            'label' => 'Prix de location par heure',
+            'attr' => [
+                'class' => 'form-control', 
+            ],
+        ])
+
+        ->add('superficie', TextType::class, [
+            'required' => true,
+            'label' => 'La superficie',
+            'attr' => [
+                'class' => 'form-control', 
+            ],
+        ])
+        
         ;
     }
 

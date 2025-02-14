@@ -21,10 +21,15 @@ final class BackController extends AbstractController
         ]);
     }
     #[Route('/backresource', name: 'app_resourceback')]
-    public function show(RessourcesRepository $ressourceRepository): Response
+    public function show(Request $request,RessourcesRepository $ressourceRepository): Response
     {
-        // Récupérer toutes les ressources de la base de données
-        $ressources = $ressourceRepository->findAll();
+        // Récupérer les paramètres de filtrage
+        $ownerId = $request->query->get('owner_id_id');  // ID du propriétaire
+        $type = $request->query->get('type');  // Type de ressource
+        if($ownerId && $type)
+    {  $ressources = $ressourceRepository->findByOwnerAndType($ownerId, $type);
+    }else
+      { $ressources = $ressourceRepository->findAll();}
 
         return $this->render('back/listResources.html.twig', [
             'ressources' => $ressources,

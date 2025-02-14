@@ -43,15 +43,38 @@ final class DemandeController extends AbstractController
         ]);
     }
     #[Route('/showDemandes', name: 'demande_liste')]
-    public function list(DemandesRepository $demandeRepository): Response
+    public function list(DemandesRepository $demandeRepository,Request $request): Response
     {
-        // Récupérer toutes les demandes
-        $demandes = $demandeRepository->findAll();
+       
+        
+        $status = $request->query->get('status');
+        if ($status) {
+            $demandes = $demandeRepository->findByStatus($status);
+        } else {
+            $demandes = $demandeRepository->findAll();
+           
+        }
 
         return $this->render('demande/list.html.twig', [
             'demandes' => $demandes,
         ]);
     }
+    #[Route('/demande/{id}/proposition', name: 'ajouter_proposition', methods: ['POST'])]
+public function ajouterProposition(Request $request, Demandes $demande, EntityManagerInterface $entityManager): JsonResponse
+{
+    $proposition = $request->request->get('proposition');
+
+    if ($proposition) {
+        $demande->setPropositon($proposition);
+        $entityManager->persist($demande);
+        $entityManager->flush();
+
+        return new JsonResponse(['success' => true, 'proposition' => $proposition]);
+    }
+
+    return new JsonResponse(['success' => false]);
+}
+
     #[Route('/showDemande', name: 'demandes_liste')]
     public function list2(DemandesRepository $demandeRepository ,EntityManagerInterface $entityManager): Response
     {   
@@ -121,7 +144,7 @@ public function createDemande(int $id, Request $request, EntityManagerInterface 
         $em->flush();
        
         $this->addFlash('success', 'Demande envoyée avec succès!');
-        return $this->redirectToRoute('demande_liste'); 
+        return $this->redirectToRoute('demandes_liste'); 
     }
 
     return $this->render('demande/create.html.twig', [
@@ -206,6 +229,43 @@ public function getTimelineData(DemandesRepository $demandeRepository): JsonResp
     }
 
     return new JsonResponse($data);
+}
+
+#[Route('/demande/{id}/discussion', name: 'update_discussion', methods: ['POST'])]
+public function updateDiscussion(Request $request, Demandes $demande, EntityManagerInterface $entityManager): Response
+{
+    $proposition = $request->request->get('proposition');
+    $reponse = $request->request->get('reponse');
+   
+    if ($proposition !== null) {
+        $demande->setProposition($proposition);
+    }
+
+    if ($reponse !== null) {
+        $demande->setReponse($reponse);
+    }
+
+    $entityManager->persist($demande);
+    $entityManager->flush();
+
+    return $this->redirectToRoute('demande_liste');
+}
+
+#[Route('/demande/{id}/reponse1', name: 'save_response', methods: ['POST'])]
+public function saveResponse(Request $request, Demandes $demande, EntityManagerInterface $entityManage ):Response
+  {  $reponse = $request->request->get('reponse');
+  
+   
+   
+
+    if ($reponse !== null) {
+        $demande->setReponse($reponse);
+    }
+
+    $entityManager->persist($demande);
+    $entityManager->flush();
+
+    return $this->redirectToRoute('demande_liste');
 }
 
 

@@ -48,4 +48,12 @@ class DemandesRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult();
 }
+public function findByStatus($status)
+{
+    return $this->createQueryBuilder('d')
+        ->where('d.status = :status')
+        ->setParameter('status', $status)
+        ->getQuery()
+        ->getResult();
+}
 }

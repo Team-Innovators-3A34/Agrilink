@@ -1,40 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Liste des demandes{% endblock %}
+ 
 
-{% block titlebody %}
-<div class="middle-sidebar-bottom">
-    <div class="middle-sidebar-left">
-        <div class="row">
-            <div class="col-xl-12 mb-4">
-                <div class="row">
-                    <div class="col-lg-12 mb-3">
-                        <div class="card p-lg-5 p-4 bg-primary-gradiant rounded-3 shadow-xss bg-pattern border-0 overflow-hidden">
-                            <div class="bg-pattern-div"></div>
-                            <h2 class="display2-size display2-md-size fw-700 text-white mb-0 mt-0">Listes des demandes</h2>
-                        </div>
-                    </div>                                 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock  %}          
-
-{% block body %}
+{% block content %}
 <div class="container mt-4">
     <button id="cleanBtn" class="btn btn-warning mb-3">Clean</button>  <!-- Bouton "Clean" -->
-
+    <form method="GET" action="{{ path('demande_liste') }}">
+        <label for="idR">Filtrer par etat :</label>
+        <input type="text" name="status" id="status" value="{{ app.request.query.get('status') }}">
+        <button type="submit">Filtrer</button>
+    </form>
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>ID Ressource</th>
+                    <th>Ressource</th>
                     <th>Status</th>
-                    <th>Message</th>
-                    <th>Date de début</th>
-                    <th>Date de fin</th>
+                    <th>Details</th>
+                   
                     <th>Actions</th>
+                    <th>Discussion</th>
                 </tr>
             </thead>
             <tbody id="demandesTable">
@@ -46,9 +32,11 @@
                                 {{ demande.status }}
                             </span>
                         </td>
-                        <td class="message">{{ demande.message }}</td>
-                        <td>{{ demande.createdAt|date('d/m/Y H:i') }}</td>
-                        <td>{{ demande.expireDate|date('d/m/Y H:i') }}</td>
+                       <td>    <p><strong>Date de création :</strong> {{ demande.createdAt|date('d/m/Y H:i') }}</p>
+                        <p><strong>Date d'expiration :</strong> {{ demande.expireDate|date('d/m/Y H:i') }}</p>
+                        <p><strong>Message :</strong> {{ demande.message }}</p>
+                        <p><strong>Priorité :</strong> {{ demande.priorite }}</p>
+                    </td>
                         <td>
                             <form action="{{ path('app_demandes_update_status', {'id': demande.getdemandeId, 'status': 'Approuvé'}) }}" method="POST">
                                 <button type="submit" class="btn btn-success">Approuver</button>
@@ -58,18 +46,99 @@
                                 <button type="submit" class="btn btn-danger">Rejeter</button>
                             </form>
                         </td>
+                        <td>
+                            <div id="discussionCard" class="hidden">
+                                <div class="card-content">
+                                    <span class="close-btn" onclick="closeCard()">&times;</span>
+                                    <h3>Ajouter une proposition</h3>
+                            
+                                    <form id="propositionForm">
+                                        <input type="hidden" id="demandeId" value="">
+                            
+                                        <label for="proposition">Proposition :</label>
+                                        <textarea id="proposition" name="proposition"></textarea>
+                            
+                                        <button type="button" id="btnProposition" onclick="sendProposition()">Envoyer</button>
+                                    </form>
+                            
+                                    <h4>Dernière proposition :</h4>
+                                    <p id="lastProposition">Aucune proposition enregistrée.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Bouton pour ouvrir la card -->
+                            <button class="openDiscussion" data-id="{{ demande.getDemandeId() }}">Proposer</button>
+                            
+                            <p><strong>Reponse:</strong> {{ demande.reponse}}</p>
+                            
+                           
+
+                        </td>
                     </tr>
+                    
                 {% else %}
                     <tr>
                         <td colspan="6" class="text-center">Aucune demande trouvée.</td>
                     </tr>
                 {% endfor %}
+                
+                
             </tbody>
         </table>
+    
     </div>
 </div>
 
 <script>
+   
+
+   
+
+
+   document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".openDiscussion").forEach(button => {
+        button.addEventListener("click", function () {
+            const demandeId = this.getAttribute("data-id");
+            document.getElementById("demandeId").value = demandeId;
+            document.getElementById("discussionCard").classList.remove("hidden");
+        });
+    });
+});
+
+function closeCard() {
+    document.getElementById("discussionCard").classList.add("hidden");
+}
+
+function sendProposition() {
+    const demandeId = document.getElementById("demandeId").value;
+    const proposition = document.getElementById("proposition").value;
+
+    if (proposition.trim() === "") {
+        alert("Veuillez entrer une proposition !");
+        return;
+    }
+
+    fetch(`/demande/${demandeId}/proposition`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ proposition })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById("lastProposition").textContent = data.proposition;
+            alert("Proposition enregistrée !");
+            document.getElementById("proposition").value = ""; // Réinitialiser le champ
+        } else {
+            alert("Erreur lors de l'enregistrement.");
+        }
+    })
+    .catch(error => console.error("Erreur:", error));
+}
+
+
+
+ 
 document.getElementById("cleanBtn").addEventListener("click", async function() {
     console.log("Début du nettoyage...");
 
@@ -109,6 +178,7 @@ document.getElementById("cleanBtn").addEventListener("click", async function() {
 
 
 
+
 async function verifyTextWithAI(text) {
     if (/^(.)\1{4,}$/.test(text) || text.length < 10) {
         return false;
@@ -135,6 +205,8 @@ async function verifyTextWithAI(text) {
 
 }
 
+
 </script>
+
 {% endblock %}
 

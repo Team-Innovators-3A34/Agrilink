@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RessourcesRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,7 +38,26 @@ class Ressources
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: "Le non ne peut pas être vide.")]
     private ?string $image = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $name_r = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $marque = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $etat = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $prix_location = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $superficie = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
    
     public function getId(): ?int
     {
@@ -107,6 +127,78 @@ class Ressources
     public function setImage(?string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getNameR(): ?string
+    {
+        return $this->name_r;
+    }
+
+    public function setNameR(string $name_r): static
+    {
+        $this->name_r = $name_r;
+
+        return $this;
+    }
+
+    public function getMarque(): ?string
+    {
+        return $this->marque;
+    }
+
+    public function setMarque(?string $marque): static
+    {
+        $this->marque = $marque;
+
+        return $this;
+    }
+
+    public function getEtat(): ?string
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?string $etat): static
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getPrixLocation(): ?string
+    {
+        return $this->prix_location;
+    }
+
+    public function setPrixLocation(?string $prix_location): static
+    {
+        $this->prix_location = $prix_location;
+
+        return $this;
+    }
+
+    public function getSuperficie(): ?float
+    {
+        return $this->superficie;
+    }
+
+    public function setSuperficie(?float $superficie): static
+    {
+        $this->superficie = $superficie;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): static
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }

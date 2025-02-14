@@ -20,7 +20,7 @@
     </div>
 </div>
 {% endblock  %}          
-{% block body %}
+{% block content %}
 <div class="container mt-4">
     
     <div class="table-responsive">
@@ -29,9 +29,8 @@
                 <tr>
                     <th>ID Ressource</th>
                     <th>Status</th>
-                    <th>Message</th>
-                    <th>Date de début</th>
-                    <th>Date de fin</th>
+                    
+                    <th>Détails</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -44,9 +43,14 @@
                                 {{ demande.status }}
                             </span>
                         </td>
-                        <td>{{ demande.message }}</td>
-                        <td>{{ demande.createdAt|date('d/m/Y H:i') }}</td>
-                        <td>{{ demande.expireDate|date('d/m/Y H:i') }}</td>
+                        <td>  
+                            <p><strong>Date de création :</strong> {{ demande.createdAt|date('d/m/Y H:i') }}</p>
+                            <p><strong>Date d'expiration :</strong> {{ demande.expireDate|date('d/m/Y H:i') }}</p>
+                            <p><strong>Message :</strong> {{ demande.message }}</p>
+                            <p><strong>Priorité :</strong> {{ demande.priorite }}</p>
+                        </td>
+                        
+                  
                         
                             <td>
                                 <a href="{{ path('app_demandes_update', {'id': demande.getdemandeId}) }}" class="btn btn-warning">Modifier</a>
@@ -55,8 +59,33 @@
                                     <button type="submit" class="btn btn-danger">Supprimer</button>
                                 </form>
                             </td>
-                       
+                            <td>
+                                <p><strong>Proposition:</strong> {{ demande.propositon }}</p>
+                                <div id="discussionCard" class="hidden">
+                                    <div class="card-content">
+                                        <span class="close-btn" onclick="closeCard()">&times;</span>
+                                        <h3>Répondre</h3>
+                                
+                                        <form id="reponseForm">
+                                            <input type="hidden" id="demandeId" value="">
+                                
+                                            <label for="reponse">Reponse :</label>
+                                            <textarea id="reponse" name="reponse"></textarea>
+                                
+                                            <button type="button" id="btnReponse" onclick="sendReponse()">Envoyer</button>
+                                        </form>
+                                
+                                        
+                                    </div>
+                                </div>
+                                  <!-- Bouton pour ouvrir la card -->
+                                  <button class="openDiscussion" data-id="{{ demande.getDemandeId() }}">Repondre</button>
+
+
+                            </td>
+
                     </tr>
+      
                 {% else %}
                     <tr>
                         <td colspan="6" class="text-center">Aucune demande trouvée.</td>
@@ -66,4 +95,45 @@
         </table>
     </div>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".openDiscussion").forEach(button => {
+        button.addEventListener("click", function () {
+            const demandeId = this.getAttribute("data-id");
+            document.getElementById("demandeId").value = demandeId;
+            document.getElementById("discussionCard").classList.remove("hidden");
+        });
+    });
+});
+function closeCard() {
+    document.getElementById("discussionCard").classList.add("hidden");
+}
+function sendReponse() {
+    const demandeId = document.getElementById("demandeId").value;
+    const reponse= document.getElementById("reponse").value;
+
+    if (reponse.trim() === "") {
+        alert("Veuillez entrer une proposition !");
+        return;
+    }
+
+    fetch(`/demande/${demandeId}/discussion`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ reponse})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById("lastResponse").textContent = data.reponse;
+            alert("reponse enregistrée !");
+            document.getElementById("reponse").value = ""; // Réinitialiser le champ
+        } else {
+            alert("Erreur lors de l'enregistrement.");
+        }
+    })
+    .catch(error => console.error("Erreur:", error));
+}
+
+</script>
 {% endblock %}

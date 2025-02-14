@@ -18,10 +18,15 @@
     </div>
 </div>
 {% endblock  %}
-{% block body %}
+{% block content %}
 {{ form_start (form,{'attr': {'novalidate': 'novalidate'}} ) }}
 <div class="mb-3">
     {{ form_widget(form, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <button type="submit" class="btn w-100 p-3 mt-3 font-xsss text-center text-white bg-current rounded-3 text-uppercase fw-600 ls-3">Soumettre la demande</button>
+    </div>
 </div>
 {{ form_end(form) }}
 {% endblock %}

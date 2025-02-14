@@ -40,4 +40,23 @@ class RessourcesRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    // Méthode pour filtrer les ressources par propriétaire (owner_id_id) et type
+    public function findByOwnerAndType($ownerId = null, $type = null)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        // Appliquer le filtre pour owner_id_id si fourni
+        if ($ownerId) {
+            $qb->andWhere('r.owner_id_id = :owner_id_id')
+               ->setParameter('owner_id_id', $ownerId);
+        }
+
+        // Appliquer le filtre pour type si fourni
+        if ($type) {
+            $qb->andWhere('r.type = :type')
+               ->setParameter('type', $type);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

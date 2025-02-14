@@ -187,35 +187,97 @@ td.status-termine {
 .modal {
     display: none; 
     position: fixed; 
-    z-index: 1; 
+    z-index: 1050; /* Assurez-vous que la modale est au-dessus des autres éléments */
     left: 0;
     top: 0;
     width: 100%; 
     height: 100%; 
     overflow: auto; 
-    background-color: rgb(0,0,0); 
-    background-color: rgba(0,0,0,0.4); 
+  
     padding-top: 60px;
 }
+/* Masquer la card par défaut */
+.hidden {
+    display: none;
+}
+
+/* Style de la card */
+#discussionCard {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+/* Style du bouton de fermeture */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    color: red;
+}
+
+
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: #fff;
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border-radius: 5px;
     width: 80%;
+    max-width: 600px;
 }
 
 .close {
     color: #aaa;
-    float: right;
     font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .close:hover,
 .close:focus {
     color: black;
-    text-decoration: none;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 20px 0;
+}
+/* Style du bouton rouge par défaut */
+.btn-rouge {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Quand le bouton est cliqué, il devient vert */
+.btn-vert {
+    background-color: green;
+    color: white;
+}
+
+/* Style de la carte (au début cachée) */
+.discussion-card {
+    background: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
 }
