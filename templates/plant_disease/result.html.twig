@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultat de l'Analyse{% endblock %}
+
+{% block body %}
+    <h2>Résultat de l'Analyse</h2>
+    <p><strong>Maladie détectée :</strong> {{ prediction }}</p>
+    <a href="{{ path('disease_recognition') }}">Retour</a>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détection des Maladies des Plantes{% endblock %}
+
+{% block body %}
+    <h2>Détection des Maladies des Plantes</h2>
+    
+    <form method="post" enctype="multipart/form-data">
+        <label for="image">Téléchargez une image :</label>
+        <input type="file" name="image" required>
+        <button type="submit">Analyser</button>
+    </form>
+
+    {% if prediction is not null %}
+        <p><strong>Résultat :</strong> {{ prediction }}</p>
+    {% endif %}
+{% endblock %}

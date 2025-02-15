@@ -1,0 +1,9 @@
+knp_snappy:
+    pdf:
+        enabled: true
+        binary: 'C:/Users/DELL/scoop/apps/wkhtmltopdf/current/wkhtmltopdf.exe'
+        options: []
+    image:
+        enabled:    true
+        binary: 'C:/Users/DELL/scoop/apps/wkhtmltopdf/current/wkhtmltopdf.exe'
+        options:    []
