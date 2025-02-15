@@ -28,6 +28,7 @@ final class PostsController extends AbstractController
             [], // no criteria - get all posts
             ['created_at' => 'DESC'] // order by createdAt descending
         );
+        
 
         // Render the template with the posts
         return $this->render('posts/index.html.twig', [
@@ -90,42 +91,8 @@ final class PostsController extends AbstractController
         $entityManager->flush();
         
         $this->addFlash('success', 'Post deleted successfully!');
-        return $this->redirectToRoute('app_posts');
+        return $this->redirectToRoute('app_home');
     }
 
-    #[Route('/backoffice', name: 'app_backoffice')]
-public function backoffice(): Response
-{
-$posts = $this->postsRepository->findAll();  // Get all posts
-        
-// Add these debugging lines
-dump("Number of posts fetched: " . count($posts));
-foreach ($posts as $post) {
-    dump("Post ID: " . $post->getId());
-    dump("Number of comments: " . count($post->getComments()));
-}
-
-return $this->render('backoffice/base.html.twig', [
-    'posts' => $posts  // Pass posts to the template
-]);
-}
-
-#[Route('/admin/posts2', name: 'app_admin_posts')]
-public function adminposts(): Response
-{
-$posts = $this->postsRepository->findAll();  // Get all posts
-        
-
-// Add these debugging lines
-dump("Number of posts fetched: " . count($posts));
-foreach ($posts as $post) {
-    dump("Post ID: " . $post->getId());
-    dump("Number of comments: " . count($post->getComments()));
-}
-
-return $this->render('backoffice/base.html.twig', [
-    'posts' => $posts  // Pass posts to the template
-]);
-}
 
 }
