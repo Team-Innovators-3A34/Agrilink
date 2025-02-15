@@ -75,35 +75,38 @@ public function ajouterProposition(Request $request, Demandes $demande, EntityMa
     return new JsonResponse(['success' => false]);
 }
 
-    #[Route('/showDemande', name: 'demandes_liste')]
-    public function list2(DemandesRepository $demandeRepository ,EntityManagerInterface $entityManager): Response
-    {   
-        $now = new \DateTime();
-      
-        // Récupérer les demandes en attente qui ont expiré
-        $demandesExpirées = $entityManager->getRepository(Demandes::class)
-            ->createQueryBuilder('d')
-            ->where('d.status = :status')
-            ->andWhere('d.expire_date <= :now')
-            ->setParameter('status', 'terminé')
-            ->setParameter('now', $now)
-            ->getQuery()
-            ->getResult();
+#[Route('/showDemande', name: 'demandes_liste')]
+public function list2(DemandesRepository $demandeRepository, EntityManagerInterface $entityManager): Response
+{
+    $now = new \DateTime();
 
+    // Récupérer les demandes en cours qui ont expiré
+    $demandesExpirées = $entityManager->getRepository(Demandes::class)
+        ->createQueryBuilder('d')
+        ->where('d.status = :status')
+        ->andWhere('d.expire_date <= :now')
+        ->setParameter('status', 'en cours')
+        ->setParameter('now', $now)
+        ->getQuery()
+        ->getResult();
 
-            
-            foreach ($demandesExpirées as $demande) {
-                $demande->setStatus('terminé');
-                $entityManager->persist($demande);
-                $entityManager->flush(); // Exécute la mise à jour immédiatement
-            }
-            
-        $demandes = $demandeRepository->findAll();
-
-        return $this->render('demandeshow.html.twig', [
-            'demandes' => $demandes,
-        ]);
+    // Mettre à jour le statut des demandes expirées
+    if (!empty($demandesExpirées)) {
+        foreach ($demandesExpirées as $demande) {
+            $demande->setStatus('terminé');
+            $entityManager->persist($demande);
+        }
+        $entityManager->flush();
     }
+
+    // Récupérer toutes les demandes après mise à jour
+    $demandes = $demandeRepository->findAll();
+
+    return $this->render('demandeshow.html.twig', [
+        'demandes' => $demandes,
+    ]);
+}
+
     #[Route('/demander/{id}', name: 'demande_create')]
 public function createDemande(int $id, Request $request, EntityManagerInterface $em, RessourcesRepository $ressourceRepo,MailerInterface $mailer ): Response
 {
@@ -202,7 +205,7 @@ public function update(Request $request, Demandes $demande, EntityManagerInterfa
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        // Mise à jour de la demande
+       
         $entityManager->flush();
         $this->addFlash('success', 'Demande mise à jour avec succès.');
         return $this->redirectToRoute('demandes_liste');
@@ -268,6 +271,6 @@ public function saveResponse(Request $request, Demandes $demande, EntityManagerI
     return $this->redirectToRoute('demande_liste');
 }
 
-
+    
 }
 

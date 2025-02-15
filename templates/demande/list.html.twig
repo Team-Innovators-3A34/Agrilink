@@ -11,6 +11,8 @@
         <input type="text" name="status" id="status" value="{{ app.request.query.get('status') }}">
         <button type="submit">Filtrer</button>
     </form>
+    <button id="estimateBtn" class="btn btn-primary mb-3">Estimer</button>
+
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
@@ -18,7 +20,7 @@
                     <th>Ressource</th>
                     <th>Status</th>
                     <th>Details</th>
-                   
+                    <th>Probabilité</th>
                     <th>Actions</th>
                     <th>Discussion</th>
                 </tr>
@@ -32,11 +34,14 @@
                                 {{ demande.status }}
                             </span>
                         </td>
-                       <td>    <p><strong>Date de création :</strong> {{ demande.createdAt|date('d/m/Y H:i') }}</p>
+                       <td>   
+                         <p><strong>Date de création :</strong> {{ demande.createdAt|date('d/m/Y H:i') }}</p>
                         <p><strong>Date d'expiration :</strong> {{ demande.expireDate|date('d/m/Y H:i') }}</p>
                         <p><strong>Message :</strong> {{ demande.message }}</p>
                         <p><strong>Priorité :</strong> {{ demande.priorite }}</p>
                     </td>
+                    <td class="probability"></td>
+
                         <td>
                             <form action="{{ path('app_demandes_update_status', {'id': demande.getdemandeId, 'status': 'Approuvé'}) }}" method="POST">
                                 <button type="submit" class="btn btn-success">Approuver</button>
@@ -90,7 +95,53 @@
 </div>
 
 <script>
-   
+document.getElementById("estimateBtn").addEventListener("click", function () {
+    let ongoingRequests = document.querySelectorAll("tbody tr").length; // Nombre total de demandes en cours
+
+    document.querySelectorAll("tbody tr").forEach(row => {
+        let statusElement = row.querySelector("td:nth-child(2) span");
+        let priorityElement = row.querySelector("td:nth-child(3)");
+        let probabilityElement = row.querySelector(".probability");
+
+        if (statusElement && priorityElement && probabilityElement) {
+            let status = statusElement.textContent.trim();
+            let priorityText = priorityElement.textContent.trim().toLowerCase(); // Texte : faible, moyenne, haute
+
+            if (status === "en cours") {
+                let probability = calculateProbability(priorityText, ongoingRequests);
+                probabilityElement.textContent = probability + "%"; // Affiche la probabilité
+            }
+        }
+    });
+});
+
+function calculateProbability(priorityText, ongoingRequests) {
+    let baseProbability;
+
+    // Définir la probabilité de base selon la priorité
+    switch (priorityText) {
+        case "haute":
+            baseProbability = 80; // Haute priorité → forte probabilité
+            break;
+        case "moyenne":
+            baseProbability = 50; // Moyenne priorité → probabilité moyenne
+            break;
+        case "faible":
+            baseProbability = 20; // Faible priorité → faible probabilité
+            break;
+        default:
+            baseProbability = 30; // Valeur par défaut si inconnue
+    }
+
+    // Plus il y a de demandes en cours, plus la probabilité diminue
+    let penalty = (ongoingRequests - 1) * 5; // -5% par demande en cours
+
+    let finalProbability = baseProbability - penalty;
+
+    // Assurer que la probabilité reste entre 5% et 95%
+    return Math.max(5, Math.min(finalProbability, 95)).toFixed(2);
+}
+
 
    
 
