@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Form\FormInterface;
 
 final class PostsController extends AbstractController 
 {
@@ -55,13 +57,15 @@ final class PostsController extends AbstractController
             $this->addFlash('success', 'Post created successfully!');
             
             // Redirect to the posts listing page
-            return $this->redirectToRoute('app_posts');
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('posts/new.html.twig', [
             'form' => $form->createView(),
         ]);
-    }
+
+          
+}
 
     #[Route('/posts/{id}/edit', name: 'app_posts_edit')]
     public function edit(Request $request, Posts $post, EntityManagerInterface $entityManager): Response
@@ -74,7 +78,7 @@ final class PostsController extends AbstractController
             $entityManager->flush();
             
             $this->addFlash('success', 'Post updated successfully!');
-            return $this->redirectToRoute('app_posts');
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('posts/edit.html.twig', [

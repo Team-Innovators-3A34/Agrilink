@@ -1,9 +1,19 @@
 {% extends 'base.html.twig' %}
 
+
+
 {% block body %}
+
+{% block navigation %}
+    {{ parent() }}
+{% endblock %}
+
+    <div class="content" style="margin-top: 20px;">
+<div class="space-before-body"></div>
     <div class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3 mt-3">
         <div class="card-body p-0">
             {{ form_start(form) }}
+ <div class="content" style="margin-top: 60px;">
                 <div class="mb-3">
                     {{ form_row(form.type, {
                         'attr': {'class': 'form-control'}

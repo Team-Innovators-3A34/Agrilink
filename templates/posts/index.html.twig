@@ -39,11 +39,21 @@
                 </div>
             </div>
         
-            <div class="card-body p-0 me-lg-5">
-                <p class="post-description" style="text-align: left; font-size: 16px; font-weight: bold; color: black;">
-                    {{ post.description }}
-                </p>
-            </div>
+           <!-- Right side: Post content -->
+        <div class="card-body p-0 me-lg-5"> <!-- Added ms-5 and ps-5 for right side positioning -->
+            <span class="text-grey-500 font-xssss fw-500 mb-1 d-block">{{ post.type }}</span>
+            
+      <!-- Post Title with "Title: " before it -->
+    <p class="post-title" style="text-align: left; font-size: 18px; font-weight: bold; color: black;">
+        Title: <span style="font-size: 22px;">{{ post.title }}</span>
+    </p>
+    
+    <!-- Post Description with a larger font size -->
+    <p class="post-description" style="text-align: left; font-size: 18px; font-weight: normal; color: #444;">
+        {{ post.description }}
+    </p>
+        </div>
+
 
             <div class="card-body d-flex p-0 mt-3">
                 <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3">

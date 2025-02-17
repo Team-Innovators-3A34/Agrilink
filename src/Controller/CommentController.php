@@ -32,7 +32,7 @@ class CommentController extends AbstractController
         $entityManager->persist($comment);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_posts');
+        return $this->redirectToRoute('app_home');
     }
 
     #[Route('/{id}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
@@ -45,7 +45,7 @@ class CommentController extends AbstractController
                 $comment->setContent($content);
                 $entityManager->flush();
                 
-                return $this->redirectToRoute('app_posts');
+                return $this->redirectToRoute('app_home');
             }
         }
         
@@ -62,6 +62,6 @@ class CommentController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_posts');
+        return $this->redirectToRoute('app_home');
     }
 }
