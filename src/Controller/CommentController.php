@@ -62,6 +62,16 @@ class CommentController extends AbstractController
             $entityManager->flush();
         }
 
+        $this->addFlash('success', 'Comment deleted successfully!');
+
+        $redirectTo = $request->query->get('redirect_to');
+        
+        if ($redirectTo === 'app_postsback') {
+            return $this->redirectToRoute('app_postsback');
+        }
+        
         return $this->redirectToRoute('app_home');
+
+       /*  return $this->redirectToRoute('app_home'); */
     }
 }

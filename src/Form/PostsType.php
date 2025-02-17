@@ -21,9 +21,11 @@ class PostsType extends AbstractType
                     'Question' => 'question',
                     'Discussion' => 'discussion'
                 ],
+                'required' => true,
                 'attr' => ['class' => 'form-control']
             ])
             ->add('title', TextType::class, [
+                'required' => true,
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Enter title'
@@ -31,9 +33,10 @@ class PostsType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'attr' => [
+                    'required' => true,
                     'class' => 'form-control',
                     'placeholder' => 'What\'s on your mind?',
-                    'rows' => 4
+                    'rows' => 5
                 ]
             ])
             ->add('status', ChoiceType::class, [
@@ -41,6 +44,7 @@ class PostsType extends AbstractType
                     'Active' => 'active',
                     'Draft' => 'draft'
                 ],
+                'required' => true,
                 'attr' => ['class' => 'form-control']
             ])
         ;

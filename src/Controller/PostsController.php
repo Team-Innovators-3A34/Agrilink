@@ -88,14 +88,23 @@ final class PostsController extends AbstractController
     }
 
     #[Route('/posts/{id}/delete', name: 'app_posts_delete')]
-    public function delete(Posts $post, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Posts $post, EntityManagerInterface $entityManager): Response
     {
         // For testing purposes, we're allowing deletion for all posts
         $entityManager->remove($post);
         $entityManager->flush();
         
         $this->addFlash('success', 'Post deleted successfully!');
-        return $this->redirectToRoute('app_home');
+
+
+    $redirectTo = $request->query->get('redirect_to');
+    
+    if ($redirectTo === 'app_postsback') {
+        return $this->redirectToRoute('app_postsback');
+    }
+    
+    return $this->redirectToRoute('app_home');
+       /*  return $this->redirectToRoute('app_home'); */
     }
 
 
