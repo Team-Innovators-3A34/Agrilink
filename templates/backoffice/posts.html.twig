@@ -45,6 +45,7 @@
 								<th>User</th>
 								<th>Title</th>
 								<th>Description</th>
+								<th>Attached File</th>
 								<th>Created</th>
 								<th>Comments</th>
 								<th>Likes</th>
@@ -71,12 +72,32 @@
 											{{ post.description }}
 										</div>
 									</td>
+
+									<td>
+										<div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+											{% if post.file %}
+												{% set file_extension = post.file|split('.')|last|lower %}
+
+												{% if file_extension in ['jpg', 'jpeg', 'png', 'gif'] %}
+													<img src="{{ asset('uploads/files/' ~ post.file) }}" alt="Post image" class="img-fluid">
+												{% elseif file_extension == 'pdf' %}
+													<a href="{{ asset('uploads/files/' ~ post.file) }}" class="btn btn-primary">View PDF</a>
+												{% elseif file_extension == 'mp4' %}
+													<video controls class="w-100">
+														<source src="{{ asset('uploads/files/' ~ post.file) }}" type="video/mp4">
+														Your browser does not support the video tag.
+													</video>
+												{% endif %}
+											{% endif %}
+										</div>
+									</td>
+
 									<td>{{ post.createdAt|ago }}</td>
 									<td>
 										{# <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="collapse" data-bs-target="#comments-{{ post.id }}">
-																																																			{{ post.comments|length }}
-																																																			Comments
-																																																		</button> #}
+																																																													{{ post.comments|length }}
+																																																													Comments
+																																																												</button> #}
 										<button class="btn btn-sm btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{ post.id }}" aria-expanded="false" aria-controls="comments-{{ post.id }}">
 											{{ post.comments|length }}
 											Show Comments

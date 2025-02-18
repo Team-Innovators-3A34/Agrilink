@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -24,17 +25,51 @@ class Posts
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
+   /*  #[Assert\NotBlank(message: "Title cannot be empty")]
+    #[Assert\Length(
+    min: 3,
+    max: 255,
+    minMessage: "Title must be at least {{ limit }} characters long",
+    maxMessage: "Title cannot be longer than {{ limit }} characters"
+    )] */
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private string $title = '';
 
+  
+    /* #[Assert\NotBlank(message: 'Description cannot be empty')]
+    #[Assert\Length(
+    min: 3,
+    max: 255,
+    minMessage: 'Description must be at least {{ limit }} characters long',
+    maxMessage: 'Description cannot be longer than {{ limit }} characters'
+)] */
     #[ORM\Column(length: 255)]
-    private ?string $description = null;
+    private string $description = '';
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
+
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $file;
+
+
+    
+    #[Assert\File(
+        maxSize: "40M",
+        mimeTypes: [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "application/pdf",
+            "video/mp4"
+        ],
+        mimeTypesMessage: "Please upload a valid file (JPG, PNG, GIF, PDF, MP4)"
+    )]
+    private ?File $fileUpload = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -129,6 +164,30 @@ class Posts
 
         return $this;
     }
+
+    public function getFile(): ?string
+    {
+        return $this->file;
+    }
+
+    public function setFile(?string $file): self
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    public function getFileUpload(): ?File
+    {
+        return $this->fileUpload;
+    }
+
+    public function setFileUpload(?File $fileUpload): self
+    {
+        $this->fileUpload = $fileUpload;
+        return $this;
+    }
+
+
     public function getUser(): ?User
     {
         return $this->user;

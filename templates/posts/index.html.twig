@@ -54,6 +54,21 @@
     </p>
         </div>
 
+         {% if post.file %}
+            {% set file_extension = post.file|split('.')|last|lower %}
+            
+            {% if file_extension in ['jpg', 'jpeg', 'png', 'gif'] %}
+                <img src="{{ asset('uploads/files/' ~ post.file) }}" alt="Post image" class="img-fluid">
+            {% elseif file_extension == 'pdf' %}
+                <a href="{{ asset('uploads/files/' ~ post.file) }}" class="btn btn-primary">View PDF</a>
+            {% elseif file_extension == 'mp4' %}
+                <video controls class="w-100">
+                    <source src="{{ asset('uploads/files/' ~ post.file) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% endif %}
+        {% endif %}
+
 
             <div class="card-body d-flex p-0 mt-3">
                 <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3">
