@@ -17,6 +17,7 @@ return [
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
 =======
     KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
@@ -30,4 +31,7 @@ return [
 >>>>>>> origin/gestionevent
 =======
 >>>>>>> origin/gestionressources
+=======
+    Knp\Bundle\SnappyBundle\KnpSnappyBundle::class => ['all' => true],
+>>>>>>> origin/gestionReclamation
 ];

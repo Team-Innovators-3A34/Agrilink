@@ -3,6 +3,7 @@ framework:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     mailer:
         dsn: '%env(MAILER_DSN)%'
 =======
@@ -22,3 +23,7 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
 >>>>>>> origin/gestionressources
+=======
+    mailer:
+        dsn: '%env(MAILER_DSN)%'
+>>>>>>> origin/gestionReclamation

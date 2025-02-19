@@ -8,7 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+<<<<<<< HEAD
 use App\Entity\Reponses;
+=======
+>>>>>>> origin/gestionReclamation
 
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
@@ -19,9 +22,14 @@ class Reclamation
     #[ORM\Column]
     private ?int $id = null;
 
+<<<<<<< HEAD
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $id_user = null;
+=======
+    #[ORM\Column(nullable: true)]
+    private ?int $id_user = null;
+>>>>>>> origin/gestionReclamation
 
     #[ORM\Column(length: 255)]
     /**
@@ -94,6 +102,15 @@ class Reclamation
     #[ORM\OneToMany(targetEntity: Reponses::class, mappedBy: 'id_reclamation', orphanRemoval: true)]
     private Collection $reponses;
 
+<<<<<<< HEAD
+=======
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $etatRec = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $etatuser = null;
+
+>>>>>>> origin/gestionReclamation
     public function __construct()
     {
         $this->reponses = new ArrayCollection();
@@ -239,7 +256,11 @@ class Reclamation
         return $this->reponses;
     }
 
+<<<<<<< HEAD
     /* public function addReponse(Reponses $reponse): static
+=======
+    public function addReponse(Reponses $reponse): static
+>>>>>>> origin/gestionReclamation
     {
         if (!$this->reponses->contains($reponse)) {
             $this->reponses->add($reponse);
@@ -259,5 +280,33 @@ class Reclamation
         }
 
         return $this;
+<<<<<<< HEAD
     }*/
+=======
+    }
+
+    public function getEtatRec(): ?string
+    {
+        return $this->etatRec;
+    }
+
+    public function setEtatRec(?string $etatRec): static
+    {
+        $this->etatRec = $etatRec;
+
+        return $this;
+    }
+
+    public function getEtatuser(): ?string
+    {
+        return $this->etatuser;
+    }
+
+    public function setEtatuser(?string $etatuser): static
+    {
+        $this->etatuser = $etatuser;
+
+        return $this;
+    }
+>>>>>>> origin/gestionReclamation
 }

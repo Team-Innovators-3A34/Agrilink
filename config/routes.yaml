@@ -5,6 +5,7 @@ controllers:
     type: attribute
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 update_event_places:
     path: /update-event-places/{id}
@@ -13,3 +14,5 @@ update_event_places:
 >>>>>>> origin/gestionevent
 =======
 >>>>>>> origin/gestionressources
+=======
+>>>>>>> origin/gestionReclamation

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reclamation PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            margin: auto;
+        }
+        h1 {
+            background: #d9534f;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .info {
+            font-size: 16px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 5px solid #d9534f;
+        }
+        .info strong {
+            color: #d9534f;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reclamation Numero :{{ reclamation.id }}</h1>
+        
+        <div class="info"><strong>Nom Utilisateur:</strong> {{ reclamation.getNomUser() }}</div>
+        <div class="info"><strong>Email Utilisateur:</strong> {{ reclamation.getMailUser() }}</div>
+        <div class="info"><strong>Titre:</strong> {{ reclamation.title }}</div>
+        <div class="info"><strong>Contenu:</strong> {{ reclamation.content }}</div>
+        <div class="info"><strong>Statut:</strong> {{ reclamation.status }}</div>
+        <div class="info"><strong>Date:</strong> {{ reclamation.date|date('d/m/Y') }}</div>
+        <div class="info"><strong>Priorite:</strong> {{ reclamation.getPriorite() }}</div>
+        <div class="info"><strong>Type:</strong> {{ reclamation.type }}</div>
+
+        <div class="footer">Genere automatiquement par le systeme de gestion des reclamations</div>
+    </div>
+</body>
+</html>

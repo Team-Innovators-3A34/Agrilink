@@ -3,6 +3,7 @@ twig:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     form_themes:
         - bootstrap_4_layout.html.twig
@@ -11,10 +12,13 @@ twig:
 >>>>>>> origin/gestionevent
 =======
 >>>>>>> origin/gestionressources
+=======
+>>>>>>> origin/gestionReclamation
 
 when@test:
     twig:
         strict_variables: true
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -25,3 +29,5 @@ when@test:
 >>>>>>> origin/gestionevent
 =======
 >>>>>>> origin/gestionressources
+=======
+>>>>>>> origin/gestionReclamation

@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "name": "symfony/skeleton",
     "type": "project",
     "license": "proprietary",
@@ -19,6 +20,10 @@
     "type": "project",
     "license": "proprietary",
 >>>>>>> origin/gestionressources
+=======
+    "type": "project",
+    "license": "proprietary",
+>>>>>>> origin/gestionReclamation
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
@@ -29,6 +34,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -58,6 +64,11 @@
         "phpstan/phpdoc-parser": "^2.0",
         "pusher/pusher-php-server": "*",
 >>>>>>> origin/gestionressources
+=======
+        "knplabs/knp-snappy-bundle": "*",
+        "phpdocumentor/reflection-docblock": "^5.6",
+        "phpstan/phpdoc-parser": "^2.0",
+>>>>>>> origin/gestionReclamation
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
         "symfony/console": "6.4.*",
@@ -67,6 +78,7 @@
         "symfony/flex": "^2",
         "symfony/form": "6.4.*",
         "symfony/framework-bundle": "6.4.*",
+<<<<<<< HEAD
 <<<<<<< HEAD
         "symfony/http-client": "6.4.*",
         "symfony/intl": "6.4.*",
@@ -78,6 +90,11 @@
         "symfony/mailer": "6.4.*",
         "symfony/mercure": "^0.6.5",
 >>>>>>> origin/gestionressources
+=======
+        "symfony/http-client": "6.4.*",
+        "symfony/intl": "6.4.*",
+        "symfony/mailer": "6.4.*",
+>>>>>>> origin/gestionReclamation
         "symfony/mime": "6.4.*",
         "symfony/monolog-bundle": "^3.0",
         "symfony/notifier": "6.4.*",
@@ -97,6 +114,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "symfony/webpack-encore-bundle": "^2.2",
 =======
 >>>>>>> origin/gestionpost
@@ -104,6 +122,8 @@
 >>>>>>> origin/gestionevent
 =======
 >>>>>>> origin/gestionressources
+=======
+>>>>>>> origin/gestionReclamation
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
@@ -165,6 +185,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "symfony/maker-bundle": "^1.0",
 =======
         "symfony/maker-bundle": "^1.62",
@@ -175,6 +196,9 @@
 =======
         "symfony/maker-bundle": "^1.0",
 >>>>>>> origin/gestionressources
+=======
+        "symfony/maker-bundle": "^1.0",
+>>>>>>> origin/gestionReclamation
         "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "6.4.*",
         "symfony/web-profiler-bundle": "6.4.*"

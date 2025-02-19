@@ -8,6 +8,7 @@ doctrine:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         server_version: '10.4.32-MariaDB'
 >>>>>>> origin/gestionpost
@@ -15,6 +16,8 @@ doctrine:
 >>>>>>> origin/gestionevent
 =======
 >>>>>>> origin/gestionressources
+=======
+>>>>>>> origin/gestionReclamation
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true

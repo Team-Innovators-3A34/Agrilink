@@ -4,6 +4,7 @@ framework:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         enabled: true
@@ -14,6 +15,9 @@ framework:
 =======
 
 >>>>>>> origin/gestionressources
+=======
+
+>>>>>>> origin/gestionReclamation
         # Enables validator auto-mapping support.
         # For instance, basic validation constraints will be inferred from Doctrine's metadata.
         #auto_mapping:
@@ -26,6 +30,7 @@ when@test:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             enabled: true
 
@@ -34,3 +39,5 @@ when@test:
 >>>>>>> origin/gestionevent
 =======
 >>>>>>> origin/gestionressources
+=======
+>>>>>>> origin/gestionReclamation

@@ -7,6 +7,7 @@ parameters:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     files_directory: '%kernel.project_dir%/public/uploads/files'
@@ -27,12 +28,34 @@ parameters:
 
      
 >>>>>>> origin/gestionressources
+=======
+    python_service_url: '%env(PYTHON_SERVICE_URL)%'
+    images_directory: '%kernel.project_dir%/public/uploads/images'
+    rapid_api_key: '%env(RAPID_API_KEY)%'  # Ajoutez cette ligne pour configurer la clé API
+
+>>>>>>> origin/gestionReclamation
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+<<<<<<< HEAD
+=======
+
+    App\Service\DiseaseRecognitionService:
+        arguments:
+            $pythonServiceUrl: '%python_service_url%'
+    
+    App\Service\PredictService:
+        arguments:
+            $client: '@http_client'
+
+    http_client:
+        class: Symfony\Component\HttpClient\NativeHttpClient
+        factory: ['Symfony\Component\HttpClient\HttpClient', 'create']
+        
+>>>>>>> origin/gestionReclamation
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -42,6 +65,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+<<<<<<< HEAD
     # add more service definitions when explicit configuration is needed
 <<<<<<< HEAD
     # please note that last definitions always *replace* previous ones
@@ -57,3 +81,10 @@ services:
 
  
 >>>>>>> origin/gestionressources
+=======
+    # Configure ReponsesController to inject the RAPID_API_KEY from the environment
+    App\Controller\ReponsesController:
+        arguments:
+            $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface'  # Injecte HttpClientInterface
+            $rapidApiKey: '%env(RAPID_API_KEY)%'  # Injecte la clé API à partir de l'environnement
+>>>>>>> origin/gestionReclamation
