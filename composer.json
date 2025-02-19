@@ -1,9 +1,14 @@
 {
+<<<<<<< HEAD
     "name": "symfony/skeleton",
     "type": "project",
     "license": "proprietary",
     "description": "A minimal Symfony project recommended to create bare bones applications",
 
+=======
+    "type": "project",
+    "license": "proprietary",
+>>>>>>> origin/gestionpost
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
@@ -14,6 +19,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+<<<<<<< HEAD
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.0",
         "excelwebzone/recaptcha-bundle": "^1.5",
@@ -25,6 +31,11 @@
         "phpstan/phpdoc-parser": "^2.0",
         "railsware/mailtrap-php": "^2.1",
         "sendgrid/sendgrid": "^8.1",
+=======
+        "knplabs/knp-time-bundle": "^2.4",
+        "phpdocumentor/reflection-docblock": "^5.6",
+        "phpstan/phpdoc-parser": "^2.0",
+>>>>>>> origin/gestionpost
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
         "symfony/console": "6.4.*",
@@ -53,7 +64,10 @@
         "symfony/ux-turbo": "^2.22",
         "symfony/validator": "6.4.*",
         "symfony/web-link": "6.4.*",
+<<<<<<< HEAD
         "symfony/webpack-encore-bundle": "^2.2",
+=======
+>>>>>>> origin/gestionpost
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
@@ -112,7 +126,11 @@
         "symfony/browser-kit": "6.4.*",
         "symfony/css-selector": "6.4.*",
         "symfony/debug-bundle": "6.4.*",
+<<<<<<< HEAD
         "symfony/maker-bundle": "^1.0",
+=======
+        "symfony/maker-bundle": "^1.62",
+>>>>>>> origin/gestionpost
         "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "6.4.*",
         "symfony/web-profiler-bundle": "6.4.*"

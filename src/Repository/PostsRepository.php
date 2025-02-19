@@ -16,6 +16,10 @@ class PostsRepository extends ServiceEntityRepository
         parent::__construct($registry, Posts::class);
     }
 
+<<<<<<< HEAD
+=======
+    
+>>>>>>> origin/gestionpost
     //    /**
     //     * @return Posts[] Returns an array of Posts objects
     //     */

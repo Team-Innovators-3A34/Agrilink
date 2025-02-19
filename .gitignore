@@ -1,4 +1,8 @@
 
+<<<<<<< HEAD
+=======
+###> symfony/framework-bundle ###
+>>>>>>> origin/gestionpost
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -6,6 +10,7 @@
 /public/bundles/
 /var/
 /vendor/
+<<<<<<< HEAD
 
 /phpunit.xml
 .phpunit.result.cache
@@ -24,3 +29,21 @@ yarn-error.log
 
 /config/jwt/*.pem
 
+=======
+###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
+>>>>>>> origin/gestionpost

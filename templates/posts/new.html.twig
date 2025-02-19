@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+	{% block navigation %}
+		{{ parent() }}
+	{% endblock %}
+
+	{{ form_start(form, {
+    'attr': {
+        'novalidate': 'novalidate',
+        'data-turbo': 'false'
+    }
+}) }}
+	<div class="content" style="margin-top: 100px;">
+
+		{# Type field #}
+		<div class="form-group">
+			{{ form_label(form.type) }}
+			{{ form_widget(form.type) }}
+			{% if form_errors(form.type) %}
+				<div class="error-message">
+					{{ form_errors(form.type) }}
+				</div>
+			{% endif %}
+		</div>
+
+		{# Title field #}
+		<div class="form-group">
+			{{ form_label(form.title) }}
+			{{ form_widget(form.title) }}
+			<div class="error-message">
+				{{ form_errors(form.title) }}
+			</div>
+		</div>
+
+		{# Description field #}
+		<div class="form-group">
+			{{ form_label(form.description) }}
+			{{ form_widget(form.description) }}
+			<div class="error-message">
+				{{ form_errors(form.description) }}
+			</div>
+
+		</div>
+
+		{# Status field #}
+		<div class="form-group">
+			{{ form_label(form.status) }}
+			{{ form_widget(form.status) }}
+			{% if form_errors(form.status) %}
+				<div class="error-message">
+					{{ form_errors(form.status) }}
+				</div>
+			{% endif %}
+		</div>
+
+		{# file field #}
+		{# <div class="form-group">
+			{{ form_row(form.fileUpload) }}
+		</div> #}
+        <div class="form-group">
+    {{ form_row(form.fileUpload) }}
+    
+    {% if form.fileUpload.vars.errors|length > 0 %}
+        <div class="alert alert-danger">
+            {% for error in form.fileUpload.vars.errors %}
+                {{ error.message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+
+		<button type="submit" class="btn btn-primary">Create Post</button>
+
+		{{ form_end(form) }}
+		{# {{ form_end(form, {'render_rest': false}) }} #}
+
+
+		<style>
+			.form-group {
+				margin-bottom: 1rem;
+			}
+			.error-message {
+				color: #dc3545;
+				font-size: 0.875em;
+				margin-top: 0.25rem;
+			}
+			.error-message ul {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+		</style>
+	{% endblock %}

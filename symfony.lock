@@ -27,6 +27,7 @@
         ]
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     "excelwebzone/recaptcha-bundle": {
         "version": "1.5",
@@ -87,6 +88,11 @@
         ]
     },
 >>>>>>> origin/gestionuser
+=======
+    "knplabs/knp-time-bundle": {
+        "version": "v2.4.0"
+    },
+>>>>>>> origin/gestionpost
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -345,6 +351,7 @@
         ]
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
     "symfony/webpack-encore-bundle": {
         "version": "2.2",
         "recipe": {
@@ -367,5 +374,9 @@
     "twig/extra-bundle": {
         "version": "v3.19.0"
 >>>>>>> origin/gestionuser
+=======
+    "twig/extra-bundle": {
+        "version": "v3.18.0"
+>>>>>>> origin/gestionpost
     }
 }

@@ -4,12 +4,16 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 <<<<<<< HEAD
+<<<<<<< HEAD
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+=======
+>>>>>>> origin/gestionpost
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
+<<<<<<< HEAD
 =======
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,6 +27,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 >>>>>>> origin/gestionuser
+=======
+>>>>>>> origin/gestionpost
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,8 +36,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     #[ORM\Column]
     private ?int $userId = null;
+=======
+    #[ORM\Column]
+    private ?int $user_id = null;
+>>>>>>> origin/gestionpost
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -39,6 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
@@ -151,11 +163,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $accountVerification = null;
 >>>>>>> origin/gestionuser
 
+=======
+>>>>>>> origin/gestionpost
     public function getId(): ?int
     {
         return $this->id;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     public function getUserId(): ?int
     {
@@ -250,6 +265,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->telephone = $telephone;
 >>>>>>> origin/gestionuser
+=======
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(int $user_id): static
+    {
+        $this->user_id = $user_id;
+>>>>>>> origin/gestionpost
 
         return $this;
     }
@@ -277,6 +309,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
     public function getEmail(): ?string
@@ -573,4 +606,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+=======
+>>>>>>> origin/gestionpost
 }

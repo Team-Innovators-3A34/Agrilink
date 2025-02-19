@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block body %}
+{% block navigation %}
+    {{ parent() }}
+{% endblock %}
+    <div class="container">
+     <div class="content" style="margin-top: 200px;">
+        <h1>Edit Comment</h1>
+        
+        <form method="post">
+            <div class="form-group">
+                <textarea name="content" class="form-control" required>{{ comment.content }}</textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{{ path('app_home') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

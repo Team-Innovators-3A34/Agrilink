@@ -6,26 +6,34 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 >>>>>>> origin/gestionuser
+=======
+>>>>>>> origin/gestionpost
 
 /**
  * @extends ServiceEntityRepository<User>
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 class UserRepository extends ServiceEntityRepository
 =======
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 >>>>>>> origin/gestionuser
+=======
+class UserRepository extends ServiceEntityRepository
+>>>>>>> origin/gestionpost
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     /**
@@ -43,6 +51,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
 >>>>>>> origin/gestionuser
+=======
+>>>>>>> origin/gestionpost
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */
