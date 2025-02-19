@@ -6,6 +6,7 @@
     ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     "content-hash": "d1117a638b0cfe5d56385e8fe050d064",
     "packages": [
@@ -86,6 +87,11 @@
     "packages": [
         {
 >>>>>>> origin/gestionevent
+=======
+    "content-hash": "1ddf7419846bfafdd00990338d544dd2",
+    "packages": [
+        {
+>>>>>>> origin/gestionressources
             "name": "composer/semver",
             "version": "3.4.3",
             "source": {
@@ -624,6 +630,7 @@
         {
             "name": "doctrine/doctrine-migrations-bundle",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "version": "3.4.0",
             "source": {
                 "type": "git",
@@ -639,6 +646,8 @@
 =======
 >>>>>>> origin/gestionpost
 =======
+=======
+>>>>>>> origin/gestionressources
             "version": "3.4.1",
             "source": {
                 "type": "git",
@@ -649,7 +658,10 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/e858ce0f5c12b266dce7dce24834448355155da7",
                 "reference": "e858ce0f5c12b266dce7dce24834448355155da7",
+<<<<<<< HEAD
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -708,6 +720,7 @@
                 "issues": "https://github.com/doctrine/DoctrineMigrationsBundle/issues",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/doctrine/DoctrineMigrationsBundle/tree/3.4.1"
 =======
@@ -716,6 +729,9 @@
 =======
                 "source": "https://github.com/doctrine/DoctrineMigrationsBundle/tree/3.4.1"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/doctrine/DoctrineMigrationsBundle/tree/3.4.1"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -732,6 +748,7 @@
                 }
             ],
 <<<<<<< HEAD
+<<<<<<< HEAD
             "time": "2025-01-16T20:28:10+00:00"
 <<<<<<< HEAD
 
@@ -740,6 +757,9 @@
 =======
             "time": "2025-01-27T22:48:22+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-27T22:48:22+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "doctrine/event-manager",
@@ -1175,6 +1195,7 @@
         },
         {
             "name": "doctrine/orm",
+<<<<<<< HEAD
             "version": "3.3.1",
             "source": {
                 "type": "git",
@@ -1185,6 +1206,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/orm/zipball/b1f8253105aa5382c495e5f9f8ef34e297775428",
                 "reference": "b1f8253105aa5382c495e5f9f8ef34e297775428",
+=======
+            "version": "3.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/orm.git",
+                "reference": "c9557c588b3a70ed93caff069d0aa75737f25609"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/c9557c588b3a70ed93caff069d0aa75737f25609",
+                "reference": "c9557c588b3a70ed93caff069d0aa75737f25609",
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -1259,9 +1292,15 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/doctrine/orm/tree/3.3.1"
             },
             "time": "2024-12-19T07:08:14+00:00"
+=======
+                "source": "https://github.com/doctrine/orm/tree/3.3.2"
+            },
+            "time": "2025-02-04T19:43:15+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "doctrine/persistence",
@@ -1484,6 +1523,7 @@
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "name": "excelwebzone/recaptcha-bundle",
             "version": "v1.5.41",
@@ -1597,6 +1637,8 @@
             "time": "2023-02-18T17:41:46+00:00"
         },
         {
+=======
+>>>>>>> origin/gestionressources
             "name": "guzzlehttp/guzzle",
             "version": "7.9.2",
             "source": {
@@ -1922,6 +1964,7 @@
             "time": "2024-07-18T11:15:46+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "knpuniversity/oauth2-client-bundle",
             "version": "v2.18.3",
             "source": {
@@ -2432,6 +2475,8 @@
         {
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "name": "monolog/monolog",
             "version": "3.8.1",
             "source": {
@@ -2537,6 +2582,7 @@
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "name": "namshi/jose",
             "version": "7.2.3",
@@ -2634,10 +2680,36 @@
                 "php-http/psr7-integration-tests": "^1.0",
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
                 "symfony/error-handler": "^4.4"
+=======
+            "name": "paragonie/sodium_compat",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/sodium_compat.git",
+                "reference": "a673d5f310477027cead2e2f2b6db5d8368157cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/a673d5f310477027cead2e2f2b6db5d8368157cb",
+                "reference": "a673d5f310477027cead2e2f2b6db5d8368157cb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "php-64bit": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7|^8|^9",
+                "vimeo/psalm": "^4|^5"
+            },
+            "suggest": {
+                "ext-sodium": "Better performance, password hashing (Argon2i), secure memory management (memzero), and better security."
+>>>>>>> origin/gestionressources
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< HEAD
                     "dev-master": "1.8-dev"
                 }
             },
@@ -2800,10 +2872,19 @@
                 },
                 "exclude-from-classmap": [
                     "src/Composer/Plugin.php"
+=======
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "autoload.php"
+>>>>>>> origin/gestionressources
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
+<<<<<<< HEAD
                 "MIT"
             ],
             "authors": [
@@ -3013,6 +3094,62 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com"
+                },
+                {
+                    "name": "Frank Denis",
+                    "email": "jedisct1@pureftpd.org"
+                }
+            ],
+            "description": "Pure PHP implementation of libsodium; uses the PHP extension if it exists",
+            "keywords": [
+                "Authentication",
+                "BLAKE2b",
+                "ChaCha20",
+                "ChaCha20-Poly1305",
+                "Chapoly",
+                "Curve25519",
+                "Ed25519",
+                "EdDSA",
+                "Edwards-curve Digital Signature Algorithm",
+                "Elliptic Curve Diffie-Hellman",
+                "Poly1305",
+                "Pure-PHP cryptography",
+                "RFC 7748",
+                "RFC 8032",
+                "Salpoly",
+                "Salsa20",
+                "X25519",
+                "XChaCha20-Poly1305",
+                "XSalsa20-Poly1305",
+                "Xchacha20",
+                "Xsalsa20",
+                "aead",
+                "cryptography",
+                "ecdh",
+                "elliptic curve",
+                "elliptic curve cryptography",
+                "encryption",
+                "libsodium",
+                "php",
+                "public-key cryptography",
+                "secret-key cryptography",
+                "side-channel resistant"
+            ],
+            "support": {
+                "issues": "https://github.com/paragonie/sodium_compat/issues",
+                "source": "https://github.com/paragonie/sodium_compat/tree/v2.1.0"
+            },
+            "time": "2024-09-04T12:51:01+00:00"
+        },
+        {
+>>>>>>> origin/gestionressources
             "name": "phpdocumentor/reflection-common",
             "version": "2.2.0",
             "source": {
@@ -3437,7 +3574,10 @@
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/gestionressources
             "name": "psr/http-client",
             "version": "1.0.3",
             "source": {
@@ -3598,10 +3738,13 @@
             "time": "2023-04-04T09:54:51+00:00"
         },
         {
+<<<<<<< HEAD
 =======
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "name": "psr/link",
             "version": "2.0.1",
             "source": {
@@ -3710,6 +3853,7 @@
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "name": "railsware/mailtrap-php",
             "version": "2.1.0",
@@ -3753,17 +3897,53 @@
                     "providers": [
                         "Mailtrap\\Bridge\\Laravel\\MailtrapApiProvider"
                     ]
+=======
+            "name": "pusher/pusher-php-server",
+            "version": "7.2.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pusher/pusher-http-php.git",
+                "reference": "148b0b5100d000ed57195acdf548a2b1b38ee3f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/148b0b5100d000ed57195acdf548a2b1b38ee3f7",
+                "reference": "148b0b5100d000ed57195acdf548a2b1b38ee3f7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^7.2",
+                "paragonie/sodium_compat": "^1.6|^2.0",
+                "php": "^7.3|^8.0",
+                "psr/log": "^1.0|^2.0|^3.0"
+            },
+            "require-dev": {
+                "overtrue/phplint": "^2.3",
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+>>>>>>> origin/gestionressources
                 }
             },
             "autoload": {
                 "psr-4": {
+<<<<<<< HEAD
                     "Mailtrap\\": "src/"
+=======
+                    "Pusher\\": "src/"
+>>>>>>> origin/gestionressources
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
+<<<<<<< HEAD
             "description": "The Mailtrap SDK provides methods for all API functions.",
             "homepage": "https://github.com/railsware/mailtrap-php",
             "keywords": [
@@ -3782,6 +3962,27 @@
                 "source": "https://github.com/railsware/mailtrap-php/tree/2.1.0"
             },
             "time": "2025-01-27T09:06:23+00:00"
+=======
+            "description": "Library for interacting with the Pusher REST API",
+            "keywords": [
+                "events",
+                "messaging",
+                "php-pusher-server",
+                "publish",
+                "push",
+                "pusher",
+                "real time",
+                "real-time",
+                "realtime",
+                "rest",
+                "trigger"
+            ],
+            "support": {
+                "issues": "https://github.com/pusher/pusher-http-php/issues",
+                "source": "https://github.com/pusher/pusher-http-php/tree/7.2.7"
+            },
+            "time": "2025-01-06T10:56:20+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "ralouphie/getallheaders",
@@ -3828,6 +4029,7 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "sendgrid/php-http-client",
             "version": "4.1.1",
             "source": {
@@ -4049,6 +4251,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "name": "symfony/asset",
             "version": "v6.4.13",
             "source": {
@@ -4120,6 +4324,7 @@
         {
             "name": "symfony/asset-mapper",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "version": "v6.4.16",
             "source": {
                 "type": "git",
@@ -4133,6 +4338,8 @@
 <<<<<<< HEAD
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -4144,10 +4351,13 @@
                 "url": "https://api.github.com/repos/symfony/asset-mapper/zipball/9ec7ea222381fa63aefde98d5076b99df2fba927",
                 "reference": "9ec7ea222381fa63aefde98d5076b99df2fba927",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -4199,6 +4409,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/asset-mapper/tree/v6.4.18"
 =======
@@ -4207,6 +4418,9 @@
 =======
                 "source": "https://github.com/symfony/asset-mapper/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/asset-mapper/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -4224,8 +4438,11 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "time": "2025-01-25T08:10:40+00:00"
         },
         {
@@ -4240,6 +4457,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/cache/zipball/b209751ed25f735ea90ca4c9c969d9413a17dfee",
                 "reference": "b209751ed25f735ea90ca4c9c969d9413a17dfee",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "time": "2024-11-20T11:01:37+00:00"
@@ -4259,6 +4477,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -4326,6 +4546,7 @@
             ],
             "support": {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/cache/tree/v6.4.16"
 <<<<<<< HEAD
 
@@ -4334,6 +4555,9 @@
 =======
                 "source": "https://github.com/symfony/cache/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/cache/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -4351,6 +4575,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-22T14:13:52+00:00"
 =======
@@ -4359,6 +4584,9 @@
 =======
             "time": "2025-01-22T14:13:52+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-22T14:13:52+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/cache-contracts",
@@ -4831,9 +5059,12 @@
             "name": "symfony/doctrine-bridge",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -4844,6 +5075,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/doctrine-bridge/zipball/fd0094d4648bf6bbdafcd1f0c8aafb6e93d735e6",
                 "reference": "fd0094d4648bf6bbdafcd1f0c8aafb6e93d735e6",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.17",
@@ -4859,10 +5091,13 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
                 "doctrine/event-manager": "^1.2|^2",
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -4873,6 +5108,9 @@
 =======
                 "doctrine/persistence": "^2.5|^3.1|^4",
 >>>>>>> origin/gestionevent
+=======
+                "doctrine/persistence": "^2.5|^3.1|^4",
+>>>>>>> origin/gestionressources
                 "php": ">=8.1",
                 "symfony/deprecation-contracts": "^2.5|^3",
                 "symfony/polyfill-ctype": "~1.8",
@@ -4948,6 +5186,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/doctrine-bridge/tree/v6.4.18"
 =======
@@ -4956,6 +5195,9 @@
 =======
                 "source": "https://github.com/symfony/doctrine-bridge/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/doctrine-bridge/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -4973,9 +5215,12 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "time": "2025-01-25T08:04:58+00:00"
         },
         {
@@ -4990,6 +5235,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/doctrine-messenger/zipball/5437d2cde244a4a4b657bc7f3aceb1ce6c56ea7f",
                 "reference": "5437d2cde244a4a4b657bc7f3aceb1ce6c56ea7f",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "time": "2024-12-18T10:42:42+00:00"
@@ -5009,6 +5255,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -5053,6 +5301,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/doctrine-messenger/tree/v6.4.18"
 =======
@@ -5061,6 +5310,9 @@
 =======
                 "source": "https://github.com/symfony/doctrine-messenger/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/doctrine-messenger/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -5078,6 +5330,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-06T15:50:19+00:00"
 =======
@@ -5086,6 +5339,9 @@
 =======
             "time": "2025-01-06T15:50:19+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-06T15:50:19+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/dotenv",
@@ -5165,9 +5421,12 @@
             "name": "symfony/error-handler",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -5178,6 +5437,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/error-handler/zipball/e8d3b5b1975e67812a54388b1ba8e9ec28eb770e",
                 "reference": "e8d3b5b1975e67812a54388b1ba8e9ec28eb770e",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.17",
@@ -5193,6 +5453,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -5239,6 +5501,7 @@
             "homepage": "https://symfony.com",
             "support": {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/error-handler/tree/v6.4.17"
 <<<<<<< HEAD
 
@@ -5247,6 +5510,9 @@
 =======
                 "source": "https://github.com/symfony/error-handler/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/error-handler/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -5264,6 +5530,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             "time": "2025-01-06T09:38:16+00:00"
 =======
             "time": "2024-12-06T13:30:51+00:00"
@@ -5271,6 +5538,9 @@
 =======
             "time": "2025-01-06T09:38:16+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-06T09:38:16+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/event-dispatcher",
@@ -5791,8 +6061,11 @@
             "name": "symfony/framework-bundle",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -5803,6 +6076,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/framework-bundle/zipball/91df8ee37543ebc01756c9e5eaf94d1878ff1ccd",
                 "reference": "91df8ee37543ebc01756c9e5eaf94d1878ff1ccd",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.17",
@@ -5818,6 +6092,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -5939,6 +6215,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/framework-bundle/tree/v6.4.18"
 =======
                 "source": "https://github.com/symfony/framework-bundle/tree/v6.4.17"
@@ -5946,6 +6223,9 @@
 =======
                 "source": "https://github.com/symfony/framework-bundle/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/framework-bundle/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -5963,12 +6243,83 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
             "time": "2025-01-28T18:47:02+00:00"
         },
         {
+=======
+            "time": "2025-01-28T18:47:02+00:00"
+        },
+        {
+            "name": "symfony/google-mailer",
+            "version": "v6.4.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/google-mailer.git",
+                "reference": "bb35654e4d9d02fea335de97a0ae4a24b6db582c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/google-mailer/zipball/bb35654e4d9d02fea335de97a0ae4a24b6db582c",
+                "reference": "bb35654e4d9d02fea335de97a0ae4a24b6db582c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/mailer": "^5.4.21|^6.2.7|^7.0"
+            },
+            "require-dev": {
+                "symfony/http-client": "^5.4|^6.0|^7.0"
+            },
+            "type": "symfony-mailer-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Mailer\\Bridge\\Google\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Google Mailer Bridge",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/google-mailer/tree/v6.4.13"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-25T14:18:03+00:00"
+        },
+        {
+>>>>>>> origin/gestionressources
             "name": "symfony/http-client",
             "version": "v6.4.18",
             "source": {
@@ -5980,6 +6331,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/http-client/zipball/394b440934056b8d9d6ba250001458e9d7998b7f",
                 "reference": "394b440934056b8d9d6ba250001458e9d7998b7f",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "time": "2024-12-19T14:08:41+00:00"
@@ -5999,6 +6351,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -6064,6 +6418,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/http-client/tree/v6.4.18"
 =======
                 "source": "https://github.com/symfony/http-client/tree/v6.4.17"
@@ -6071,6 +6426,9 @@
 =======
                 "source": "https://github.com/symfony/http-client/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/http-client/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -6088,6 +6446,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             "time": "2025-01-28T15:49:13+00:00"
 =======
             "time": "2024-12-18T12:18:31+00:00"
@@ -6095,6 +6454,9 @@
 =======
             "time": "2025-01-28T15:49:13+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-28T15:49:13+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/http-client-contracts",
@@ -6178,9 +6540,12 @@
             "name": "symfony/http-foundation",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -6191,6 +6556,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/http-foundation/zipball/d0492d6217e5ab48f51fca76f64cf8e78919d0db",
                 "reference": "d0492d6217e5ab48f51fca76f64cf8e78919d0db",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.16",
@@ -6206,6 +6572,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -6255,6 +6623,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/http-foundation/tree/v6.4.18"
 =======
@@ -6263,6 +6632,9 @@
 =======
                 "source": "https://github.com/symfony/http-foundation/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/http-foundation/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -6280,9 +6652,12 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "time": "2025-01-09T15:48:56+00:00"
         },
         {
@@ -6297,6 +6672,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/http-kernel/zipball/fca7197bfe9e99dfae7fb1ad3f7f5bd9ef80e1b7",
                 "reference": "fca7197bfe9e99dfae7fb1ad3f7f5bd9ef80e1b7",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "time": "2024-11-13T18:58:10+00:00"
@@ -6316,6 +6692,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -6402,6 +6780,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/http-kernel/tree/v6.4.18"
 =======
@@ -6410,6 +6789,9 @@
 =======
                 "source": "https://github.com/symfony/http-kernel/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/http-kernel/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -6427,6 +6809,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-29T07:25:58+00:00"
 =======
@@ -6435,6 +6818,9 @@
 =======
             "time": "2025-01-29T07:25:58+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-29T07:25:58+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/intl",
@@ -6523,9 +6909,12 @@
             "name": "symfony/mailer",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -6536,6 +6925,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/mailer/zipball/e93a6ae2767d7f7578c2b7961d9d8e27580b2b11",
                 "reference": "e93a6ae2767d7f7578c2b7961d9d8e27580b2b11",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.13",
@@ -6551,6 +6941,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -6603,6 +6995,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/mailer/tree/v6.4.18"
 =======
                 "source": "https://github.com/symfony/mailer/tree/v6.4.13"
@@ -6610,6 +7003,9 @@
 =======
                 "source": "https://github.com/symfony/mailer/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/mailer/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -6627,6 +7023,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-24T15:27:15+00:00"
 =======
@@ -6635,6 +7032,95 @@
 =======
             "time": "2025-01-24T15:27:15+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-24T15:27:15+00:00"
+        },
+        {
+            "name": "symfony/mercure",
+            "version": "v0.6.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/mercure.git",
+                "reference": "304cf84609ef645d63adc65fc6250292909a461b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/mercure/zipball/304cf84609ef645d63adc65fc6250292909a461b",
+                "reference": "304cf84609ef645d63adc65fc6250292909a461b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.3",
+                "symfony/deprecation-contracts": "^2.0|^3.0|^4.0",
+                "symfony/http-client": "^4.4|^5.0|^6.0|^7.0",
+                "symfony/http-foundation": "^4.4|^5.0|^6.0|^7.0",
+                "symfony/polyfill-php80": "^1.22",
+                "symfony/web-link": "^4.4|^5.0|^6.0|^7.0"
+            },
+            "require-dev": {
+                "lcobucci/jwt": "^3.4|^4.0|^5.0",
+                "symfony/event-dispatcher": "^4.4|^5.0|^6.0|^7.0",
+                "symfony/http-kernel": "^4.4|^5.0|^6.0|^7.0",
+                "symfony/phpunit-bridge": "^5.2|^6.0|^7.0",
+                "symfony/stopwatch": "^4.4|^5.0|^6.0|^7.0",
+                "twig/twig": "^2.0|^3.0|^4.0"
+            },
+            "suggest": {
+                "symfony/stopwatch": "Integration with the profiler performances"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/dunglas/mercure",
+                    "name": "dunglas/mercure"
+                },
+                "branch-alias": {
+                    "dev-main": "0.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Mercure\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kévin Dunglas",
+                    "email": "dunglas@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Mercure Component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "mercure",
+                "push",
+                "sse",
+                "updates"
+            ],
+            "support": {
+                "issues": "https://github.com/symfony/mercure/issues",
+                "source": "https://github.com/symfony/mercure/tree/v0.6.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/dunglas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/mercure",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-04-08T12:51:34+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/messenger",
@@ -6727,9 +7213,12 @@
             "name": "symfony/mime",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -6740,6 +7229,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/mime/zipball/917d77981eb1ea963608d5cda4d9c0cf72eaa68e",
                 "reference": "917d77981eb1ea963608d5cda4d9c0cf72eaa68e",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.17",
@@ -6755,6 +7245,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -6812,6 +7304,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/mime/tree/v6.4.18"
 =======
                 "source": "https://github.com/symfony/mime/tree/v6.4.17"
@@ -6819,6 +7312,9 @@
 =======
                 "source": "https://github.com/symfony/mime/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/mime/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -6836,6 +7332,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-23T13:10:52+00:00"
 =======
@@ -6844,6 +7341,9 @@
 =======
             "time": "2025-01-23T13:10:52+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-23T13:10:52+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/monolog-bridge",
@@ -7631,6 +8131,7 @@
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "name": "symfony/polyfill-php56",
             "version": "v1.20.0",
@@ -7704,6 +8205,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "name": "symfony/polyfill-php83",
             "version": "v1.31.0",
             "source": {
@@ -7844,8 +8347,11 @@
             "name": "symfony/property-access",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -7856,6 +8362,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/property-access/zipball/80e0378f2f058b60d87dedc3c760caec882e992c",
                 "reference": "80e0378f2f058b60d87dedc3c760caec882e992c",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.13",
@@ -7871,6 +8378,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -7920,6 +8429,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/property-access/tree/v6.4.18"
 =======
@@ -7928,6 +8438,9 @@
 =======
                 "source": "https://github.com/symfony/property-access/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/property-access/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -7945,8 +8458,11 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "time": "2024-12-16T14:42:05+00:00"
         },
         {
@@ -7961,6 +8477,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/property-info/zipball/94d18e5cc11a37fd92856d38b61d9cdf72536a1e",
                 "reference": "94d18e5cc11a37fd92856d38b61d9cdf72536a1e",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "time": "2024-09-25T14:18:03+00:00"
@@ -7980,6 +8497,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -7990,6 +8509,7 @@
                 "doctrine/annotations": "<1.12",
                 "phpdocumentor/reflection-docblock": "<5.2",
                 "phpdocumentor/type-resolver": "<1.5.1",
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -8004,6 +8524,11 @@
                 "symfony/dependency-injection": "<5.4|>=6.0,<6.4",
                 "symfony/serializer": "<5.4"
 >>>>>>> origin/gestionevent
+=======
+                "symfony/cache": "<5.4",
+                "symfony/dependency-injection": "<5.4|>=6.0,<6.4",
+                "symfony/serializer": "<5.4"
+>>>>>>> origin/gestionressources
             },
             "require-dev": {
                 "doctrine/annotations": "^1.12|^2",
@@ -8049,6 +8574,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/property-info/tree/v6.4.18"
 =======
@@ -8057,6 +8583,9 @@
 =======
                 "source": "https://github.com/symfony/property-info/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/property-info/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -8074,9 +8603,12 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "time": "2025-01-21T10:52:27+00:00"
         },
         {
@@ -8091,6 +8623,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/routing/zipball/e9bfc94953019089acdfb9be51c1b9142c4afa68",
                 "reference": "e9bfc94953019089acdfb9be51c1b9142c4afa68",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "time": "2024-12-26T19:01:29+00:00"
@@ -8110,6 +8643,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -8165,6 +8700,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/routing/tree/v6.4.18"
 =======
@@ -8173,6 +8709,9 @@
 =======
                 "source": "https://github.com/symfony/routing/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/routing/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -8190,6 +8729,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-09T08:51:02+00:00"
 =======
@@ -8198,6 +8738,9 @@
 =======
             "time": "2025-01-09T08:51:02+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-09T08:51:02+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/runtime",
@@ -8394,9 +8937,12 @@
             "name": "symfony/security-core",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -8407,6 +8953,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/security-core/zipball/0ae7ae716968e00287ab9b7768405e0dc9cad109",
                 "reference": "0ae7ae716968e00287ab9b7768405e0dc9cad109",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.16",
@@ -8422,6 +8969,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -8480,6 +9029,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/security-core/tree/v6.4.18"
 =======
@@ -8488,6 +9038,9 @@
 =======
                 "source": "https://github.com/symfony/security-core/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/security-core/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -8505,6 +9058,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-22T20:59:03+00:00"
 =======
@@ -8513,6 +9067,9 @@
 =======
             "time": "2025-01-22T20:59:03+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-22T20:59:03+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/security-csrf",
@@ -8586,9 +9143,12 @@
             "name": "symfony/security-http",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -8599,6 +9159,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/security-http/zipball/54f2ccce1f3822eee3fb3a85debd9a67d12762b8",
                 "reference": "54f2ccce1f3822eee3fb3a85debd9a67d12762b8",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.15",
@@ -8614,6 +9175,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -8674,6 +9237,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/security-http/tree/v6.4.18"
 =======
@@ -8682,6 +9246,9 @@
 =======
                 "source": "https://github.com/symfony/security-http/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/security-http/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -8699,9 +9266,12 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "time": "2025-01-28T14:53:52+00:00"
         },
         {
@@ -8716,6 +9286,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/serializer/zipball/6ad986f62276da4c8c69754decfaa445a89cb6e3",
                 "reference": "6ad986f62276da4c8c69754decfaa445a89cb6e3",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "time": "2024-11-13T13:40:18+00:00"
@@ -8735,6 +9306,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -8805,6 +9378,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/serializer/tree/v6.4.18"
 =======
@@ -8813,6 +9387,9 @@
 =======
                 "source": "https://github.com/symfony/serializer/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/serializer/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -8830,6 +9407,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-28T18:47:02+00:00"
 =======
@@ -8838,6 +9416,9 @@
 =======
             "time": "2025-01-28T18:47:02+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-28T18:47:02+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/service-contracts",
@@ -9607,11 +10188,14 @@
             "name": "symfony/validator",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -9711,8 +10295,11 @@
             "name": "symfony/var-dumper",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -9723,6 +10310,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/var-dumper/zipball/4ad10cf8b020e77ba665305bb7804389884b4837",
                 "reference": "4ad10cf8b020e77ba665305bb7804389884b4837",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.15",
@@ -9738,6 +10326,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -9795,6 +10385,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/var-dumper/tree/v6.4.18"
 =======
@@ -9803,6 +10394,9 @@
 =======
                 "source": "https://github.com/symfony/var-dumper/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/var-dumper/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -9820,6 +10414,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-17T11:26:11+00:00"
 =======
@@ -9828,6 +10423,9 @@
 =======
             "time": "2025-01-17T11:26:11+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-17T11:26:11+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/var-exporter",
@@ -9992,9 +10590,12 @@
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "name": "symfony/yaml",
             "version": "v6.4.18",
             "source": {
@@ -10006,6 +10607,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/yaml/zipball/bf598c9d9bb4a22f495a4e26e4c4fce2f8ecefc5",
                 "reference": "bf598c9d9bb4a22f495a4e26e4c4fce2f8ecefc5",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "name": "symfony/yaml",
@@ -10022,6 +10624,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -10066,6 +10670,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/yaml/tree/v6.4.18"
 =======
                 "source": "https://github.com/symfony/yaml/tree/v6.4.13"
@@ -10073,6 +10678,9 @@
 =======
                 "source": "https://github.com/symfony/yaml/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/yaml/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -10090,14 +10698,18 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "time": "2025-01-07T09:44:41+00:00"
         },
         {
             "name": "twig/extra-bundle",
             "version": "v3.19.0",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "time": "2024-09-25T14:18:03+00:00"
@@ -10108,6 +10720,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/twig-extra-bundle.git",
@@ -10167,6 +10781,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/twigphp/twig-extra-bundle/tree/v3.19.0"
 =======
@@ -10175,6 +10790,9 @@
 =======
                 "source": "https://github.com/twigphp/twig-extra-bundle/tree/v3.19.0"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/twigphp/twig-extra-bundle/tree/v3.19.0"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -10192,9 +10810,12 @@
             "name": "twig/twig",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v3.19.0",
             "source": {
                 "type": "git",
@@ -10205,6 +10826,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/twigphp/Twig/zipball/d4f8c2b86374f08efc859323dbcd95c590f7124e",
                 "reference": "d4f8c2b86374f08efc859323dbcd95c590f7124e",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v3.18.0",
@@ -10220,6 +10842,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -10276,6 +10900,7 @@
                 "issues": "https://github.com/twigphp/Twig/issues",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "source": "https://github.com/twigphp/Twig/tree/v3.19.0"
 =======
                 "source": "https://github.com/twigphp/Twig/tree/v3.18.0"
@@ -10283,6 +10908,9 @@
 =======
                 "source": "https://github.com/twigphp/Twig/tree/v3.19.0"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/twigphp/Twig/tree/v3.19.0"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -10296,6 +10924,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2025-01-29T07:06:14+00:00"
 =======
@@ -10304,6 +10933,9 @@
 =======
             "time": "2025-01-29T07:06:14+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-29T07:06:14+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "webmozart/assert",
@@ -12264,9 +12896,12 @@
             "name": "symfony/dom-crawler",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -12277,6 +12912,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/fd07959d3e8992795029bdab3605c2e8e895034e",
                 "reference": "fd07959d3e8992795029bdab3605c2e8e895034e",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.16",
@@ -12292,6 +12928,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -12331,6 +12969,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/dom-crawler/tree/v6.4.18"
 =======
@@ -12339,6 +12978,9 @@
 =======
                 "source": "https://github.com/symfony/dom-crawler/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/dom-crawler/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -12356,6 +12998,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             "time": "2025-01-09T15:35:00+00:00"
 =======
             "time": "2024-11-13T15:06:22+00:00"
@@ -12363,6 +13006,9 @@
 =======
             "time": "2025-01-09T15:35:00+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2025-01-09T15:35:00+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "symfony/maker-bundle",
@@ -12542,9 +13188,12 @@
             "name": "symfony/web-profiler-bundle",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
             "version": "v6.4.18",
             "source": {
                 "type": "git",
@@ -12555,6 +13204,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/979b623f12d1eb4f6f8f24fd321dfe1dee2444a2",
                 "reference": "979b623f12d1eb4f6f8f24fd321dfe1dee2444a2",
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
             "version": "v6.4.17",
@@ -12570,6 +13220,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
                 "shasum": ""
             },
             "require": {
@@ -12624,6 +13276,7 @@
             "support": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                 "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.18"
 =======
@@ -12632,6 +13285,9 @@
 =======
                 "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.18"
 >>>>>>> origin/gestionevent
+=======
+                "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.18"
+>>>>>>> origin/gestionressources
             },
             "funding": [
                 {
@@ -12649,6 +13305,7 @@
             ],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             "time": "2024-12-23T18:38:04+00:00"
 =======
@@ -12657,6 +13314,9 @@
 =======
             "time": "2024-12-23T18:38:04+00:00"
 >>>>>>> origin/gestionevent
+=======
+            "time": "2024-12-23T18:38:04+00:00"
+>>>>>>> origin/gestionressources
         },
         {
             "name": "theseer/tokenizer",
@@ -12713,6 +13373,7 @@
     "minimum-stability": "stable",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     "stability-flags": {},
 =======
@@ -12721,6 +13382,9 @@
 =======
     "stability-flags": [],
 >>>>>>> origin/gestionevent
+=======
+    "stability-flags": [],
+>>>>>>> origin/gestionressources
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -12730,6 +13394,7 @@
     },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "platform-dev": {},
 =======
     "platform-dev": [],
@@ -12737,5 +13402,8 @@
 =======
     "platform-dev": [],
 >>>>>>> origin/gestionevent
+=======
+    "platform-dev": [],
+>>>>>>> origin/gestionressources
     "plugin-api-version": "2.6.0"
 }

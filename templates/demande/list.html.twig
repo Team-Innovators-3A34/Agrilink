@@ -1,0 +1,263 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des demandes{% endblock %}
+ 
+
+{% block content %}
+<div class="container mt-4">
+    <button id="cleanBtn" class="btn btn-warning mb-3">Clean</button>  <!-- Bouton "Clean" -->
+    <form method="GET" action="{{ path('demande_liste') }}">
+        <label for="idR">Filtrer par etat :</label>
+        <input type="text" name="status" id="status" value="{{ app.request.query.get('status') }}">
+        <button type="submit">Filtrer</button>
+    </form>
+    <button id="estimateBtn" class="btn btn-primary mb-3">Estimer</button>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Ressource</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                    <th>Probabilité</th>
+                    <th>Actions</th>
+                    <th>Discussion</th>
+                </tr>
+            </thead>
+            <tbody id="demandesTable">
+                {% for demande in demandes %}
+                    <tr data-id="{{ demande.getdemandeId }}">
+                        <td>{{ demande.idR }}</td>
+                        <td class="status">
+                            <span class="badge {% if demande.status == 'Approuvé' %}bg-success{% elseif demande.status == 'Rejeté' %}bg-danger{% else %}bg-warning{% endif %}">
+                                {{ demande.status }}
+                            </span>
+                        </td>
+                       <td>   
+                         <p><strong>Date de création :</strong> {{ demande.createdAt|date('d/m/Y H:i') }}</p>
+                        <p><strong>Date d'expiration :</strong> {{ demande.expireDate|date('d/m/Y H:i') }}</p>
+                        <p><strong>Message :</strong> {{ demande.message }}</p>
+                        <p><strong>Priorité :</strong> {{ demande.priorite }}</p>
+                    </td>
+                    <td class="probability"></td>
+
+                        <td>
+                            <form action="{{ path('app_demandes_update_status', {'id': demande.getdemandeId, 'status': 'Approuvé'}) }}" method="POST">
+                                <button type="submit" class="btn btn-success">Approuver</button>
+                            </form>
+                        
+                            <form action="{{ path('app_demandes_update_status', {'id': demande.getdemandeId ,'status': 'Rejeté'}) }}" method="POST">
+                                <button type="submit" class="btn btn-danger">Rejeter</button>
+                            </form>
+                        </td>
+                        <td>
+                            <div id="discussionCard" class="hidden">
+                                <div class="card-content">
+                                    <span class="close-btn" onclick="closeCard()">&times;</span>
+                                    <h3>Ajouter une proposition</h3>
+                            
+                                    <form id="propositionForm">
+                                        <input type="hidden" id="demandeId" value="">
+                            
+                                        <label for="proposition">Proposition :</label>
+                                        <textarea id="proposition" name="proposition"></textarea>
+                            
+                                        <button type="button" id="btnProposition" onclick="sendProposition()">Envoyer</button>
+                                    </form>
+                            
+                                    <h4>Dernière proposition :</h4>
+                                    <p id="lastProposition">Aucune proposition enregistrée.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Bouton pour ouvrir la card -->
+                            <button class="openDiscussion" data-id="{{ demande.getDemandeId() }}">Proposer</button>
+                            
+                            <p><strong>Reponse:</strong> {{ demande.reponse}}</p>
+                            
+                           
+
+                        </td>
+                    </tr>
+                    
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Aucune demande trouvée.</td>
+                    </tr>
+                {% endfor %}
+                
+                
+            </tbody>
+        </table>
+    
+    </div>
+</div>
+
+<script>
+document.getElementById("estimateBtn").addEventListener("click", function () {
+    let ongoingRequests = document.querySelectorAll("tbody tr").length; // Nombre total de demandes en cours
+
+    document.querySelectorAll("tbody tr").forEach(row => {
+        let statusElement = row.querySelector("td:nth-child(2) span");
+        let priorityElement = row.querySelector("td:nth-child(3)");
+        let probabilityElement = row.querySelector(".probability");
+
+        if (statusElement && priorityElement && probabilityElement) {
+            let status = statusElement.textContent.trim();
+            let priorityText = priorityElement.textContent.trim().toLowerCase(); // Texte : faible, moyenne, haute
+
+            if (status === "en cours") {
+                let probability = calculateProbability(priorityText, ongoingRequests);
+                probabilityElement.textContent = probability + "%"; // Affiche la probabilité
+            }
+        }
+    });
+});
+
+function calculateProbability(priorityText, ongoingRequests) {
+    let baseProbability;
+
+    // Définir la probabilité de base selon la priorité
+    switch (priorityText) {
+        case "haute":
+            baseProbability = 80; // Haute priorité → forte probabilité
+            break;
+        case "moyenne":
+            baseProbability = 50; // Moyenne priorité → probabilité moyenne
+            break;
+        case "faible":
+            baseProbability = 20; // Faible priorité → faible probabilité
+            break;
+        default:
+            baseProbability = 30; // Valeur par défaut si inconnue
+    }
+
+    // Plus il y a de demandes en cours, plus la probabilité diminue
+    let penalty = (ongoingRequests - 1) * 5; // -5% par demande en cours
+
+    let finalProbability = baseProbability - penalty;
+
+    // Assurer que la probabilité reste entre 5% et 95%
+    return Math.max(5, Math.min(finalProbability, 95)).toFixed(2);
+}
+
+
+   
+
+
+   document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".openDiscussion").forEach(button => {
+        button.addEventListener("click", function () {
+            const demandeId = this.getAttribute("data-id");
+            document.getElementById("demandeId").value = demandeId;
+            document.getElementById("discussionCard").classList.remove("hidden");
+        });
+    });
+});
+
+function closeCard() {
+    document.getElementById("discussionCard").classList.add("hidden");
+}
+
+function sendProposition() {
+    const demandeId = document.getElementById("demandeId").value;
+    const proposition = document.getElementById("proposition").value;
+
+    if (proposition.trim() === "") {
+        alert("Veuillez entrer une proposition !");
+        return;
+    }
+
+    fetch(`/demande/${demandeId}/proposition`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ proposition })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById("lastProposition").textContent = data.proposition;
+            alert("Proposition enregistrée !");
+            document.getElementById("proposition").value = ""; // Réinitialiser le champ
+        } else {
+            alert("Erreur lors de l'enregistrement.");
+        }
+    })
+    .catch(error => console.error("Erreur:", error));
+}
+
+
+
+ 
+document.getElementById("cleanBtn").addEventListener("click", async function() {
+    console.log("Début du nettoyage...");
+
+    let rows = document.querySelectorAll("tbody tr");
+    let changed = false; // 🔥 Déclaration de changed ici
+
+    console.log(`Nombre de lignes trouvées : ${rows.length}`);
+
+    rows.forEach(async (row, index) => {
+        let statusElement = row.querySelector("td:nth-child(2) span");
+        let messageElement = row.querySelector("td:nth-child(3)");
+
+        if (statusElement && messageElement) {
+            let status = statusElement.textContent.trim();
+            let message = messageElement.textContent.trim();
+
+            if (status === "en cours") {
+                let isValid = await verifyTextWithAI(message);
+                let newStatus = isValid ? "en cours" : "rejeté";
+
+                console.log(`Ligne ${index + 1}: Ancien statut = "${status}", Nouveau statut = "${newStatus}"`);
+
+                statusElement.textContent = newStatus;
+                statusElement.className = newStatus === "en cours" ? "badge bg-warning" : "badge bg-danger";
+
+                changed = true; // 🔥 Mise à jour de changed
+            }
+        }
+    });
+
+    if (changed) {
+        console.log("Modification terminée !");
+    } else {
+        console.log("Aucune modification effectuée.");
+    }
+});
+
+
+
+
+async function verifyTextWithAI(text) {
+    if (/^(.)\1{4,}$/.test(text) || text.length < 10) {
+        return false;
+    }
+
+    try {
+        const response = await fetch("https://api-inference.huggingface.co/models/textattack/roberta-base-CoLA", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer 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",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ inputs: text })
+        });
+
+        const result = await response.json();
+        console.log("Réponse de l'API Hugging Face:", result);
+        
+        return !(result.length > 0 && result[0].label === "unacceptable");
+    } catch (error) {
+        console.error("Erreur API Hugging Face:", error);
+        return true; // Si erreur API, considérer valide
+    }
+
+}
+
+
+</script>
+
+{% endblock %}
+

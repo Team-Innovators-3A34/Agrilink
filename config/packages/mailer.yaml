@@ -2,6 +2,7 @@ framework:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     mailer:
         dsn: '%env(MAILER_DSN)%'
 =======
@@ -17,3 +18,7 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
 >>>>>>> origin/gestionevent
+=======
+    mailer:
+        dsn: '%env(MAILER_DSN)%'
+>>>>>>> origin/gestionressources

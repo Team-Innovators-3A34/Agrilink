@@ -40,4 +40,23 @@ class DemandesRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+<<<<<<< HEAD
+=======
+    public function findByIdR($idR)
+{
+    return $this->createQueryBuilder('d')
+        ->where('d.idR = :idR')
+        ->setParameter('idR', $idR)
+        ->getQuery()
+        ->getResult();
+}
+public function findByStatus($status)
+{
+    return $this->createQueryBuilder('d')
+        ->where('d.status = :status')
+        ->setParameter('status', $status)
+        ->getQuery()
+        ->getResult();
+}
+>>>>>>> origin/gestionressources
 }

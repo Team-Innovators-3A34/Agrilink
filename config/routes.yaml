@@ -4,9 +4,12 @@ controllers:
         namespace: App\Controller
     type: attribute
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 update_event_places:
     path: /update-event-places/{id}
     controller: App\Controller\EventController::updatePlaces
     methods: [POST]
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources

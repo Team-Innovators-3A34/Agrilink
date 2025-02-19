@@ -29,6 +29,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     "excelwebzone/recaptcha-bundle": {
         "version": "1.5",
@@ -96,6 +97,8 @@
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -110,6 +113,18 @@
             "./tests/bootstrap.php"
         ]
     },
+<<<<<<< HEAD
+=======
+    "pusher/pusher-php-server": {
+        "version": "7.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "8dd3ea817217453e14ab596317177465211e01d2"
+        }
+    },
+>>>>>>> origin/gestionressources
     "symfony/asset-mapper": {
         "version": "6.4",
         "recipe": {
@@ -181,6 +196,18 @@
             "./src/Kernel.php"
         ]
     },
+<<<<<<< HEAD
+=======
+    "symfony/google-mailer": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.4",
+            "ref": "f8fd4ddb9b477510f8f4bce2b9c054ab428c0120"
+        }
+    },
+>>>>>>> origin/gestionressources
     "symfony/mailer": {
         "version": "6.4",
         "recipe": {
@@ -356,6 +383,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "symfony/webpack-encore-bundle": {
         "version": "2.2",
         "recipe": {
@@ -386,5 +414,9 @@
     "twig/extra-bundle": {
         "version": "v3.19.0"
 >>>>>>> origin/gestionevent
+=======
+    "twig/extra-bundle": {
+        "version": "v3.18.0"
+>>>>>>> origin/gestionressources
     }
 }

@@ -9,6 +9,7 @@ import './styles/app.css';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
@@ -626,3 +627,5 @@ Index Of Script
   })(jQuery);
   
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources

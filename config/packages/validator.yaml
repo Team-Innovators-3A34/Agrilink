@@ -3,6 +3,7 @@ framework:
         email_validation_mode: html5
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         enabled: true
@@ -10,6 +11,9 @@ framework:
 =======
 
 >>>>>>> origin/gestionevent
+=======
+
+>>>>>>> origin/gestionressources
         # Enables validator auto-mapping support.
         # For instance, basic validation constraints will be inferred from Doctrine's metadata.
         #auto_mapping:
@@ -21,9 +25,12 @@ when@test:
             not_compromised_password: false
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
             enabled: true
 
 >>>>>>> origin/gestionpost
 =======
 >>>>>>> origin/gestionevent
+=======
+>>>>>>> origin/gestionressources
