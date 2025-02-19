@@ -1,3 +1,9 @@
 framework:
+<<<<<<< HEAD
     mailer:
         dsn: '%env(MAILER_DSN)%'
+=======
+  mailer:
+    dsn: "%env(MAILER_DSN)%"
+    message_bus: false
+>>>>>>> origin/gestionuser
