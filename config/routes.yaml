@@ -3,3 +3,10 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+<<<<<<< HEAD
+=======
+update_event_places:
+    path: /update-event-places/{id}
+    controller: App\Controller\EventController::updatePlaces
+    methods: [POST]
+>>>>>>> origin/gestionevent

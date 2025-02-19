@@ -1,8 +1,12 @@
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ###> symfony/framework-bundle ###
 >>>>>>> origin/gestionpost
+=======
+###> symfony/framework-bundle ###
+>>>>>>> origin/gestionevent
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -10,6 +14,7 @@
 /public/bundles/
 /var/
 /vendor/
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /phpunit.xml
@@ -30,6 +35,8 @@ yarn-error.log
 /config/jwt/*.pem
 
 =======
+=======
+>>>>>>> origin/gestionevent
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
@@ -46,4 +53,7 @@ yarn-error.log
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+<<<<<<< HEAD
 >>>>>>> origin/gestionpost
+=======
+>>>>>>> origin/gestionevent

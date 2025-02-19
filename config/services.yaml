@@ -5,10 +5,16 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     files_directory: '%kernel.project_dir%/public/uploads/files'
 >>>>>>> origin/gestionpost
+=======
+    images_directory: '%kernel.project_dir%/public/uploads/images'
+
+
+>>>>>>> origin/gestionevent
 services:
     # default configuration for services in *this* file
     _defaults:

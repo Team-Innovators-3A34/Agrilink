@@ -1,5 +1,6 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "name": "symfony/skeleton",
     "type": "project",
     "license": "proprietary",
@@ -9,6 +10,10 @@
     "type": "project",
     "license": "proprietary",
 >>>>>>> origin/gestionpost
+=======
+    "type": "project",
+    "license": "proprietary",
+>>>>>>> origin/gestionevent
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
@@ -19,6 +24,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+<<<<<<< HEAD
 <<<<<<< HEAD
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.0",
@@ -36,6 +42,10 @@
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.0",
 >>>>>>> origin/gestionpost
+=======
+        "phpdocumentor/reflection-docblock": "^5.6",
+        "phpstan/phpdoc-parser": "^2.0",
+>>>>>>> origin/gestionevent
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
         "symfony/console": "6.4.*",
@@ -65,9 +75,12 @@
         "symfony/validator": "6.4.*",
         "symfony/web-link": "6.4.*",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "symfony/webpack-encore-bundle": "^2.2",
 =======
 >>>>>>> origin/gestionpost
+=======
+>>>>>>> origin/gestionevent
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
@@ -127,10 +140,14 @@
         "symfony/css-selector": "6.4.*",
         "symfony/debug-bundle": "6.4.*",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "symfony/maker-bundle": "^1.0",
 =======
         "symfony/maker-bundle": "^1.62",
 >>>>>>> origin/gestionpost
+=======
+        "symfony/maker-bundle": "^1.0",
+>>>>>>> origin/gestionevent
         "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "6.4.*",
         "symfony/web-profiler-bundle": "6.4.*"

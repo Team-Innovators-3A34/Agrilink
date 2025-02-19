@@ -28,6 +28,7 @@
     },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     "excelwebzone/recaptcha-bundle": {
         "version": "1.5",
@@ -93,6 +94,8 @@
         "version": "v2.4.0"
     },
 >>>>>>> origin/gestionpost
+=======
+>>>>>>> origin/gestionevent
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -352,6 +355,7 @@
     },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "symfony/webpack-encore-bundle": {
         "version": "2.2",
         "recipe": {
@@ -378,5 +382,9 @@
     "twig/extra-bundle": {
         "version": "v3.18.0"
 >>>>>>> origin/gestionpost
+=======
+    "twig/extra-bundle": {
+        "version": "v3.19.0"
+>>>>>>> origin/gestionevent
     }
 }

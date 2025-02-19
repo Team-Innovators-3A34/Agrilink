@@ -1,15 +1,21 @@
 twig:
     file_name_pattern: '*.twig'
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     form_themes:
         - bootstrap_4_layout.html.twig
 >>>>>>> origin/gestionpost
+=======
+>>>>>>> origin/gestionevent
 
 when@test:
     twig:
         strict_variables: true
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> origin/gestionpost
+=======
+>>>>>>> origin/gestionevent

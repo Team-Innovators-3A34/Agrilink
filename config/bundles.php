@@ -15,6 +15,7 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
 =======
     KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
@@ -24,4 +25,6 @@ return [
 =======
     Knp\Bundle\TimeBundle\KnpTimeBundle::class => ['all' => true],
 >>>>>>> origin/gestionpost
+=======
+>>>>>>> origin/gestionevent
 ];

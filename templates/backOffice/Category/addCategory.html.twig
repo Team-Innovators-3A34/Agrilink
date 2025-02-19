@@ -1,0 +1,39 @@
+{% extends "backOffice/base.html.twig" %}
+{% block title %}
+Add Category
+{% endblock %}
+{% block content %}
+<div class="container-fluid add-form-list">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title">Add Category</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{form_start(form,{'attr':{'novalidate': 'novalidate'}})}}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Category Type *</label>
+                                    {{ form_widget(form.nom, {'attr': {'class': 'selectpicker form-control', 'data-style': 'py-0'}}) }}
+                                    <div class="text-danger">
+                                        {{ form_errors(form.nom) }}
+                                    </div>
+                                </div>
+                                 
+                            </div>  
+   
+                        </div>                            
+                        <button type="submit" class="btn btn-primary mr-2">Add Category</button>
+                        {#<button type="reset" class="btn btn-danger">Reset</button>#}
+                    {{form_end(form)}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page end  -->
+</div>
+{% endblock %}
