@@ -1,0 +1,161 @@
+{% extends 'backoffice/base.html.twig' %} {% block title %}List Post {% endblock
+%} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div
+        class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4"
+      >
+        <div>
+          <h4 class="mb-3">Post List</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <div class="table-responsive rounded mb-3">
+        <table class="data-tables table mb-0 tbl-server-info">
+          <thead class="bg-white text-uppercase">
+            <tr class="ligth ligth-data">
+              <th>
+                <div class="checkbox d-inline-block">
+                  <input
+                    type="checkbox"
+                    class="checkbox-input"
+                    id="checkbox1"
+                  />
+                  <label for="checkbox1" class="mb-0"></label>
+                </div>
+              </th>
+              <th>User</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Comments</th>
+              <th>Likes</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody class="ligth-body">
+            {% for post in posts %}
+            <tr>
+              <td>
+                <div class="checkbox d-inline-block">
+                  <input
+                    type="checkbox"
+                    class="checkbox-input"
+                    id="checkbox2"
+                  />
+                  <label for="checkbox2" class="mb-0"></label>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <img
+                    src="{{ asset('uploads/images/' ~ post.getUserId().image) }}"
+                    class="img-fluid rounded avatar-50 mr-3"
+                    alt="image"
+                  />
+                  <div>
+                    {{ post.getUserId().nom }} {{ post.getUserId().prenom }}
+                  </div>
+                </div>
+              </td>
+              <td>{{ post.title }}</td>
+              <td>{{ post.description }}</td>
+              <td>
+                <button
+                  class="btn btn-sm btn-link"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#commentsModal-{{ post.id }}"
+                >
+                  {{ post.comments | length }}
+                  Show Comments
+                </button>
+
+                <!-- Modal -->
+                <div
+                  class="modal fade"
+                  id="commentsModal-{{ post.id }}"
+                  tabindex="-1"
+                  aria-labelledby="commentsModalLabel-{{ post.id }}"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5
+                          class="modal-title"
+                          id="commentsModalLabel-{{ post.id }}"
+                        >
+                          Comments
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
+                      </div>
+                      <div class="modal-body">
+                        {% for comment in post.comments %}
+                        <div class="comment">
+                          <p>
+                            <strong
+                              >{{ comment.getUserCommented().nom }}
+                              {{ comment.getUserCommented().prenom }}</strong
+                            >: {{ comment.content }}
+                          </p>
+                          <a
+                            href="{{
+                              path('app_comment_delete_back', {
+                                id: comment.id
+                              })
+                            }}"
+                            >delete</a
+                          >
+                        </div>
+                        {% endfor %}
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td>2.8K</td>
+
+              <td>
+                <div class="d-flex align-items-center list-action">
+                  <a
+                    class="badge bg-warning mr-2"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title=""
+                    data-original-title="Delete"
+                    href="{{ path('app_posts_delete_back', { id: post.id }) }}"
+                    ><i class="ri-delete-bin-line mr-0"></i
+                  ></a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Page end  -->
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "backOffice/base.html.twig" %}{% block title %}Detail Claim{%
+endblock %} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div
+        class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4"
+      >
+        <div>
+          <h4 class="mb-3">Detaille Reponses</h4>
+          <p class="mb-0">
+            Les détails des réponses permettent de gérer efficacement les
+            retours des clients en fournissant des informations claires et
+            structurées, assurant ainsi un suivi précis et adapté pour chaque
+            réclamation.
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="reponse-details-container">
+          <h1 class="reponse-title">Détails de la Réponse</h1>
+
+          <div class="reponse-details">
+            <table class="reponse-table">
+              <tbody>
+                <tr>
+                  <th>Contenu :</th>
+                  <td>{{ reponse.content }}</td>
+                </tr>
+                <tr>
+                  <th>Solution :</th>
+                  <td>{{ reponse.solution }}</td>
+                </tr>
+                <tr>
+                  <th>Status :</th>
+                  <td>{{ reponse.status }}</td>
+                </tr>
+                <tr>
+                  <th>Date :</th>
+                  <td>{{ reponse.date|date('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                  <th>Automatique :</th>
+                  <td>{{ reponse.isAuto ? "Oui" : "Non" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="form-actions"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page end  -->
+</div>
+{% endblock %}

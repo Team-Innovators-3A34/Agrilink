@@ -1,0 +1,171 @@
+{% extends "frontOffice/base.html.twig" %} {% block title %} Point de recyclage
+{% endblock %} {% block content %}
+<style>
+  #map {
+    position: sticky;
+    top: 0;
+    height: 400px;
+    width: 100%;
+  }
+</style>
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left pe-0 ms-0 me-0" style="max-width: 100%">
+      <div class="row">
+        <div class="col-xl-6 chat-left scroll-bar">
+          <div class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3">
+            <div class="card-body d-flex align-items-center p-0">
+              <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                Point de Recyclage
+              </h2>
+              <div class="search-form-2 ms-auto">
+                <i class="ti-search font-xss"></i>
+                <input
+                  type="text"
+                  class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+                  placeholder="Search here."
+                />
+              </div>
+              <a
+                href="#"
+                class="btn-round-md ms-2 bg-greylight theme-dark-bg rounded-3"
+                ><i class="feather-filter font-xss text-grey-500"></i
+              ></a>
+            </div>
+          </div>
+          {% for point in points %}
+          <div
+            class="card d-block w-100 border-0 mb-3 shadow-xss bg-white rounded-3 p-4"
+            style="padding-left: 120px !important"
+          >
+            <img
+              src="{{ asset('uploads/images/' ~ point.image) }}"
+              alt="images"
+              class="position-absolute p-2 bg-lightblue2 w65 ms-4 left-0"
+            />
+            <i
+              class="feather-bookmark font-md text-grey-500 position-absolute right-0 me-3"
+            ></i>
+            <h4 class="font-xss fw-700 text-grey-900 mb-3 pe-4">
+              {{ point.name }}
+              <span class="font-xssss fw-500 text-grey-500 ms-4"
+                >(3 days ago)</span
+              >
+            </h4>
+            <h5 class="font-xssss mb-2 text-grey-500 fw-600">
+              <span class="text-grey-900 font-xssss">Adresse : </span>
+              {{ point.adresse }}
+            </h5>
+            <h5 class="font-xssss mb-2 text-grey-500 fw-600">
+              <span class="text-grey-900 font-xssss">Owner : </span>
+              {{ point.getOwner().nom }} {{ point.getOwner().prenom }}
+            </h5>
+            <h5 class="font-xssss text-grey-500 fw-600 mb-3">
+              <span class="text-grey-900 font-xssss">Salary : </span>
+              12000 -45000
+            </h5>
+
+            <a
+              href="{{ path('front_add_produit', { 'id': point.id }) }}"
+              class="position-absolute bottom-15 mb-3 right-15"
+              ><i
+              class="btn-round-sm bg-primary-gradiant text-white font-sm feather-chevron-right"
+              ></i
+            ></a>
+            <a href="#" 
+            class="position-absolute bottom-15 mb-3 right-15 focus-map" 
+            data-lat="{{ point.latitude }}" 
+            data-lng="{{ point.longitude }}" 
+            style="margin-right: 40px">
+            <i class="btn-round-sm bg-gold-gradiant text-white font-sm feather-eye"></i>
+         </a>
+         
+          </div>
+          {% endfor %}
+        </div>
+        <div class="col-xl-6 ps-0 d-none d-xl-block">
+          <div
+            class="card w-100 border-0 shadow-none rounded-3 border-0 mb-4 overflow-hidden"
+          >
+            <div id="map" class="rounded-3" style="height: 86vh"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  var points = [
+    {% for point in points %}
+      {
+        name: "{{ point.name }}",
+        adresse: "{{ point.adresse }}",
+        owner: "{{ point.getOwner().nom }} {{ point.getOwner().prenom }}",
+        lat: {{ point.latitude }},
+        lng: {{ point.longitude }}
+      },
+    {% endfor %}
+  ];
+
+  // Compute the center of all points
+  let map;
+  if (points.length > 0) {
+    let totalLat = 0, totalLng = 0;
+    points.forEach(p => { totalLat += p.lat; totalLng += p.lng; });
+    
+    let centerLat = totalLat / points.length;
+    let centerLng = totalLng / points.length;
+
+    map = L.map("map").setView([centerLat, centerLng], 8);
+  } else {
+    map = L.map("map").setView([36.8065, 10.1815], 7);
+  }
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; OpenStreetMap contributors',
+  }).addTo(map);
+
+  // Add markers
+  points.forEach(function (point) {
+    var marker = L.marker([point.lat, point.lng]).addTo(map);
+    marker.bindPopup(`<b>${point.name}</b><br>Adresse: ${point.adresse}<br>Propriétaire: ${point.owner}`);
+  });
+
+  // Handle click event on the "eye" icon
+  document.querySelectorAll(".eye-icon").forEach(icon => {
+    icon.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent page refresh
+      let lat = parseFloat(this.getAttribute("data-lat"));
+      let lng = parseFloat(this.getAttribute("data-lng"));
+
+      if (!isNaN(lat) && !isNaN(lng)) {
+        map.setView([lat, lng], 12); // Zoom in on the selected point
+      }
+    });
+  });
+
+  document.querySelectorAll(".focus-map").forEach((link) => {
+  link.addEventListener("click", function (event) {
+    event.preventDefault(); // Prevent the default link behavior
+
+    let lat = parseFloat(this.dataset.lat);
+    let lng = parseFloat(this.dataset.lng);
+
+    if (!isNaN(lat) && !isNaN(lng)) {
+      map.setView([lat, lng], 10); // Adjust zoom level as needed
+    }
+  });
+});
+
+});
+
+</script>
+
+{% endblock %}

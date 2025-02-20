@@ -1,0 +1,95 @@
+{% extends "frontoffice/base.html.twig" %} {% block title %}Publication{%
+endblock %} {% block content %}
+<div class="main-content bg-lightblue theme-dark-bg right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      <div class="middle-wrap">
+        <div class="card w-100 border-0 bg-white shadow-xs p-0 mb-4">
+          <div class="card-body p-4 w-100 bg-current border-0 d-flex rounded-3">
+            <a href="{{ path('app_home') }}" class="d-inline-block mt-2">
+              <i class="ti-arrow-left font-sm text-white"></i>
+            </a>
+            <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">
+              {% if ("action" == "add")%}Ajouter {% else %} Modifer {% endif %}
+              une Publication
+            </h4>
+          </div>
+          <div class="card-body p-lg-5 p-4 w-100 border-0">
+            {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+            <form method="post" enctype="multipart/form-data">
+              {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+              <div class="row">
+                <div class="col-lg-12 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Post title'
+
+                    }}) }}
+                  </div>
+                </div>
+                <div class="col-lg-12 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.type, {'attr': {'class': 'form-control', 'placeholder': 'Post type'
+
+
+
+
+
+
+
+                    }}) }}
+                  </div>
+                </div>
+                <div class="col-lg-12 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Describe your post', 'required': false
+                    }}) }}
+                  </div>
+                </div>
+                <div class="col-lg-12 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.status, {'attr': {'class': 'form-control', 'placeholder': 'Upload image'
+
+
+
+
+
+
+
+                    }}) }}
+                  </div>
+                </div>
+                <div class="col-lg-12 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.images, {'attr': {'class': 'form-control', 'placeholder': 'Upload image'
+
+
+
+
+
+
+
+                    }}) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12 mb-0">
+                  <button
+                    type="submit"
+                    class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block"
+                  >
+                    Comfirmer
+                  </button>
+                </div>
+              </div>
+              {{ form_end(form) }}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

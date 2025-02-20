@@ -1,0 +1,87 @@
+{% extends "backOffice/base.html.twig" %} {% block title %}Edit Answer{%
+endblock %} {% block content %}
+<div class="container-fluid add-form-list">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <div class="header-title">
+            <h4 class="card-title">Modifier Reponse</h4>
+          </div>
+        </div>
+        <div class="card-body">
+          <h1>
+            Modifier la réponse à la réclamation :
+            {{ reclamation.title }}
+          </h1>
+
+          {{ form_start(form, {'attr': {'data-toggle': 'validator'}}) }}
+          <div class="row">
+            <!-- Contenu de la réponse -->
+            <div class="col-md-12">
+              <div class="form-group">
+                {{ form_row(form.content, {'attr': {'class': 'form-control form-control-lg'
+
+
+                }}) }}
+              </div>
+            </div>
+
+            <!-- Champ Solution -->
+            <div class="col-md-12">
+              <div class="form-group">
+                {{
+                  form_row(form.solution, {
+                    attr: {
+                      class: "form-control form-control-lg",
+                      placeholder: "Entrez la solution"
+                    }
+                  })
+                }}
+              </div>
+            </div>
+
+            <!-- Date de la réponse -->
+            <div class="col-md-12">
+              <div class="form-group">
+                {{ form_row(form.date, {'attr': {'class': 'form-control form-control-lg'
+
+
+                }}) }}
+              </div>
+            </div>
+
+            <!-- Automatique (réponse automatique ou non) -->
+            <div class="col-md-12">
+              <div class="form-group">
+                {{ form_row(form.isAuto, {'attr': {'class': 'form-control form-control-lg'
+
+
+                }}) }}
+              </div>
+            </div>
+
+            <!-- Boutons de soumission et de retour -->
+            <div class="col-md-12">
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary mr-2">
+                  Soumettre
+                </button>
+                <a
+                  href="{{
+                    path('reclamation_reponses', { id: reclamation.id })
+                  }}"
+                  class="btn btn-danger"
+                  >Retour</a
+                >
+              </div>
+            </div>
+          </div>
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page end  -->
+</div>
+{% endblock %}

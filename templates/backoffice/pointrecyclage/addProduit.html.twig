@@ -1,0 +1,88 @@
+{% extends "backOffice/base.html.twig" %} {% block title %} Ajout Produit {%
+endblock %} {% block content %}
+<div class="container-fluid add-form-list">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <div class="header-title">
+            <h4 class="card-title">
+              {% if (action == "edit") %}Editer Point{% elseif (action
+              =="add")%}Ajouter Point{% endif %}
+            </h4>
+          </div>
+        </div>
+        <div class="card-body">
+          {{form_start(form,{'attr':{'novalidate': 'novalidate'}})}}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Nom Produit *</label>
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'
+                }}) }}
+                <div class="text-danger">
+                  {{ form_errors(form.name) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Quantite Produit *</label>
+                {{ form_widget(form.quantite, {'attr': {'class': 'form-control'
+                }}) }}
+                <div class="text-danger">
+                  {{ form_errors(form.quantite) }}
+                </div>
+              </div>
+            </div>
+          
+             <div class="col-md-12">
+              <div class="form-group">
+                <label>Description Produit *</label>
+                {{ form_widget(form.description, {'attr': {'class': 'form-control'
+                }}) }}
+                <div class="text-danger">
+                  {{ form_errors(form.description) }}
+                </div>
+              </div>
+            </div>
+              <div class="col-md-12">
+              <div class="form-group">
+                <label>Image</label>
+                {{ form_widget(form.image) }}
+                <div class="text-danger">
+                  {{ form_errors(form.image) }}
+                </div>
+                  {% if (action == "edit") %}
+                <p>Image actuelle :</p>
+                <img
+                  src="{{ asset('uploads/images/' ~ form.vars.value.image) }}"
+                  alt="Image du point"
+                  width="150"
+                />
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Point de recyclage *</label>
+                {{ form_widget(form.pointderecyclage, {'attr': {'class': 'selectpicker form-control', 'data-style': 'py-0'
+                }}) }}
+                <div class="text-danger">
+                  {{ form_errors(form.pointderecyclage) }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mr-2">
+            Ajouter Produit
+          </button>
+          {#<button type="reset" class="btn btn-danger">Reset</button>#}
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page end  -->
+</div>
+{% endblock %}

@@ -1,0 +1,1093 @@
+{% extends "frontoffice/base.html.twig" %}{% block title %}Profile{% endblock
+%}{% block content %}
+<style>
+  #pills-tabContent {
+    background-color: transparent !important;
+  }
+  #pills-tabContent {
+    background: none !important;
+  }
+  .image-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-container img {
+    width: 100%;  /* Largeur automatique en fonction du parent */
+    height: 150px; /* Hauteur fixe */
+    object-fit: cover; /* Coupe l'image pour qu'elle remplisse bien l'espace */
+    border-radius: 8px; /* Arrondi les coins */
+}
+
+.image-single {
+    width: 100%;
+    height: 400px; /* Hauteur un peu plus grande pour une seule image */
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+</style>
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card w-100 border-0 p-0 bg-white shadow-xss rounded-xxl">
+            <div class="card-body h250 p-0 rounded-xxl overflow-hidden m-3">
+              <img src="images/u-bg.jpg" alt="image" />
+            </div>
+            <div class="card-body p-0 position-relative">
+              <figure
+                class="avatar position-absolute w100 z-index-1"
+                style="top: -40px; left: 30px"
+              >
+                <img
+                  src="{{ asset('uploads/images/' ~ user.image) }}"
+                  alt="image"
+                  class="float-right p-1 bg-white rounded-circle w-100"
+                  style="height: 100px"
+                />
+              </figure>
+              <h4 class="fw-700 font-sm mt-2 mb-lg-5 mb-4 pl-15">
+                {{ user.nom }} {{ user.prenom }}
+                <span
+                  class="fw-500 font-xssss text-grey-500 mt-1 mb-3 d-block"
+                  >{{ user.email }}</span
+                >
+              </h4>
+              {% if (user != app.user) %}
+              <div
+                class="d-flex align-items-center justify-content-center position-absolute-md right-15 top-0 me-2"
+              >
+                <a
+                  href="#"
+                  class="d-none d-lg-block bg-success p-3 z-index-1 rounded-3 text-white font-xsssss text-uppercase fw-700 ls-3"
+                  >Add Friend</a
+                >
+                <a
+                  href="{{ path('start_conversation', { userId: user.id }) }}"
+                  class="d-none d-lg-block bg-greylight btn-round-lg ms-2 rounded-3 text-grey-700"
+                  ><i class="feather-mail font-md"></i
+                ></a>
+              </div>
+              {% endif %}
+            </div>
+
+            <div
+              class="card-body d-block w-100 shadow-none mb-0 p-0 border-top-xs"
+            >
+              <ul
+                class="nav nav-tabs h55 d-flex product-info-tab border-bottom-0 ps-4"
+                id="pills-tab"
+                role="tablist"
+              >
+                <li class="list-inline-item me-5">
+                  <a
+                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block active"
+                    id="navtabs1-tab"
+                    data-bs-toggle="tab"
+                    href="#navtabs1"
+                    role="tab"
+                    aria-controls="navtabs1"
+                    aria-selected="true"
+                  >
+                    A Propos
+                  </a>
+                </li>
+                {% if user.roles[0] == "ROLE_RESOURCE_INVESTOR" or user.roles[0]
+                == "ROLE_AGRICULTURE" %}
+                <li class="list-inline-item me-5">
+                  <a
+                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
+                    id="navtabs2-tab"
+                    data-bs-toggle="tab"
+                    href="#navtabs2"
+                    role="tab"
+                    aria-controls="navtabs2"
+                    aria-selected="false"
+                  >
+                    Ressources
+                  </a>
+                </li>
+                {% endif %} {% if user.roles[0] == "ROLE_RECYCLING_INVESTOR" %}
+                <li class="list-inline-item me-5">
+                  <a
+                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
+                    id="navtabs3-tab"
+                    data-bs-toggle="tab"
+                    href="#navtabs3"
+                    role="tab"
+                    aria-controls="navtabs3"
+                    aria-selected="false"
+                  >
+                    Point 
+                  </a>
+                </li>
+                {% endif %} {% if user == app.user %}
+                <li class="list-inline-item me-5">
+                  <a
+                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
+                    id="navtabs4-tab"
+                    data-bs-toggle="tab"
+                    href="#navtabs4"
+                    role="tab"
+                    aria-controls="navtabs4"
+                    aria-selected="false"
+                  >
+                    Mes Reclamations
+                  </a>
+                </li>
+                <li class="list-inline-item me-5">
+                  <a
+                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
+                    id="navtabs5-tab"
+                    data-bs-toggle="tab"
+                    href="#navtabs5"
+                    role="tab"
+                    aria-controls="navtabs5"
+                    aria-selected="false"
+                  >
+                    Mes Evenements
+                  </a>
+                </li>
+                <li class="list-inline-item me-5">
+                  <a
+                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
+                    id="navtabs6-tab"
+                    data-bs-toggle="tab"
+                    href="#navtabs6"
+                    role="tab"
+                    aria-controls="navtabs6"
+                    aria-selected="false"
+                  >
+                    Mes Demandes
+                  </a>
+                </li>
+                <li class="list-inline-item me-5">
+                  <a
+                    class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"
+                    id="navtabs7-tab"
+                    data-bs-toggle="tab"
+                    href="#navtabs7"
+                    role="tab"
+                    aria-controls="navtabs6"
+                    aria-selected="false"
+                  >
+                    Demandes a Repondre
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+
+            <div
+              class="tab-content"
+              id="pills-tabContent"
+              style="background: none"
+            >
+              <div
+                class="tab-pane fade show active"
+                id="navtabs1"
+                role="tabpanel"
+                aria-labelledby="navtabs1-tab"
+                style="margin-top: 10px"
+              >
+                <div class="row" style="margin-left: 20px; margin-right: 20px">
+                  <div
+                    class="col-xl-4 col-xxl-3 col-lg-4 pe-0"
+                    style="margin-top: 20px"
+                  >
+                    <div
+                      class="card w-100 shadow-xss rounded-xxl border-0 mb-3"
+                    >
+                      <div class="card-body d-block p-4">
+                        <h4 class="fw-700 mb-3 font-xsss text-grey-900">
+                          A Propos
+                        </h4>
+                        <p class="fw-500 text-grey-500 lh-24 font-xssss mb-0">
+                          Lorem ipsum dolor sit amet, consectetur adipiscing
+                          elit. Morbi nulla dolor, ornare at commodo non,
+                          feugiat non nisi. Phasellus faucibus mollis pharetra.
+                          Proin blandit ac massa sed rhoncus
+                        </p>
+                      </div>
+                      <div class="card-body border-top-xs d-flex">
+                        <i class="feather-lock text-grey-500 me-3 font-lg"></i>
+                        <h4 class="fw-700 text-grey-900 font-xssss mt-0">
+                          Private
+                          <span
+                            class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500"
+                            >What's up, how are you?</span
+                          >
+                        </h4>
+                      </div>
+
+                      <div class="card-body d-flex pt-0">
+                        <i class="feather-eye text-grey-500 me-3 font-lg"></i>
+                        <h4 class="fw-700 text-grey-900 font-xssss mt-0">
+                          Visble
+                          <span
+                            class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500"
+                            >Anyone can find you</span
+                          >
+                        </h4>
+                      </div>
+                      <div class="card-body d-flex pt-0">
+                        <i
+                          class="feather-map-pin text-grey-500 me-3 font-lg"
+                        ></i>
+                        <h4 class="fw-700 text-grey-900 font-xssss mt-1">
+                          Flodia, Austia
+                        </h4>
+                      </div>
+                      <div class="card-body d-flex pt-0">
+                        <i class="feather-users text-grey-500 me-3 font-lg"></i>
+                        <h4 class="fw-700 text-grey-900 font-xssss mt-1">
+                          Genarel Group
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                    {% if user.getPosts() is not empty %}
+                  <div class="col-xl-8 col-xxl-9 col-lg-8">
+                    <div
+                      class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3 mt-3"
+                    >
+                      <div class="card-body p-0">
+                        <a
+                          href="{{ path('app_posts_new') }}"
+                          class="font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center"
+                          ><i
+                            class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"
+                          ></i
+                          >Create Post</a
+                        >
+                      </div>
+                      <div class="card-body p-0 mt-3 position-relative">
+                        <figure
+                          class="avatar position-absolute ms-2 mt-1 top-5"
+                        >
+                          <img
+                            src="images/user-8.png"
+                            alt="image"
+                            class="shadow-sm rounded-circle w30"
+                          />
+                        </figure>
+                        <textarea
+                          name="message"
+                          class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg"
+                          cols="30"
+                          rows="10"
+                          placeholder="What's on your mind?"
+                        ></textarea>
+                      </div>
+                      <div class="card-body d-flex p-0 mt-0">
+                        <a
+                          href="#"
+                          class="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
+                          ><i class="font-md text-danger feather-video me-2"></i
+                          ><span class="d-none-xs">Live Video</span></a
+                        >
+                        <a
+                          href="#"
+                          class="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
+                          ><i
+                            class="font-md text-success feather-image me-2"
+                          ></i
+                          ><span class="d-none-xs">Photo/Video</span></a
+                        >
+                        <a
+                          href="#"
+                          class="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
+                          ><i
+                            class="font-md text-warning feather-camera me-2"
+                          ></i
+                          ><span class="d-none-xs">Feeling/Activity</span></a
+                        >
+                        <a
+                          href="#"
+                          class="ms-auto"
+                          id="dropdownMenu8"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                          ><i
+                            class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"
+                          ></i
+                        ></a>
+                        <div
+                          class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg"
+                          aria-labelledby="dropdownMenu8"
+                        >
+                          <div class="card-body p-0 d-flex">
+                            <i
+                              class="feather-bookmark text-grey-500 me-3 font-lg"
+                            ></i>
+                            <h4
+                              class="fw-600 text-grey-900 font-xssss mt-0 me-4"
+                            >
+                              Save Link
+                              <span
+                                class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500"
+                                >Add this to your saved items</span
+                              >
+                            </h4>
+                          </div>
+                          <div class="card-body p-0 d-flex mt-2">
+                            <i
+                              class="feather-alert-circle text-grey-500 me-3 font-lg"
+                            ></i>
+                            <h4
+                              class="fw-600 text-grey-900 font-xssss mt-0 me-4"
+                            >
+                              Hide Post
+                              <span
+                                class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500"
+                                >Save to your saved items</span
+                              >
+                            </h4>
+                          </div>
+                          <div class="card-body p-0 d-flex mt-2">
+                            <i
+                              class="feather-alert-octagon text-grey-500 me-3 font-lg"
+                            ></i>
+                            <h4
+                              class="fw-600 text-grey-900 font-xssss mt-0 me-4"
+                            >
+                              Hide all from Group
+                              <span
+                                class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500"
+                                >Save to your saved items</span
+                              >
+                            </h4>
+                          </div>
+                          <div class="card-body p-0 d-flex mt-2">
+                            <i
+                              class="feather-lock text-grey-500 me-3 font-lg"
+                            ></i>
+                            <h4
+                              class="fw-600 mb-0 text-grey-900 font-xssss mt-0 me-4"
+                            >
+                              Unfollow Group
+                              <span
+                                class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500"
+                                >Save to your saved items</span
+                              >
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% for post in user.getPosts() %}
+                    <div
+                      class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3"
+                    >
+                      <div class="card-body p-0 d-flex">
+                        <figure class="avatar me-3">
+                          <img
+                            src="{{ asset('uploads/images/' ~ post.getUserId().image) }}"
+                            alt="image"
+                            class="shadow-sm rounded-circle w45"
+                            style="max-height: 50px;"
+                          />
+                        </figure>
+                        <h4 class="fw-700 text-grey-900 font-xssss mt-1">
+                          {{post.getUserId().nom}} {{post.getUserId().prenom}}
+                            <span
+                            class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500"
+                            >{{ post.createdAt|date("d/m/Y") }}
+                          </span>
+                          
+                        </h4>
+                        <a
+                        href="{{ path('app_post_detail', { id: post.id }) }}"
+                        class="ms-auto"
+
+                      >
+                        <i class="ti-arrow-right text-grey-900 btn-round-md bg-greylight font-xss"></i>
+                      </a>
+                      
+                      
+                      
+                      </div>
+                      <div class="card-body p-0 me-lg-5">
+                        <p class="fw-500 text-grey-500 lh-26 font-xssss w-100">
+                          {{ post.description }}
+                        </p>
+                      </div>
+
+                      {% if post.images | length > 1 %}
+    <!-- Affichage multiple -->
+    <div class="card-body d-block p-0">
+        <div class="row ps-2 pe-2 image-container">
+            {% for image in post.images %}
+                {% if loop.index <= 2 %}
+                    <div class="col-xs-4 col-sm-4 p-1">
+                        <a href="{{ asset('uploads/images/' ~ image) }}" data-lightbox="roadtrip">
+                            <img src="{{ asset('uploads/images/' ~ image) }}" class="rounded-3 w-100" alt="image" />
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if post.images | length > 2 %}
+                <div class="col-xs-4 col-sm-4 p-1">
+                    <a href="{{ asset('uploads/images/' ~ post.images[2]) }}" data-lightbox="roadtrip" class="position-relative d-block">
+                        <img src="{{ asset('uploads/images/' ~ post.images[2]) }}" class="rounded-3 w-100" alt="image" />
+                        {% if ( post.images | length - 3 > 0) %}
+                        <span class="img-count font-sm text-white ls-3 fw-600">
+                            <b>+{{ post.images | length - 3 }}</b>
+                        </span>
+                        {% endif %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% elseif post.images | length == 1 %}
+    <!-- Affichage d'une seule image -->
+    <div class="card-body d-block p-0 mb-3">
+        <div class="row ps-2 pe-2">
+            <div class="col-sm-12 p-1">
+                <a href="{{ asset('uploads/images/' ~ post.images[0]) }}" data-lightbox="roadtr">
+                    <img src="{{ asset('uploads/images/' ~ post.images[0]) }}" class="image-single" alt="image" />
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+
+                      
+                      <div class="card-body d-flex p-0 mt-3">
+                        <a
+                          href="#"
+                          class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3"
+                          ><i
+                            class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                          ></i>
+                          <i
+                            class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"
+                          ></i
+                          >2.8K Like</a
+                        >
+                        <a
+                          href="#"
+                          class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
+                          ><i
+                            class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"
+                          ></i
+                          >{{ post.comments | length }} Comment</a
+                        >
+                        <!--<a
+                          href="#"
+                          class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
+                          ><i
+                            class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"
+                          ></i
+                          ><span class="d-none-xs">Share</span></a
+                        >-->
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  
+                </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="navtabs2"
+                role="tabpanel"
+                aria-labelledby="navtabs2-tab"
+                style="margin-top: 10px"
+              >
+                <div class="row" style="margin-left: 20px; margin-right: 20px">
+                  <div class="col-xl-12">
+                    <div
+                      class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3"
+                    >
+                      <div class="card-body d-flex align-items-center p-0">
+                        <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                          Ressources
+                        </h2>
+                        <div class="search-form-2 ms-auto">
+                          <i class="ti-search font-xss"></i>
+                          <input
+                            type="text"
+                            class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+                            placeholder="Search here."
+                          />
+                        </div>
+                        {% if user == app.user %}
+                        <a
+                          href="{{ path('app_add_ressource') }}"
+                          class="btn-round-md ms-2 rounded-3"
+                          style="background-color: #10d879"
+                          ><i
+                            class="feather-plus-circle font-xss text-white"
+                          ></i
+                        ></a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    {% if user.getRessources() %}
+                    <div class="row ps-2 pe-2">
+                      {% for ressource in user.getRessources() %}
+
+                      <div class="col-md-3 col-sm-4 pe-2 ps-2">
+                        <div
+                          class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3"
+                        >
+                          <div
+                            class="card-body d-block w-100 ps-3 pe-3 pb-4 text-center"
+                          >
+                            <figure
+                              class="avatar ms-auto me-auto mb-0 position-relative w65 z-index-1"
+                            >
+                              <img
+                                src="{{ asset('uploads/images/' ~ ressource.image) }}"
+                                alt="image"
+                                class="float-right p-0 bg-white rounded-circle w-100 shadow-xss"
+                                style="
+                                  width: 100px;
+                                  height: 70px;
+                                  object-fit: cover;
+                                "
+                              />
+                            </figure>
+                            <div class="clearfix"></div>
+                            <h4 class="fw-700 font-xs mt-3 mb-1">
+                              {{ ressource.getNameR }}
+                            </h4>
+                            <p
+                              class="fw-500 font-xssss text-grey-500 mt-0 mb-3"
+                            >
+                              {{ ressource.type }}
+                            </p>
+                            {% if user == app.user %}
+
+                            <a
+                              href="{{
+                                path('app_resource_edit', {
+                                  id: ressource.id
+                                })
+                              }}"
+                              class="mt-0 btn pt-1 pb-1 ps-2 pe-2 d-inline-block rounded-xl font-xsssss text-white"
+                              style="background-color: #0055ff"
+                              ><i class="feather-edit-2 font-xs"></i
+                            ></a>
+                            <a
+                              href="{{
+                                path('app_resource_delete', {
+                                  id: ressource.id
+                                })
+                              }}"
+                              class="mt-0 btn pt-1 pb-1 ps-2 pe-2 d-inline-block rounded-xl font-xsssss text-white"
+                              style="background-color: #fe9431"
+                              ><i class="feather-trash-2 font-xs"></i>
+                            </a>
+                            {% else %} <a href="{{
+                              path("demande_create", { id: ressource.id })
+                            }}" class="mt-0 btn pt-1 pb-1 ps-2 pe-2
+                            d-inline-block rounded-xl font-xssss text-white"
+                            style="background-color: #10d879" > Demander  </a> {%
+                            endif %}
+                            <a href="{{
+                              path("app_resource_show", { id: ressource.id })
+                            }}" class="mt-0 btn pt-1 pb-1 ps-2 pe-2
+                            d-inline-block rounded-xl font-xssss text-white"
+                            style="background-color: #0055ff;" > <i class="feather-eye font-xs"></i>  </a>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                    <div
+                      class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3"
+                    >
+                      <div class="card-body d-flex align-items-center p-0">
+                        <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                          Vous n'avez pas encore de ressources
+                        </h2>
+                      </div>
+                    </div>
+                    {% endif %}
+                    {% if user.getRessources() is empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">Vous n'êtes dans aucun Ressource.</td>
+                    </tr>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="navtabs3"
+                role="tabpanel"
+                aria-labelledby="navtabs3-tab"
+              >
+              <div class="row" style="margin-left: 20px; margin-right: 20px">
+                <div class="col-xl-12">
+                  <div
+                    class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3"
+                  >
+                    <div class="card-body d-flex align-items-center p-0">
+                      <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                        Point De Recyclage
+                      </h2>
+                      <div class="search-form-2 ms-auto">
+                        <i class="ti-search font-xss"></i>
+                        <input
+                          type="text"
+                          class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+                          placeholder="Search here."
+                        />
+                      </div>
+                      {% if user == app.user %}
+                      <a
+                        href="{{ path('add_point_front') }}"
+                        class="btn-round-md ms-2 rounded-3"
+                        style="background-color: #10d879"
+                        ><i
+                          class="feather-plus-circle font-xss text-white"
+                        ></i
+                      ></a>
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% if user.getPointrecyclages() %}
+                  
+                  <div class="row ps-2 pe-2">
+                    {% for point in user.getPointrecyclages() %}
+
+                    <div class="col-md-3 col-sm-4 pe-2 ps-2">
+                      <div
+                        class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3"
+                      >
+                        <div
+                          class="card-body d-block w-100 ps-3 pe-3 pb-4 text-center"
+                        >
+                          <figure
+                            class="avatar ms-auto me-auto mb-0 position-relative w65 z-index-1"
+                          >
+                            <img
+                              src="{{ asset('uploads/images/' ~ point.image) }}"
+                              alt="image"
+                              class="float-right p-0 bg-white rounded-circle w-100 shadow-xss"
+                              style="
+                                width: 100px;
+                                height: 70px;
+                                object-fit: cover;
+                              "
+                            />
+                          </figure>
+                          <div class="clearfix"></div>
+                          <h4 class="fw-700 font-xs mt-3 mb-1">
+                            {{ point.name }}
+                          </h4>
+                          <!--<p
+                            class="fw-500 font-xssss text-grey-500 mt-0 mb-3"
+                          >
+                            
+                          </p>-->
+                          {% if app.user == point.getOwner() %}
+
+                          <a
+                            href="{{
+                              path('edit_point_front', {
+                                id: point.id
+                              })
+                            }}"
+                            class="mt-0 btn pt-1 pb-1 ps-2 pe-2 d-inline-block rounded-xl font-xsssss text-white"
+                            style="background-color: #0055ff"
+                            ><i class="feather-edit-2 font-xs"></i
+                          ></a>
+                          <a
+                            href="{{
+                              path('delete_point_front', {
+                                id: point.id
+                              })
+                            }}"
+                            class="mt-0 btn pt-1 pb-1 ps-2 pe-2 d-inline-block rounded-xl font-xsssss text-white"
+                            style="background-color: #fe9431"
+                            ><i class="feather-trash-2 font-xs"></i>
+                          </a>
+                          {% else %} <a href="{{
+                            path("front_add_produit", { id: point.id })
+                          }}" class="mt-0 btn pt-1 pb-1 ps-2 pe-2
+                          d-inline-block rounded-xl font-xssss text-white"
+                          style="background-color: #10d879" > Demander  </a> {%
+                          endif %}
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% if user.getPointrecyclages() is empty %}
+                  <tr>
+                      <td colspan="6" class="text-center">Aucun Point de Recyclage.</td>
+                  </tr>
+                  {% endif %}
+                </div>
+              </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="navtabs4"
+                role="tabpanel"
+                aria-labelledby="navtabs4-tab"
+              >
+                <div class="row" style="margin-left: 20px; margin-right: 20px">
+                  <div class="col-xl-12">
+                    <div
+                      class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3"
+                    >
+                      <div class="card-body d-flex align-items-center p-0">
+                        <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                          Mes Réclamations
+                        </h2>
+                        <div class="search-form-2 ms-auto">
+                          <i class="ti-search font-xss"></i>
+                          <input
+                            type="text"
+                            class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+                            placeholder="Search here."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        margin-left: 10px;
+                        margin-right: 10px;
+                        margin-top: 30px;
+                      "
+                    >
+                      <table
+                        class="table table-hover"
+                        style="margin-left: 20px; margin-right: 20px"
+                      >
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Réclamation</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for reclamation in user.getReclamations() %}
+                          <tr>
+                            <th>{{ loop.index }}</th>
+                            <td>{{ reclamation.title }}</td>
+                            <td>{{ reclamation.date|date('d/m/Y') }}</td>
+                            <td>{{ reclamation.status }}</td>
+                            <td>
+                              <a href="{{path("app_reclamation_edit",{ id: reclamation.id })}}" class="badge bg-success mr-2"
+                              ><i class="feather-edit-2 mr-0"></i
+                            ></a>
+                            <a href="{{ path('app_reclamation_deleteback', { id: reclamation.id }) }}" class="badge bg-warning mr-2"
+                              ><i class="feather-trash-2 mr-0"></i
+                            ></a>
+                            <a href="{{ path('reclamationDetails', { id: reclamation.id }) }}" class="badge bg-info mr-2">
+                              <i class="feather-eye mr-0"></i>
+                            </a>
+                            </td>
+                          </tr>
+                          {% endfor %}
+                          {% if user.getReclamations() is empty %}
+                          <tr>
+                              <td colspan="6" class="text-center">Vous n'avez aucune reclamation.</td>
+                          </tr>
+                          {% endif %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="navtabs5"
+                role="tabpanel"
+                aria-labelledby="navtabs5-tab"
+              >
+                <div class="row" style="margin-left: 20px; margin-right: 20px">
+                  <div
+                    class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3"
+                  >
+                    <div class="card-body d-flex align-items-center p-0">
+                      <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                        Mes Événements
+                      </h2>
+                      <div class="search-form-2 ms-auto">
+                        <i class="ti-search font-xss"></i>
+                        <input
+                          type="text"
+                          class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+                          placeholder="Search here."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="row"
+                    style="margin-left: 20px; margin-right: 30px"
+                  >
+                    {% for event in user.getEvents() %}
+                    <div class="col-lg-4 col-md-6 pe-2 ps-2">
+                      <div
+                        class="card p-3 bg-white w-100 hover-card border-0 shadow-xss rounded-xxl mb-3 overflow-hidden"
+                      >
+                        <div class="card-image w-100">
+                          <img
+                            src="{{ asset('uploads/images/' ~ event.image) }}"
+                            alt="{{ event.nom }}"
+                            class="w-100 rounded-3"
+                            style="height: 250px"
+                          />
+                        </div>
+                        <div class="card-body d-flex ps-0 pe-0 pb-0">
+                          <div
+                            class="bg-greylight me-3 p-3 border-light-md rounded-xxl"
+                          >
+                            <h4 class="fw-700 font-lg ls-3 text-grey-900 mb-0">
+                              <span
+                                class="ls-3 d-block font-xsss text-grey-500 fw-500"
+                                >{{ event.date|date('M') }}</span
+                              >
+                              {{ event.date|date('d') }}
+                            </h4>
+                          </div>
+                          <h2 class="fw-700 lh-3 font-xss">
+                            {{ event.nom }}
+                            <span
+                              class="d-flex font-xssss fw-500 mt-2 lh-3 text-grey-500"
+                            >
+                              <i class="ti-location-pin me-1"></i>
+                              {{ event.adresse }}
+                            </span>
+                          </h2>
+                        </div>
+                        <span
+                          class="nbr-places text-muted"
+                          style="margin-top: 8px"
+                          id="nbr-places-{{ event.id }}"
+                        >
+                          {{ event.getNbrPlaces() }} places available
+                        </span>
+                        <div class="button-row">
+                          <a
+                            style="margin-left: 125px; margin-top: 15px"
+                            href="{{ path('leave_event', { id: event.id }) }}"
+                            id="apply-btn-{{ event.id }}"
+                            type="button"
+                            data-event-id="{{ event.id }}"
+                            data-nbr-places="{{ event.getNbrPlaces() }}"
+                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 bg-success d-inline-block text-white me-1 apply-btn"
+                            disabled
+                            aria-disabled="true"
+                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 bg-primary d-inline-block text-white me-1 apply-btn"
+                          >
+                            Leave Event
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                    {% if user.getEvents() is empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">Vous n'êtes dans aucun événement.</td>
+                    </tr>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="navtabs6"
+                role="tabpanel"
+                aria-labelledby="navtabs5-tab"
+              >
+                <div class="row" style="margin-left: 20px; margin-right: 20px">
+                  <div class="col-xl-12">
+                    <div
+                      class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3"
+                    >
+                      <div class="card-body d-flex align-items-center p-0">
+                        <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                          Mes Demandes
+                        </h2>
+                        <div class="search-form-2 ms-auto">
+                          <i class="ti-search font-xss"></i>
+                          <input
+                            type="text"
+                            class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+                            placeholder="Search here."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        margin-left: 10px;
+                        margin-right: 10px;
+                        margin-top: 30px;
+                      "
+                    >
+                      <table
+                        class="table table-hover"
+                        style="margin-left: 20px; margin-right: 20px"
+                      >
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Message</th>
+                            <th>Etat</th>
+                            <th>Date</th>
+                            <th>Priorité</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for demande in user.getDemandes() %}
+                          <tr>
+                            <th>{{ loop.index }}</th>
+                            <td>{{ demande.message }}</td>
+                            <td>{{ demande.status }}</td>
+                            <td>
+                              {{ demande.getCreatedAt() | date('d/m/Y') }}
+                            </td>
+                            <td>{{ demande.priorite }}</td>
+                            {% if demande.status == "en cours" %}
+                            <td>
+                              <a
+                                href="{{
+                                  path('app_demandes_update', {
+                                    id: demande.getDemandeId()
+                                  })
+                                }}"
+                                class="badge bg-success mr-2"
+                                ><i class="feather-edit-2 mr-0"></i
+                              ></a>
+                              <a href="{{
+                                path("app_demandes_delete", {
+                                  id: demande.getDemandeId()
+                                })
+                              }}" class="badge bg-warning mr-2" ><i
+                                class="feather-trash-2 mr-0"
+                              ></i></a>
+                            </td>
+                            {% else %}
+                            <td>-</td>
+                            {% endif %}
+
+                          </tr>
+                          {% endfor %}
+                          {% if user.getDemandes() is empty %}
+                        <tr>
+                          <td colspan="6" class="text-center">Aucune demandes </td>
+                        </tr>
+                        {% endif %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="navtabs7"
+                role="tabpanel"
+                aria-labelledby="navtabs7-tab"
+              >
+              <div class="row" style="margin-left: 20px; margin-right: 20px">
+                <div class="col-xl-12">
+                  <div
+                    class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3"
+                  >
+                    <div class="card-body d-flex align-items-center p-0">
+                      <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                         Demandes A Repondre
+                      </h2>
+                      <div class="search-form-2 ms-auto">
+                        <i class="ti-search font-xss"></i>
+                        <input
+                          type="text"
+                          class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+                          placeholder="Search here."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      margin-left: 10px;
+                      margin-right: 10px;
+                      margin-top: 30px;
+                    "
+                  >
+                    <table
+                      class="table table-hover"
+                      style="margin-left: 20px; margin-right: 20px"
+                    >
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Demandeur</th>
+                          <th>Message</th>
+                          <th>Date</th>
+                          <th>Priorité</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for demande in user.todemandes() %}
+                        <tr>
+                          <th>{{ loop.index }}</th>
+                          <td>{{ demande.userId.nom }} {{ demande.userId.prenom }}</td>
+                          <td>{{ demande.message }}</td>
+                          <td>
+                            {{ demande.getCreatedAt() | date('d/m/Y') }}
+                          </td>
+                          <td>{{ demande.priorite }}</td>
+                          {% if demande.status == "en cours" %}
+                          <td>
+                            <a
+                              href="{{path('accept_demande', {id: demande.getDemandeId()})}}"
+                              class="badge bg-success mr-2"
+                              ><i class="feather-thumbs-up mr-0"></i
+                            ></a>
+                            <a href="{{path('refuse_demande', {id: demande.getDemandeId()})}}" class="badge bg-warning mr-2" ><i
+                              class="feather-thumbs-down mr-0"
+                            ></i></a>
+                          </td>
+                          {% else %}
+                          <td>-</td>
+                          {% endif %}
+                        </tr>
+                        {% endfor %}
+                        {% if user.todemandes() is empty %}
+                        <tr>
+                          <td colspan="6" class="text-center">Aucune demandes pour le moment</td>
+                        </tr>
+                        {% endif %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+</div>
+{% endblock %}
