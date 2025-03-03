@@ -3,3 +3,8 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+chatbot_ask:
+    path: /api/chatbot
+    controller: App\Controller\ChatbotController::askChatbot
+    methods: ['POST']

@@ -28,19 +28,22 @@ class CodeValidationController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
+
+            if (!$email) {
+                $this->addFlash('error', 'Entrez un email');
+                return $this->redirectToRoute('app_send_code_validation');
+            }
+            
             $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
 
             if (!$user) {
                 $this->addFlash('error', 'No user found with this email. Please recheck the email.');
                 return $this->redirectToRoute('app_send_code_validation');
             } else {
-                if ($user->getAccountVerification() == 'approved' && $user->getStatus() == 'approved') {
+                if ($user->getAccountVerification() == 'approved') {
                     $this->addFlash('success', 'Your account is active. Just Login.');
                     return $this->redirectToRoute('app_login');
-                } else if ($user->getStatus() == 'pending') {
-                    $this->addFlash('error', 'Your account is not approved. Wait for approval.');
-                    return $this->redirectToRoute('app_send_code_validation');
-                } else if ($user->getAccountVerification() == 'pending' && $user->getStatus() == 'approved') {
+                } else if ($user->getAccountVerification() == 'pending') {
                     $validationCode = rand(1000, 9999);
                     $user->setVerificationCode((string) $validationCode);
                     $user->setCodeExpirationDate(new \DateTime('+10 minutes'));
@@ -71,7 +74,9 @@ class CodeValidationController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             // Retrieve email from session
+
             $email = $request->getSession()->get('email_for_verification') ?? null;
+
 
             if (!$email) {
                 $this->addFlash('error', 'Email session expired');
@@ -95,21 +100,48 @@ class CodeValidationController extends AbstractController
                 return $this->redirectToRoute('app_send_code_validation');
             }
 
-            // Check if the code is correct and has not expired
-            $code = $user->getVerificationCode();
-            $expirationDate = $user->getCodeExpirationDate();
+            // Get the action from the request
+            if ($request->getSession()->get('action') == '2FA') {
+                // Check if the code is correct and has not expired
+                $code = $user->getCode2FA();
+                $expirationDate = $user->getCode2FAexpiry();
 
-            if ($code === $enteredOtp && new \DateTime() < $expirationDate) {
-                // Code is valid
-                $user->setAccountVerification('approved'); // Approve the user
-                $user->setVerificationCode(null); // Clear the verification code
-                $user->setCodeExpirationDate(null); // Clear the expiration date
-                $this->em->flush();
-                $this->addFlash('success', 'Account verified successfully!');
-                return $this->redirectToRoute('app_login');
-            } else {
-                // Code is invalid or expired
-                $this->addFlash('error', 'Invalid or expired code.');
+                if ($code === $enteredOtp && new \DateTime() < $expirationDate) {
+                    // Code is valid
+                    $user->setCode2FA(null); // Clear the 2FA code
+                    $user->setCode2FAexpiry(null); // Clear the expiration date
+                    $this->em->flush();
+                    if ($user->getRoles()[0] == 'ROLE_ADMIN') {
+                        return $this->redirectToRoute('app_dashboard');
+                    } else {
+                        return $this->redirectToRoute('app_home');
+                    }
+                } elseif (new \DateTime() > $expirationDate) {
+                    // Code is invalid or expired
+                    $this->addFlash('error', 'expired code.');
+                } elseif ($code !== $enteredOtp) {
+                    // Code is invalid or expired
+                    $this->addFlash('error', 'Invalid code.');
+                }
+            } else {  // Check if the code is correct and has not expired
+                $code = $user->getVerificationCode();
+                $expirationDate = $user->getCodeExpirationDate();
+
+                if ($code === $enteredOtp && new \DateTime() < $expirationDate) {
+                    // Code is valid
+                    $user->setAccountVerification('approved'); // Approve the user
+                    $user->setVerificationCode(null); // Clear the verification code
+                    $user->setCodeExpirationDate(null); // Clear the expiration date
+                    $this->em->flush();
+                    $this->addFlash('success', 'Account verified successfully!');
+                    return $this->redirectToRoute('app_login');
+                } elseif (new \DateTime() > $expirationDate) {
+                    // Code is invalid or expired
+                    $this->addFlash('error', 'expired code.');
+                } elseif ($code !== $enteredOtp) {
+                    // Code is invalid or expired
+                    $this->addFlash('error', 'Invalid code.');
+                }
             }
         }
 
@@ -126,10 +158,13 @@ class CodeValidationController extends AbstractController
             if (!$user) {
                 $this->addFlash('error', 'No user found with this email. Please recheck the email.');
                 return $this->redirectToRoute('app_send_reset_password');
-            } else if ($user->getStatus() !== 'approved' && $user->getAccountVerification() !== 'approved') {
+            } else if ($user->getStatus() == 'hide') {
+                $this->addFlash('error', 'banned Account');
+                return $this->redirectToRoute('app_send_code_validation');
+            } else if ($user->getAccountVerification() !== 'approved') {
                 $this->addFlash('error', 'Your account is not active. Please verify your account.');
                 return $this->redirectToRoute('app_send_code_validation');
-            } else if ($user->getStatus() == 'approved' && $user->getAccountVerification() == 'approved') {
+            } else if ($user->getAccountVerification() == 'approved') {
                 $resetToken = bin2hex(random_bytes(32)); // Generate a secure token
                 $user->setResetToken($resetToken);
                 $user->setResetTokenExpiresAt(new \DateTime('+20 minutes'));
@@ -160,7 +195,25 @@ class CodeValidationController extends AbstractController
             return $this->redirectToRoute('app_send_reset_password');
         }
 
+
+
         if ($request->isMethod('POST')) {
+
+            if (!$request->request->get('password')) {
+                $this->addFlash('error', 'Entrez un password');
+                return $this->redirectToRoute('app_verif_reset_password_code', ['token' => $token]);
+            }
+
+            if (!$request->request->get('comfirm_password')) {
+                $this->addFlash('error', 'Entrez un comfirm password');
+                return $this->redirectToRoute('app_verif_reset_password_code', ['token' => $token]);
+            }
+
+            if ($request->request->get('password') !== $request->request->get('comfirm_password')) {
+                $this->addFlash('error', 'Les mots de passe ne correspondent pas');
+                return $this->redirectToRoute('app_verif_reset_password_code', ['token' => $token]);
+            }
+
             $password = $request->request->get('password');
             $user->setPassword($userPasswordHasher->hashPassword($user, $password));
             $user->setResetToken(null);

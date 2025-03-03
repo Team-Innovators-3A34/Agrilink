@@ -79,7 +79,7 @@ final class CategorieController extends AbstractController
                 return $this->redirectToRoute('display_categorie');
             }
         }
-        return $this->render('backOffice/Category/addCategory.html.twig', [
+        return $this->render('backOffice/evenement/addCategory.html.twig', [
             "form" => $form->createView()
         ]);
     }

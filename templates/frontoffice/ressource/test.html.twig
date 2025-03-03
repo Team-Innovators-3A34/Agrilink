@@ -1,0 +1,400 @@
+{% extends "frontoffice/base.html.twig" %}{% block title %}Detail{% endblock %}
+{% block content %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
+/>
+<style>
+  /* From Uiverse.io by andrew-demchenk0 */ 
+.rating:not(:checked) > input {
+  position: absolute;
+  appearance: none;
+}
+
+.rating:not(:checked) > label {
+  float: right;
+  cursor: pointer;
+  font-size: 30px;
+  color: #666;
+}
+
+.rating:not(:checked) > label:before {
+  content: '★';
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked + label:hover ~ label,
+.rating > input:checked ~ label:hover,
+.rating > input:checked ~ label:hover ~ label,
+.rating > label:hover ~ input:checked ~ label {
+  color: #e58e09;
+}
+
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+  color: #ff9e0b;
+}
+
+.rating > input:checked ~ label {
+  color: #ffa723;
+}
+
+
+
+
+</style>
+
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom ps-0 pe-0">
+    <div class="middle-sidebar-left pe-0">
+      <div class="row">
+        <div class="col-xl-12 col-xxl-12 col-lg-12">
+          <div class="product-slider owl-nav-link owl-carousel owl-theme">
+            {% for image in ressource.images %}
+
+            <div class="owl-items">
+                <img src="{{ asset('uploads/images/' ~ image) }}" alt="product-image" class="rounded-3" style="max-height: 300px;object-fit: cover;" />
+            </div>
+            {% endfor %}
+
+           
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-8 col-xxl-9 col-lg-8">
+
+          <div
+            class="card d-block mt-4 border-0 shadow-xss bg-white p-lg-5 p-4"
+          >
+          {% if (ressource.status == "indisponible") %}
+            <span
+              class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 bg-danger d-inline-block text-white"
+              >{{ ressource.status }}</span
+            >
+            {% else %}
+            <span
+              class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 bg-primary-gradiant d-inline-block text-white"
+              >{{ ressource.status }}</span
+            >
+            {% endif %}
+            <h2 class="fw-700 font-lg mt-3 mb-2">
+              {{ ressource.getNameR }}
+            </h2>
+            <p class="font-xsss fw-500 text-grey-500 lh-30 pe-5 mt-3 me-5">
+              {{ ressource.description }}
+            </p>
+
+            <div class="clearfix"></div>
+            <div class="row">
+            {% set totalRating = 0 %}
+            {% for rating in ressource.getRatingRessources() %}
+            {% set totalRating = totalRating + rating.rate %}
+            {% endfor %}
+            {% if ressource.getRatingRessources()|length == 0 %}
+                              {% set averageRating = 0 %}
+                              {% else %}
+                              {% set averageRating = totalRating / ressource.getRatingRessources()|length %}
+                              {% endif %}
+            <div class="row mt-1">
+              <div class="col-7 pe-1 mt-0">
+                <div class="star d-inline text-left">
+                  {% for i in 1..5 %}
+                  {% if i <= averageRating %}
+                    <img src="images/star.png" alt="star" class="w15" />
+                  {% else %}
+                    <img src="images/star-disable.png" alt="star" class="w15" />
+                  {% endif %}
+                  {% endfor %}
+                </div>
+                <p class="review-link font-xssss fw-600 text-grey-500 lh-3 mb-0 d-inline">
+                  ({{ ressource.getRatingRessources()|length }} notes)
+                </p>
+              </div>
+            </div>
+          </div>
+
+            <div class="clearfix"></div>
+            <h5
+              class="mt-4 mb-4 d-inline-block font-xssss fw-600 text-grey-500 me-2"
+            >
+              <i
+                class="btn-round-sm bg-greylight ti-location-pin text-grey-500 me-1"
+              ></i>
+              {{ ressource.adresse }}
+            </h5>
+
+            <div class="clearfix"></div>
+
+            {% if  (ressource.getUserId() == app.user) %}
+            <a
+              href="{{
+                                path('app_resource_edit', {
+                                  id: ressource.id
+                                })
+                              }}"
+              class="btn-round-lg ms-3 d-inline-block rounded-3 bg-greylight"
+              ><i class="feather-edit font-sm text-grey-700"></i
+            ></a>
+            <a
+              href="{{
+                                path('app_resource_delete', {
+                                  id: ressource.id
+                                })
+                              }}"
+              class="btn-round-lg ms-2 d-inline-block rounded-3 bg-danger"
+              ><i class="feather-trash font-sm text-white"></i>
+            </a>
+            {% else %}
+            <a
+              href="{{path("demande_create", { id: ressource.id })}}"
+              class="bg-primary-gradiant border-0 text-white fw-600 text-uppercase font-xssss float-left rounded-3 d-inline-block mt-0 p-2 lh-34 text-center ls-3 w200"
+              >DEMANDER</a>
+            {% endif %}
+
+          </div>
+
+          <div
+            class="card d-block border-0 rounded-3 overflow-hidden p-4 shadow-xss mt-4"
+          >
+            <h2 class="fw-700 font-sm mb-3 mt-1 ps-1 mb-3">Details</h2>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Type :</strong> <span class="text-muted">{{ ressource.type }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Prix de location :</strong> <span class="text-muted">{{ ressource.status }}</span>
+              </li>
+              {% if (ressource.type != "terrain") %}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Marque :</strong> <span class="text-muted">{{ ressource.marque }}</span>
+              </li>
+              {% else %}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Superficie :</strong> <span class="text-muted">{{ ressource.superficie }}</span>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+
+          <div
+            class="card d-block border-0 rounded-3 overflow-hidden p-4 shadow-xss mt-4"
+          >
+            <h2 class="fw-700 font-sm mb-3 mt-1 ps-1 mb-3">Galerie</h2>
+            <div class="row ps-3 pe-3">
+              {% for image in ressource.images %}
+
+              <div class="col-sm-4 col-xss-4 pe-1 ps-1 mb-2">
+                  <img
+                    src="{{ asset('uploads/images/' ~ image) }}"
+                    alt="image"
+                    class="img-fluid w-100 rounded-3"
+                    style="max-height: 210px;object-fit: cover;"
+                />
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-xl-4 col-xxl-3 col-lg-4 ps-0">
+          <div
+            class="card w-100 border-0 mt-4 mb-4 p-lg-4 p-3 shadow-xss position-relative rounded-3 bg-white"
+          >
+            <div
+              class="section full mb-4 p-4 bg-light theme-dark-bg theme-light-bg rounded-3"
+            >
+              <div class="row">
+                <div class="col-12 text-center">
+                  <h2 class="display2-size lh-1 m-0 text-grey-900 fw-700">
+                    4.3
+                  </h2>
+                </div>
+                <div class="col-12 text-center">
+                  <h4 class="font-xssss text-grey-600 fw-600 mt-2">
+                    Based on 433 rating
+                  </h4>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-7 pe-1 mt-0">
+                  <div class="star d-inline text-left">
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                  </div>
+                </div>
+                <div class="col-5 ps-1 text-right">
+                  <h4 class="font-xssss mt-1 fw-700 text-grey-800">Support</h4>
+                </div>
+              </div>
+              <div class="row mt-1">
+                <div class="col-7 pe-1 mt-0">
+                  <div class="star d-inline text-left">
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star-disable.png" alt="star" class="w15" />
+                    <img src="images/star-disable.png" alt="star" class="w15" />
+                  </div>
+                </div>
+                <div class="col-5 ps-1 text-right">
+                  <h4 class="font-xssss mt-1 fw-700 text-grey-800">Clean</h4>
+                </div>
+              </div>
+              <div class="row mt-1">
+                <div class="col-7 pe-1 mt-0">
+                  <div class="star d-inline text-left">
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star-disable.png" alt="star" class="w15" />
+                    <img src="images/star-disable.png" alt="star" class="w15" />
+                    <img src="images/star-disable.png" alt="star" class="w15" />
+                  </div>
+                </div>
+                <div class="col-5 ps-1 text-right">
+                  <h4 class="font-xssss mt-1 fw-700 text-grey-800">Speed</h4>
+                </div>
+              </div>
+              <div class="row mt-1">
+                <div class="col-7 pe-1 mt-0">
+                  <div class="star d-inline text-left">
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star-disable.png" alt="star" class="w15" />
+                  </div>
+                </div>
+                <div class="col-5 ps-1 text-right">
+                  <h4 class="font-xssss mt-1 fw-700 text-grey-800">Quality</h4>
+                </div>
+              </div>
+              <div class="row mt-1">
+                <div class="col-7 pe-1 mt-0">
+                  <div class="star d-inline text-left">
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star.png" alt="star" class="w15" />
+                    <img src="images/star-disable.png" alt="star" class="w15" />
+                  </div>
+                </div>
+                <div class="col-5 ps-1 text-right">
+                  <h4 class="font-xssss mt-1 fw-700 text-grey-800">Delivery</h4>
+                </div>
+              </div>
+            </div>
+
+            {% if app.user != ressource.getUserId %}
+            {% if MyRate is  null %}
+            <div class="row">
+              <div class="col-12">
+                <form action="{{path('app_add_rate',{'id':ressource.id})}}" method="post">
+                  <div class="row">
+
+                  <div class="rating" style="margin-left: -60px;">
+                    <input value="5" name="rate" id="star5" type="radio">
+                    <label title="text" for="star5"></label>
+                    <input value="4" name="rate" id="star4" type="radio">
+                    <label title="text" for="star4"></label>
+                    <input value="3" name="rate" id="star3" type="radio" checked="">
+                    <label title="text" for="star3"></label>
+                    <input value="2" name="rate" id="star2" type="radio">
+                    <label title="text" for="star2"></label>
+                    <input value="1" name="rate" id="star1" type="radio">
+                    <label title="text" for="star1"></label>
+                  </div>
+                </div>
+
+                  <div class="row">
+                    <button
+                      class="d-block p-2 lh-32 text-center bg-greylight fw-600 font-xssss text-grey-900 rounded-3"
+                      >Add a Review</button
+                    >
+                  </div>
+                </form>
+              </div>
+            </div>
+            {% else %}
+            <div class="row mt-1" style="margin-left: 40px;">
+              <div class="col-12">
+              <p class="font-xssss fw-600 text-grey-500 lh-3 mb-0">
+                Your rating: {{ MyRate.rate }} stars
+              </p>
+              </div>
+            </div>
+            <div class="row mt-1" style="margin-left: 50px;">
+              <div class="col-7 pe-1 mt-0">
+              <div class="star d-inline text-left">
+                {% for i in 1..5 %}
+                {% if i <= MyRate.rate %}
+                  <img src="images/star.png" alt="star" class="w15" />
+                {% else %}
+                  <img src="images/star-disable.png" alt="star" class="w15" />
+                {% endif %}
+                {% endfor %}
+              </div>
+              </div>
+            </div>
+           
+            
+            {% endif %}
+           
+            {% endif %}
+          </div>
+          <div
+            class="card w-100 border-0 mt-4 mb-4 p-4 shadow-xss position-relative rounded-3 bg-white"
+          >
+            <h2 class="fw-700 font-sm mb-4 mt-1 ps-1 mb-3">Ask a Question</h2>
+            <form action="#">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group mb-3">
+                    <input
+                      type="text"
+                      class="form-control style2-input bg-color-none text-grey-700"
+                      value="Name"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group mb-3">
+                    <input
+                      type="text"
+                      class="form-control style2-input bg-color-none text-grey-700"
+                      value="Email"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group mb-3 md-mb-2">
+                    <textarea
+                      class="w-100 h125 style2-textarea p-3 form-control"
+                    >
+Message</textarea
+                    >
+                  </div>
+                  <a
+                    href="#"
+                    class="bg-primary-gradiant border-0 text-white fw-600 text-uppercase font-xssss float-left rounded-3 d-block mt-0 w-100 p-2 lh-34 text-center ls-3"
+                    >Contact US</a
+                  >
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

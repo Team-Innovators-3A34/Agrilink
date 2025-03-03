@@ -8,8 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\Reponses;
-
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 class Reclamation
@@ -19,80 +17,53 @@ class Reclamation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $id_user = null;
-
     #[ORM\Column(length: 255)]
-    /**
-     * @Assert\NotBlank(message="Le nom de l'utilisateur ne peut pas être vide.")
-     * @Assert\Type("string", message="Le nom doit être une chaîne de caractères.")
-     */
+    #[Assert\NotBlank(message: "Le nom de l'utilisateur ne peut pas être vide.")]
+    #[Assert\Type(type: "string", message: "Le nom doit être une chaîne de caractères.")]
     private ?string $nom_user = null;
 
     #[ORM\Column(length: 255)]
-    /**
-     * @Assert\NotBlank(message="L'email de l'utilisateur ne peut pas être vide.")
-     * @Assert\Email(message="Veuillez entrer un email valide.")
-     */
+    #[Assert\NotBlank(message: "L'email de l'utilisateur ne peut pas être vide.")]
+    #[Assert\Email(message: "Veuillez entrer un email valide.")]
     private ?string $mail_user = null;
 
     #[ORM\Column(length: 255)]
-    /**
-     * @Assert\NotBlank(message="Le titre ne peut pas être vide.")
-     * @Assert\Type("string", message="Le titre doit être une chaîne de caractères.")
-     */
+    #[Assert\NotBlank(message: "Le titre ne peut pas être vide.")]
+    #[Assert\Type(type: "string", message: "Le titre doit être une chaîne de caractères.")]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
-    /**
-     * @Assert\NotBlank(message="Le contenu de la réclamation ne peut pas être vide.")
-     * @Assert\Type("string", message="Le contenu doit être une chaîne de caractères.")
-     */
+    #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "Le contenu de la réclamation ne peut pas être vide.")]
     private ?string $content = null;
 
     #[ORM\Column(length: 255)]
-    /**
-     * @Assert\NotBlank(message="Le statut ne peut pas être vide.")
-     * @Assert\Choice(choices={"En cours", "Terminé", "Rejeté"}, message="Le statut doit être 'En cours', 'Terminé' ou 'Rejeté'.")
-     */
+    #[Assert\NotBlank(message: "Le statut ne peut pas être vide.")]
+    #[Assert\Choice(choices: ["En cours", "Terminé", "Rejeté"], message: "Le statut doit être 'En cours', 'Terminé' ou 'Rejeté'.")]
     private ?string $status = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    /**
-     * @Assert\NotBlank(message="La date ne peut pas être vide.")
-     * @Assert\Type("\DateTime", message="La date doit être valide.")
-     */
+    #[Assert\Type(type: "\DateTimeInterface", message: "La date doit être valide.")]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    /**
-     * @Assert\Type("string", message="Le type doit être une chaîne de caractères.")
-     */
-    private ?string $type = null;
+    #[ORM\ManyToOne(targetEntity: TypeRec::class)]
+    #[ORM\JoinColumn(name: "type_id", referencedColumnName: "id", nullable: false, onDelete: "CASCADE")]
+    #[Assert\NotNull(message: "Veuillez sélectionner un type.")]
+    private ?TypeRec $type = null;
 
-    #[ORM\Column(nullable: true)]
-    /**
-     * @Assert\NotBlank(message="La priorité ne peut pas être vide.")
-     * @Assert\Type("integer", message="La priorité doit être un entier.")
-     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Assert\Type(type: "integer", message: "La priorité doit être un entier.")]
     private ?int $priorite = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    /**
-     * @Assert\Image(
-     *     maxSize="5M",
-     *     mimeTypes={"image/jpeg", "image/png", "image/gif"},
-     *     mimeTypesMessage="Veuillez télécharger une image valide (jpeg, png, gif)."
-     * )
-     */
     private ?string $image = null;
 
-    /**
-     * @var Collection<int, Reponses>
-     */
-    #[ORM\OneToMany(targetEntity: Reponses::class, mappedBy: 'id_reclamation', orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'id_reclamation', targetEntity: Reponses::class, orphanRemoval: true)]
     private Collection $reponses;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "id_user", referencedColumnName: "id", nullable: false, onDelete: "CASCADE")]
+    #[Assert\NotNull(message: "Veuillez associer un utilisateur.")]
+    private ?User $id_user = null;
 
     public function __construct()
     {
@@ -104,25 +75,6 @@ class Reclamation
         return $this->id;
     }
 
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getIdUser(): ?User
-    {
-        return $this->id_user;
-    }
-
-    public function setIdUser(?User $id_user): static
-    {
-        $this->id_user = $id_user;
-
-        return $this;
-    }
-
     public function getNomUser(): ?string
     {
         return $this->nom_user;
@@ -131,7 +83,6 @@ class Reclamation
     public function setNomUser(string $nom_user): static
     {
         $this->nom_user = $nom_user;
-
         return $this;
     }
 
@@ -143,7 +94,6 @@ class Reclamation
     public function setMailUser(string $mail_user): static
     {
         $this->mail_user = $mail_user;
-
         return $this;
     }
 
@@ -155,7 +105,6 @@ class Reclamation
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -167,7 +116,6 @@ class Reclamation
     public function setContent(string $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -179,7 +127,6 @@ class Reclamation
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -191,19 +138,17 @@ class Reclamation
     public function setDate(?\DateTimeInterface $date): static
     {
         $this->date = $date;
-
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): ?TypeRec
     {
         return $this->type;
     }
 
-    public function setType(?string $type): static
+    public function setType(?TypeRec $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -215,7 +160,6 @@ class Reclamation
     public function setPriorite(?int $priorite): static
     {
         $this->priorite = $priorite;
-
         return $this;
     }
 
@@ -227,37 +171,22 @@ class Reclamation
     public function setImage(?string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Reponses>
-     */
     public function getReponses(): Collection
     {
         return $this->reponses;
     }
 
-    /* public function addReponse(Reponses $reponse): static
+    public function getIdUser(): ?User
     {
-        if (!$this->reponses->contains($reponse)) {
-            $this->reponses->add($reponse);
-            $reponse->setIdReclamation($this);
-        }
-
-        return $this;
+        return $this->id_user;
     }
 
-    public function removeReponse(Reponses $reponse): static
+    public function setIdUser(?User $id_user): static
     {
-        if ($this->reponses->removeElement($reponse)) {
-            // set the owning side to null (unless already changed)
-            if ($reponse->getIdReclamation() === $this) {
-                $reponse->setIdReclamation(null);
-            }
-        }
-
+        $this->id_user = $id_user;
         return $this;
-    }*/
+    }
 }

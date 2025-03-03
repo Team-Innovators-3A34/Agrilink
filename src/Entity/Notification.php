@@ -24,12 +24,14 @@ class Notification
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'notifications')]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?User $userNotif = null;
 
     #[ORM\Column(length: 255)]
     private ?string $typeNotification = null;
 
     #[ORM\ManyToOne(inversedBy: 'toNotifications')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
     private ?User $toUserNotif = null;
 
     public function getId(): ?int

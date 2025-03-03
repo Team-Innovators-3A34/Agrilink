@@ -57,14 +57,14 @@
               <td>
                 <div
                   class="badge {{
-                    user.Status == 'approved'
+                    user.accountVerification == 'approved'
                       ? 'badge-success'
-                      : user.Status == 'pending'
+                      : user.accountVerification == 'pending'
                       ? 'badge-warning'
                       : 'badge-danger'
                   }}"
                 >
-                  {{ user.Status }}
+                  {{ user.accountVerification }}
                 </div>
               </td>
               <td>
@@ -78,17 +78,6 @@
                     href="{{ path('app_detail_users', { id: user.id }) }}"
                     ><i class="ri-eye-line mr-0"></i
                   ></a>
-                  {% if user.Status == "pending" %}
-                  <a
-                    class="badge bg-primary mr-2"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title=""
-                    data-original-title="Accept"
-                    href="{{ path('app_accept_users', { id: user.id }) }}"
-                    ><i class="ri-check-line mr-0"></i
-                  ></a>
-                  {% endif %}
                   <a
                     class="badge bg-success mr-2"
                     data-toggle="tooltip"

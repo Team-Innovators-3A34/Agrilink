@@ -55,8 +55,8 @@ class Event
     #[Assert\Regex(pattern: "/^-?\d+\.\d+$/", message: "Format de latitude invalide.")]
     private ?string $latitude = null;
 
-    #[ORM\ManyToOne(inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(inversedBy: 'events', cascade: ['remove'])]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull(message: "La catégorie est obligatoire.")]
     private ?Categorie $categorie = null;
 
@@ -64,7 +64,14 @@ class Event
      * @var Collection<int, User>
      */
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private Collection $participants;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lien_meet = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $type = null;
 
     public function __construct()
     {
@@ -204,6 +211,30 @@ class Event
     public function removeParticipant(User $participant): static
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    public function getLienMeet(): ?string
+    {
+        return $this->lien_meet;
+    }
+
+    public function setLienMeet(?string $lien_meet): static
+    {
+        $this->lien_meet = $lien_meet;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

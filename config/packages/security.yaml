@@ -17,18 +17,20 @@ security:
 
   firewalls:
     dev:
-      pattern: ^/(_(profiler|wdt)|css|images|js)/ # Disable security for assets
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
     main:
       lazy: true
       provider: app_user_provider
-      custom_authenticator: App\Security\AppAuthenticator
+      custom_authenticator: App\Controller\GestionUser\AppAuthenticator
       logout:
         path: app_logout
       remember_me:
         secret: "%kernel.secret%"
-        lifetime: 86400 # Duration in seconds (1 day)
+        lifetime: 86400
         always_remember_me: false
 
-  
+  access_control: # <-- Correct indentation ici !
+    - { path: ^/api/users, roles: PUBLIC_ACCESS }
+    - { path: ^/matched-users, roles: PUBLIC_ACCESS }

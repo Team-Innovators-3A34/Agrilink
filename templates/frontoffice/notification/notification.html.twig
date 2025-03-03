@@ -1,0 +1,87 @@
+{% extends "frontoffice/base.html.twig" %} {% block title %}Notification{%
+endblock %} {% block content %}
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left pe-0">
+      <div class="row">
+        <div class="col-xl-12">
+          <div
+            class="chat-wrapper p-3 w-100 position-relative scroll-bar bg-white theme-dark-bg"
+          >
+            <h2
+              class="fw-700 mb-4 mt-2 font-md text-grey-900 d-flex align-items-center"
+            >
+              Notification {% if app.user.getUnreadToNotifications() | length >
+              0 %}
+              <span
+                class="circle-count bg-warning text-white font-xsssss rounded-3 ms-2 ls-3 fw-600 p-2 mt-0"
+                >{{ app.user.getUnreadToNotifications() | length }}</span
+              >
+              {% endif %}
+              <a href="#" class="ms-auto btn-round-sm bg-greylight rounded-3"
+                ><i class="feather-hard-drive font-xss text-grey-500"></i
+              ></a>
+              <a href="#" class="ms-2 btn-round-sm bg-greylight rounded-3"
+                ><i class="feather-alert-circle font-xss text-grey-500"></i
+              ></a>
+              <a href="#" class="ms-2 btn-round-sm bg-greylight rounded-3"
+                ><i class="feather-trash-2 font-xss text-grey-500"></i
+              ></a>
+            </h2>
+
+            <ul class="notification-box">
+              {% if app.user.getToNotifications() is not empty %} {% for
+              notification in app.user.getToNotifications() %}
+              <li>
+                <a
+                  href="{{
+                    path('app_read_notification', { id: notification.id })
+                  }} "
+                  class="d-flex align-items-center p-3 rounded-3 {% if notification.isRead() == false %} bg-lightblue {% endif %} theme-light-bg"
+                >
+                  <img
+                    src="{{ asset('uploads/images/' ~ notification.getUserNotif.image) }}"
+                    alt="user"
+                    style="max-height: 55px"
+                    class="w45 me-3"
+                  />
+                  <i
+                    class="feather-heart text-white bg-red-gradiant me-2 font-xssss notification-react"
+                  ></i>
+                  <h6
+                    class="font-xssss text-grey-900 text-grey-900 mb-0 mt-0 fw-500 lh-20"
+                  >
+                    {{ notification.message }} de
+                    <strong>
+                      {{ notification.getUserNotif.nom }}{{ notification.getUserNotif.prenom }}
+                    </strong>
+                    <span
+                      class="d-block text-grey-500 font-xssss fw-600 mb-0 mt-0 0l-auto"
+                    >
+                      {{ notification.getCreatedAt() | date('F j, Y, g:i a') }}</span
+                    >
+                  </h6>
+                </a>
+              </li>
+              {% endfor %} {% else %}
+              <li>
+                <a
+                  href="#"
+                  class="d-flex align-items-center p-3 rounded-3 bg-lightblue theme-light-bg"
+                >
+                  <h6
+                    class="font-xssss text-grey-900 text-grey-900 mb-0 mt-0 fw-500 lh-20"
+                  >
+                    <strong>Vous n'avez pas de notification</strong>
+                  </h6>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

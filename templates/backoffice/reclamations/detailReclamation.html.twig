@@ -1,0 +1,118 @@
+{% extends "backOffice/base.html.twig" %} {% block title %}Détail Réclamation{%
+endblock %} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div
+        class="d-flex flex-wrap align-items-center justify-content-between mb-4"
+      >
+        <div>
+          <h4 class="mb-3">Détails de la Réclamation</h4>
+          <p class="mb-0">
+            Les détails des réclamations permettent de gérer efficacement les
+            retours des utilisateurs en fournissant des informations claires et
+            structurées.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="card shadow p-4">
+          <h3 class="mb-4">Informations sur la Réclamation</h3>
+          {% if reclamation is defined %}
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <th>Nom Utilisateur :</th>
+                <td>{{ reclamation.nomUser }}</td>
+              </tr>
+              <tr>
+                <th>Email :</th>
+                <td>{{ reclamation.mailUser }}</td>
+              </tr>
+              <tr>
+                <th>Titre :</th>
+                <td>{{ reclamation.title }}</td>
+              </tr>
+              <tr>
+                <th>Contenu :</th>
+                <td>{{ reclamation.content }}</td>
+              </tr>
+              <tr>
+                <th>Statut :</th>
+                <td>
+                  <span
+                    class="badge {% if reclamation.status == 'En cours' %}badge-warning{% elseif reclamation.status == 'Terminé' %}badge-success{% else %}badge-danger{% endif %}"
+                  >
+                    {{ reclamation.status }}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <th>Date :</th>
+                <td>
+                  {{ reclamation.date ? reclamation.date|date('d/m/Y H:i') : 'Non spécifiée' }}
+                </td>
+              </tr>
+              <tr>
+                <th>Type :</th>
+                <td>{{ reclamation.type.nom ?? "Non spécifié" }}</td>
+              </tr>
+              <tr>
+                <th>Priorité :</th>
+                <td>{{ reclamation.priorite ?? "Non spécifiée" }}</td>
+              </tr>
+              <tr>
+                <th>Image :</th>
+                <td>
+                  {% if reclamation.image %}
+                  <img
+                    src="{{ asset('uploads/images/' ~ reclamation.image) }}"
+                    alt="Image Réclamation"
+                    class="img-fluid"
+                    width="100"
+                  />
+                  {% else %} Aucune image {% endif %}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Affichage des réponses -->
+          <h3 class="mt-4">Réponses Associées</h3>
+          {% if reclamation.reponses is not empty %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Contenu</th>
+                <th>Solution</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Automatique</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for reponse in reclamation.reponses %}
+              <tr>
+                <td>{{ reponse.content }}</td>
+                <td>{{ reponse.solution }}</td>
+                <td>{{ reponse.status }}</td>
+                <td>
+                  {{ reponse.date ? reponse.date|date('d/m/Y H:i') : 'Non spécifiée' }}
+                </td>
+                <td>{{ reponse.isAuto ? "Oui" : "Non" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>Aucune réponse pour cette réclamation.</p>
+          {% endif %} {% else %}
+          <p class="text-danger">Réclamation introuvable.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

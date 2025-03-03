@@ -8,3 +8,4 @@ knpu_oauth2_client:
       client_secret: "%env(resolve:GOOGLE_CLIENT_SECRET)%"
       redirect_route: connect_google_check
       redirect_params: {}
+  

@@ -1,0 +1,79 @@
+{% extends "frontOffice/base.html.twig" %} {% block title %}Mes Ressources{%
+endblock %} {% block content %}
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left pe-0">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3">
+            <div class="card-body d-flex align-items-center p-0">
+              <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
+                Mes Ressources
+              </h2>
+              <div class="search-form-2 ms-auto">
+                <i class="ti-search font-xss"></i>
+                <input
+                  type="text"
+                  class="form-control text-grey-500 mb-0 bg-greylight theme-dark-bg border-0"
+                  placeholder="Search here."
+                />
+              </div>
+              <a
+                href="{{ path('app_add_ressource') }}"
+                class="btn-round-md ms-2 rounded-3"
+                style="background-color: #10d879"
+                ><i class="feather-plus-circle font-xss text-white"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="row ps-2 pe-2">
+            {% for ressource in ressources %}
+
+            <div class="col-md-3 col-sm-4 pe-2 ps-2">
+              <div
+                class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3"
+              >
+                <div class="card-body d-block w-100 ps-3 pe-3 pb-4 text-center">
+                  <figure
+                    class="avatar ms-auto me-auto mb-0 position-relative w65 z-index-1"
+                  >
+                    <img
+                      src="{{ asset('uploads/images/' ~ ressource.image) }}"
+                      alt="image"
+                      class="float-right p-0 bg-white rounded-circle w-100 shadow-xss"
+                      style="width: 100px; height: 70px; object-fit: cover"
+                    />
+                  </figure>
+                  <div class="clearfix"></div>
+                  <h4 class="fw-700 font-xs mt-3 mb-1">
+                    {{ ressource.getNameR }}
+                  </h4>
+                  <p class="fw-500 font-xssss text-grey-500 mt-0 mb-3">
+                    {{ ressource.type }}
+                  </p>
+                  <a
+                    href="{{ path('app_resource_edit', { id: ressource.id }) }}"
+                    class="mt-0 btn pt-1 pb-1 ps-2 pe-2 d-inline-block rounded-xl font-xsssss  text-white"
+                    style="background-color: #0055ff"
+                    ><i class="feather-edit-2 font-xs"></i
+                  ></a>
+                  <a
+                    href="{{
+                      path('app_resource_delete', { id: ressource.id })
+                    }}"
+                    class="mt-0 btn pt-1 pb-1 ps-2 pe-2 d-inline-block rounded-xl font-xsssss  text-white"
+                    style="background-color: #fe9431"
+                    ><i class="feather-trash-2 font-xs"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

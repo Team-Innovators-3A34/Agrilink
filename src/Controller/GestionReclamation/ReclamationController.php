@@ -17,7 +17,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Service\NotificationService;
 
-
 use Knp\Snappy\Pdf;
 
 
@@ -119,7 +118,7 @@ final class ReclamationController extends AbstractController
 
     //////////////////////////////////   AJOUTER   ////////////////////////////////////////////////////////////
 
-    #[Route('/settings/newClaim', name: 'app_reclamation_new', methods: ['GET', 'POST'])]
+    #[Route('/settings/Claim', name: 'app_reclamation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, ValidatorInterface $validator): Response
     {
         $reclamation = new Reclamation();
@@ -145,7 +144,8 @@ final class ReclamationController extends AbstractController
             if (count($errors) > 0) {
                 return $this->render('frontOffice/settings/claim/newClaim.html.twig', [
                     'form' => $form->createView(),
-                    'errors' => $errors,  // Passer les erreurs à la vue
+                    'errors' => $errors,
+                    "action" => "Ajouter"  // Passer les erreurs à la vue
                 ]);
             }
 
@@ -179,70 +179,88 @@ final class ReclamationController extends AbstractController
                 $this->notificationService->claimNotification($user);
 
 
-                $this->addFlash("success", "Your claim has been successfully recorded.");
 
-                return $this->redirectToRoute('app_reclamation_new'); // Rediriger après la création
+                return $this->redirectToRoute('app_profilee', ['id' => $this->getUser()->getId()]);
             }
         }
 
         return $this->render('frontOffice/settings/claim/newClaim.html.twig', [
             'form' => $form->createView(),
             'errors' => $errors,  // Passer les erreurs à la vue, même si elles sont vides
+            "action" => 'Ajouter'
         ]);
     }
 
 
     //////////////////////////////////   UPDATE   ////////////////////////////////////////////////////////////
 
-    #[Route('/reclamation/{id}/edit', name: 'app_reclamation_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Reclamation $reclamation): Response
+    #[Route('/settings/Claim/{id}', name: 'app_reclamation_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager): Response
     {
-        // Créer le formulaire
-        $form = $this->createForm(ReclamationType::class, $reclamation);
+        $form = $this->createForm(ReclamationType::class, $reclamation, [
+            'attr' => ['novalidate' => 'novalidate']
+        ]);
+
         $form->handleRequest($request);
 
+        // Récupération de l'image actuelle avant modification
+        $oldImage = $reclamation->getImage();
+
         if ($form->isSubmitted() && $form->isValid()) {
-            // Gestion de l'image
-            $imageFile = $form->get('image')->getData();
+            $file = $form->get('image')->getData();
 
-            if ($imageFile) {
-                // Récupérer le nom du fichier original
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-
-                // Remplacer les caractères non-alphanumériques par des underscores
-                $safeFilename = preg_replace('/[^a-zA-Z0-9-_]/', '_', $originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+            if ($file) {
+                $filename = md5(uniqid()) . '.' . $file->guessExtension();
 
                 try {
-                    $imageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
+                    $file->move(
+                        $this->getParameter('images_directory'),  // Répertoire défini dans parameters.yml
+                        $filename
                     );
-                } catch (FileException $e) {
-                    // Gérer l'exception si nécessaire
-                }
 
-                // Enregistrer la nouvelle image dans l'entité
-                $reclamation->setImage($newFilename);
+                    // Supprimer l'ancienne image si elle existe
+                    if ($oldImage) {
+                        $oldImagePath = $this->getParameter('images_directory') . '/' . $oldImage;
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
+                    }
+
+                    // Mettre à jour l'image avec le nouveau fichier
+                    $reclamation->setImage($filename);
+                } catch (\Exception $e) {
+                    // Gérer l'exception en cas d'erreur
+                }
+            } else {
+                // Conserver l'ancienne image si aucune nouvelle n'est téléversée
+                $reclamation->setImage($oldImage);
             }
 
-            // Sauvegarder les changements dans la base de données
-            $this->entityManager->flush();
+            // Sauvegarde en base de données
+            $entityManager->flush();
 
-            return $this->redirectToRoute('app_reclamation_list'); // Rediriger après la modification
+
+            return $this->redirectToRoute('app_profilee', ['id' => $this->getUser()->getId()]);
         }
 
-        return $this->render('reclamation/edit.html.twig', [
+        return $this->render('frontOffice/settings/claim/newClaim.html.twig', [
             'form' => $form->createView(),
             'reclamation' => $reclamation,
+            'action' => 'Modifier'
         ]);
     }
+
+
+
+
+
+
 
 
     //////////////////////////////////   DELETE   ////////////////////////////////////////////////////////////
 
     #[Route('/reclamation/{id}', name: 'app_reclamation_delete', methods: ['POST', 'GET'])]
-    public function delete( Reclamation $reclamation): Response
+    public function delete(Reclamation $reclamation): Response
     {
         $this->entityManager->remove($reclamation);
         $this->entityManager->flush();
@@ -257,12 +275,12 @@ final class ReclamationController extends AbstractController
     #[Route('/reclamationback/{id}', name: 'app_reclamation_deleteback', methods: ['POST', 'GET'])]
     public function deleteback(Request $request, Reclamation $reclamation): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $reclamation->getId(), $request->request->get('_token'))) {
-            $this->entityManager->remove($reclamation);
-            $this->entityManager->flush();
-        }
 
-        return $this->redirectToRoute('app_reclamationback_list');
+        $this->entityManager->remove($reclamation);
+        $this->entityManager->flush();
+
+
+        return $this->redirect($request->headers->get('referer'));
     }
 
     //////////////////////////////////   SHOW RECLAMATION   ////////////////////////////////////////////////////////////
@@ -276,7 +294,7 @@ final class ReclamationController extends AbstractController
             return $this->redirectToRoute('app_reclamation_list');  // Redirect if reclamation not found
         }
 
-        return $this->render('reclamation/showreclamation.html.twig', [
+        return $this->render('frontoffice/settings/claim/detailClaim.html.twig', [
             'reclamation' => $reclamation,
         ]);
     }
@@ -285,7 +303,7 @@ final class ReclamationController extends AbstractController
     //////////////////////////////////   SHOW RECLAMATION BACK  ////////////////////////////////////////////////////////////
 
     // Route de détails pour le back-end
-    #[Route('/reclamationDetailsback/{id}', name: 'reclamationDetailsback', methods: ['GET'])]
+    #[Route('/dashboard/reclamationDetailsback/{id}', name: 'reclamationDetailsback', methods: ['GET'])]
     public function reclamationDetailsback($id): Response
     {
         $reclamation = $this->reclamationRepository->find($id);
@@ -294,7 +312,7 @@ final class ReclamationController extends AbstractController
             return $this->redirectToRoute('app_reclamationback_list');  // Redirect if reclamation not found
         }
 
-        return $this->render('reclamation/showb.html.twig', [  // Assurez-vous que la vue est la bonne
+        return $this->render('backOffice/reclamations/detailReclamation.html.twig', [  // Assurez-vous que la vue est la bonne
             'reclamation' => $reclamation,
         ]);
     }
@@ -309,14 +327,12 @@ final class ReclamationController extends AbstractController
         $reclamation = $em->getRepository(Reclamation::class)->find($id);
 
         if (!$reclamation) {
-            $this->addFlash('error', 'Réclamation introuvable.');
-            return $this->redirectToRoute('app_reclamationback_list');
+            return $this->redirectToRoute('app_reclamation_list_dashboard');
         }
 
         // Vérification du token CSRF pour la sécurité
         if (!$this->isCsrfTokenValid('update_status' . $reclamation->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Action non autorisée.');
-            return $this->redirectToRoute('app_reclamationback_list');
+            return $this->redirectToRoute('app_reclamation_list_dashboard');
         }
 
         // Mettre à jour le statut
@@ -324,9 +340,8 @@ final class ReclamationController extends AbstractController
         $em->persist($reclamation);
         $em->flush();
 
-        $this->addFlash('success', 'Le statut de la réclamation a été mis à jour avec succès.');
 
-        return $this->redirectToRoute('reclamationDetailsback', ['id' => $id]);
+        return $this->redirectToRoute('app_reclamation_list_dashboard');
     }
 
 
@@ -336,7 +351,7 @@ final class ReclamationController extends AbstractController
 
 
 
-    ///////////////////////////////////////// AJOUTER UN LIVRE POUR L'AUTEUR ///////////////////////////////////////////////
+    ///////////////////////////////////////// AJOUTER UN reponse POUR reclamation ///////////////////////////////////////////////
 
 
 
@@ -386,7 +401,7 @@ final class ReclamationController extends AbstractController
 
     /////////////////////////////////////////  AFFICHAGE DES REPONSES DE RECLAMATION BACK  ///////////////////////////////////
 
-    #[Route('/reclamation/{id}/reponses', name: 'reclamation_reponses')]
+    #[Route('/dashboard/reclamation/{id}/reponses', name: 'reclamation_reponses')]
     public function reclamationReponses(int $id): Response
     {
         // Récupérer la réclamation via son ID
@@ -394,7 +409,6 @@ final class ReclamationController extends AbstractController
 
         // Vérifier si la réclamation existe
         if (!$reclamation) {
-            $this->addFlash('error', 'Réclamation non trouvée.');
             return $this->redirectToRoute('app_reclamationback_list');
         }
 
@@ -402,7 +416,7 @@ final class ReclamationController extends AbstractController
         $reponses = $reclamation->getReponses();
 
         // Passer la réclamation et ses réponses à la vue
-        return $this->render('reclamation/reponses.html.twig', [
+        return $this->render('backOffice/reclamations/listReponse.html.twig', [
             'reclamation' => $reclamation,
             'reponses' => $reponses,
         ]);
@@ -422,7 +436,6 @@ final class ReclamationController extends AbstractController
 
         // Vérifier si la réclamation existe
         if (!$reclamation) {
-            $this->addFlash('error', 'Réclamation non trouvée.');
             return $this->redirectToRoute('app_reclamation_list');
         }
 
