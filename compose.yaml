@@ -24,7 +24,9 @@ services:
       MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
       # Allow all origins for CORS; use "*" for development only
       MERCURE_EXTRA_DIRECTIVES: |
-        cors_origins http://127.0.0.1:8000
+        cors_origins *
+      ALLOW_ANONYMOUS: 1
+      MERCURE_HTTP_ADDR: ":80" 
     # Enable development mode with the dev Caddyfile configuration
     command: /usr/bin/caddy run --config /etc/caddy/dev.Caddyfile
     healthcheck:
@@ -33,7 +35,7 @@ services:
       retries: 5
       start_period: 60s
     ports:
-      - "80" # Expose Mercure on port 3000
+      - "3000:80" # Expose Mercure on port 3000
     volumes:
       - mercure_data:/data
       - mercure_config:/config

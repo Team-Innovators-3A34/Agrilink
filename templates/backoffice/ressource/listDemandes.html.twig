@@ -1,0 +1,99 @@
+{% extends 'backoffice/base.html.twig' %} {% block title %}List Demande{%
+endblock %} {% block content %}
+<div class="col-lg-12">
+  <div class="table-responsive rounded mb-3">
+    <form method="GET" action="{{ path('app_demandeback') }}" class="mb-3 d-flex align-items-center">
+      <label for="idR" class="mr-2">Filtrer par IDR :</label>
+      <input
+        type="text"
+        name="idR"
+        id="idR"
+        value="{{ app.request.query.get('idR') }}"
+        class="form-control mr-2"
+        style="width: 200px;"
+      />
+      <button type="submit" class="btn btn-primary">Filtrer</button>
+    </form>
+    <table class="data-table table mb-0 tbl-server-info">
+      <thead class="bg-white text-uppercase">
+        <tr class="ligth ligth-data">
+          <th>
+            <div class="checkbox d-inline-block">
+              <input type="checkbox" class="checkbox-input" id="checkbox1" />
+              <label for="checkbox1" class="mb-0"></label>
+            </div>
+          </th>
+          <th>Nom propriétaire</th>
+          <th>Nom du demandeur</th>
+          <th>Détails</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody class="ligth-body">
+        {% for demande in demandes %}
+        <tr
+          class="{% if demande.status == 'Approuvé' %}bg-success text-white{% elseif demande.status == 'Rejeté' %}bg-danger text-white{% elseif demande.status == 'En cours' %}bg-warning text-dark{% elseif demande.status == 'Terminé' %}bg-primary text-white{% else %}bg-secondary{% endif %}"
+        >
+          <td>
+            <div class="checkbox d-inline-block">
+              <input type="checkbox" class="checkbox-input" id="checkbox2" />
+              <label for="checkbox2" class="mb-0"></label>
+            </div>
+          </td>
+          <td>{{ demande.nomowner }}</td>
+          <td>{{ demande.nomdemandeur }}</td>
+          <td>
+            <p>
+              <strong>Date de création :</strong>
+              {{ demande.createdAt|date('d/m/Y H:i') }}
+            </p>
+            <p>
+              <strong>Date d'expiration :</strong>
+              {{ demande.expireDate|date('d/m/Y H:i') }}
+            </p>
+            <p><strong>Message :</strong> {{ demande.message }}</p>
+            <p><strong>Priorité :</strong> {{ demande.priorite }}</p>
+          </td>
+          <td
+            class="{% if demande.status == 'Approuvé' %}text-success {% elseif demande.status == 'Rejeté' %}text-danger {% elseif demande.status == 'En cours' %}text-warning {% elseif demande.status == 'Terminé' %}text-primary {% else %}text-secondary{% endif %}"
+          >
+            <span
+              class="badge {% if demande.status == 'Approuvé' %}bg-success{% elseif demande.status == 'Rejeté' %}bg-danger{% elseif demande.status == 'En cours' %}bg-warning{% elseif demande.status == 'Terminé' %}bg-primary{% else %}bg-secondary{% endif %}"
+            >
+              {{ demande.status }}
+            </span>
+          </td>
+
+          <td>
+            <div class="d-flex align-items-center list-action">
+              <form
+                method="POST"
+                action="{{
+                  path('app_demandesdelete', { id: demande.getdemandeId })
+                }}"
+                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?');"
+              >
+                <button
+                  type="submit"
+                  class="badge bg-warning border-0"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Delete"
+                >
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="text-center">Aucune demande trouvée.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

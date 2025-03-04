@@ -4,13 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Elomoas - Online Course and LMS HTML Template</title>
+    <title>AgriLink</title>
 
     <link rel="stylesheet" href="css/themify-icons.css" />
     <link rel="stylesheet" href="css/feather.css" />
     <link rel="icon" href="{{ asset('images/favicon.png') }}" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-
   </head>
 
   <body class="color-theme-blue">
@@ -58,7 +57,6 @@
                     autocomplete="email"
                     class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600"
                     placeholder="Your Email Address"
-                    required
                   />
                 </div>
                 <input
@@ -73,10 +71,41 @@
                     name="password"
                     id="inputPassword"
                     autocomplete="current-password"
-                    required
                     class="style2-input ps-5 form-control text-grey-900 font-xss ls-3"
                     placeholder="Password"
                   />
+                  <i
+                    class="font-sm ti-eye text-grey-500 pe-0"
+                    style="margin-left: 290px; cursor: pointer"
+                  ></i>
+
+                  <i
+                    class="font-sm ti-eye text-grey-500 pe-0"
+                    style="margin-left: 290px; cursor: pointer; display: none"
+                    onclick="togglePasswordVisibility()"
+                  ></i>
+                  <i
+                    class="font-sm ti-eye text-grey-500 pe-0"
+                    style="margin-left: 290px; cursor: pointer"
+                    onclick="togglePasswordVisibility()"
+                  ></i>
+                  <script>
+                    function togglePasswordVisibility() {
+                      var passwordInput =
+                        document.getElementById("inputPassword");
+                      var lockIcon = document.querySelector(".ti-eye");
+                      var eyeIcon = document.querySelector(".ti-eye");
+                      if (passwordInput.type === "password") {
+                        passwordInput.type = "text";
+                        lockIcon.style.display = "none";
+                        eyeIcon.style.display = "block";
+                      } else {
+                        passwordInput.type = "password";
+                        lockIcon.style.display = "block";
+                        eyeIcon.style.display = "none";
+                      }
+                    }
+                  </script>
                 </div>
                 <div class="form-check text-left mb-3">
                   <input

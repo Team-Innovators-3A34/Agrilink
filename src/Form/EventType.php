@@ -11,9 +11,10 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;  
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -42,7 +43,7 @@ class EventType extends AbstractType
                 ],
                 'empty_data' => (new \DateTime())->format('Y-m-d'), // Prevents empty submission
             ])
-            
+
             ->add('adresse', TextType::class, [
                 'label' => 'Adresse',
                 'required' => true,
@@ -68,7 +69,7 @@ class EventType extends AbstractType
                     'class' => 'form-control image-file',
                 ],
                 'constraints' => [
-                        
+
                     new Assert\File([
                         'maxSize' => '2M',
                         'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'],
@@ -108,6 +109,18 @@ class EventType extends AbstractType
                 'required' => true,
                 'placeholder' => 'Sélectionnez une catégorie',
 
+            ])
+            ->add('type', ChoiceType::class, [
+                'mapped' => false,
+                'label' => 'Type d\'événement',
+                'required' => true,
+                'choices' => [
+                    'En ligne' => 'en_ligne',
+                    'Présentiel' => 'presentiel',
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                ]
             ]);
 
 
@@ -138,7 +151,6 @@ class EventType extends AbstractType
                 ]);
             }
         });
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

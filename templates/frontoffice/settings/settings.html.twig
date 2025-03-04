@@ -1,4 +1,5 @@
-{% extends "frontoffice/base.html.twig" %} {% block content %}
+{% extends "frontoffice/base.html.twig" %} {% block title %}Settings{% endblock
+%} {% block content %}
 <div class="main-content bg-lightblue theme-dark-bg right-chat-active">
   <div class="middle-sidebar-bottom">
     <div class="middle-sidebar-left">
@@ -31,14 +32,15 @@
                       ></i
                     ></a>
                   </li>
+
                   <li class="list-inline-item d-block border-bottom me-0">
                     <a
-                      href="contact-information.html"
+                      href="{{ path('app_address') }}"
                       class="pt-2 pb-2 d-flex align-items-center"
                       ><i
-                        class="btn-round-md bg-gold-gradiant text-white feather-bookmark font-md me-3"
+                        class="btn-round-md bg-gold-gradiant text-white feather-map-pin font-md me-3"
                       ></i>
-                      <h4 class="fw-600 font-xsss mb-0 mt-0">Saved Posts</h4>
+                      <h4 class="fw-600 font-xsss mb-0 mt-0">Saved Address</h4>
                       <i
                         class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"
                       ></i
@@ -65,36 +67,34 @@
                 <ul class="list-inline mb-4">
                   <li class="list-inline-item d-block border-bottom me-0">
                     <a
-                      href="payment.html"
+                      href="contact-information.html"
                       class="pt-2 pb-2 d-flex align-items-center"
-                    >
-                      <i
-                        class="btn-round-md bg-mini-gradiant text-white feather-folder font-md me-3"
+                      ><i
+                        class="btn-round-md bg-gold-gradiant text-white feather-bookmark font-md me-3"
                       ></i>
-                      <h4 class="fw-600 font-xsss mb-0 mt-0">My Resources</h4>
+                      <h4 class="fw-600 font-xsss mb-0 mt-0">Saved Posts</h4>
                       <i
                         class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"
-                      ></i>
-                    </a>
+                      ></i
+                    ></a>
                   </li>
-                  {% if user.roles[0] == 'ROLE_RECYCLING_INVESTOR' %}
+
                   <li class="list-inline-item d-block border-bottom me-0">
                     <a
-                      href="payment.html"
+                      href="{{ path('app_display_prod') }}"
                       class="pt-2 pb-2 d-flex align-items-center"
-                    >
-                      <i
-                        class="btn-round-md bg-mini-gradiant text-white feather-refresh-ccw font-md me-3"
+                      ><i
+                        class="btn-round-md bg-red-gradiant text-white feather-map-pin font-md me-3"
                       ></i>
                       <h4 class="fw-600 font-xsss mb-0 mt-0">
-                        My Recycling Points
+                        Mes Produits Recycles
                       </h4>
                       <i
-                        class="ti-angle-right font-xsss text-grey-500 ms-auto mt-3"
-                      ></i>
-                    </a>
+                        class="ti-reload font-xsss text-grey-500 ms-auto mt-3"
+                      ></i
+                    ></a>
                   </li>
-                  {% endif %}
+
                   <li class="list-inline-item d-block me-0">
                     <a
                       href="{{ path('app_change_password') }}"
@@ -117,7 +117,7 @@
                 <ul class="list-inline">
                   <li class="list-inline-item d-block border-bottom me-0">
                     <a
-                      href="default-notification.html"
+                      href="{{path("app_notification")}}"
                       class="pt-2 pb-2 d-flex align-items-center"
                       ><i
                         class="btn-round-md bg-gold-gradiant text-white feather-bell font-md me-3"

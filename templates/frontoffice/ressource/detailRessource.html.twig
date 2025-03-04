@@ -1,0 +1,86 @@
+{% extends "frontoffice/base.html.twig" %} {% block title %}Settings{% endblock
+%} {% block content %}
+<div class="main-content bg-lightblue theme-dark-bg right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      <div class="middle-wrap">
+        <div class="card w-100 border-0 bg-white shadow-xs p-0 mb-4">
+          <div class="card-body p-lg-5 p-4 w-100 border-0">
+            <div class="row">
+              <div class="resource-details">
+                <h1 class="resource-title">Resource Details</h1>
+                <div class="resource-content">
+                  <p>Here you can see the details of the resource.</p>
+                  <li>
+                    <div style="text-align: center">
+                      <img
+                        src="{{ asset('uploads/images/' ~ ressource.image) }}"
+                        alt="Resource Image"
+                        style="
+                          max-width: 100%;
+                          height: 500px;
+                          border: 1px solid #ddd;
+                          border-radius: 5px;
+                          padding: 5px;
+                          margin-bottom: 10px;
+                        "
+                      />
+                    </div>
+                  </li>
+                  <ul class="resource-info">
+                    <li><strong>Name:</strong> {{ ressource.getNameR }}</li>
+                    <li><strong>Type:</strong> {{ ressource.type }}</li>
+                    <li>
+                      <strong>Description:</strong> {{ ressource.description }}
+                    </li>
+                    <li><strong>Status:</strong> {{ ressource.status }}</li>
+                    <li>
+                      <strong>Owner:</strong> {{ ressource.getUserId().nom }}
+                      {{ ressource.getUserId().prenom }}
+                    </li>
+                    {% if ressource.status == "Disponible" and ressource.getUserId() != app.user %}
+                    <a href="{{
+                        path("demande_create", { id: ressource.id })
+                      }}" class="mt-0 btn pt-1 pb-1 ps-2 pe-2
+                      d-inline-block rounded-xl font-xssss text-white"
+                      style="background-color: #10d879" > Demander  </a>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .resource-details {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  .resource-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .resource-content {
+    font-size: 16px;
+  }
+  .resource-info {
+    list-style-type: none;
+    padding: 0;
+  }
+  .resource-info li {
+    margin-bottom: 5px;
+  }
+  .resource-info strong {
+    color: #333;
+  }
+</style>
+{% endblock %}

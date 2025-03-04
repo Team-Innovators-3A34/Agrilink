@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\EventRepository;
 use App\Entity\Event;
+use App\Service\MailerService;
 use App\Form\EventType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,10 +21,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class EventController extends AbstractController
 {
     private EntityManagerInterface $em;
+    private $mailer;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, MailerService $mailer)
     {
         $this->em = $em;
+        $this->mailer = $mailer;
     }
 
     #[Route('/event', name: 'app_event')]
@@ -72,9 +75,55 @@ final class EventController extends AbstractController
                     }
                 }
 
+                $type_event = $form->get('type')->getData();
+
+                $event->setType($type_event);
+
+                if ($type_event == "en_ligne") {
+
+                    $accessToken = "ya29.a0AeXRPp5YmsKbn9-NnIXMwXcJFV2_7ppMZeFRX9svG4GPXNYBzRUEqVchBQQ9g5wcK_3v49TihQKULloTQ7P4enC5e5kCRIwprbaQ5wJx6Pu6GmS9pjf_npG2Q1Jz8vE8n7h8KIDffE6VvkQmYzpgR7HY2zfFLaNsLfu0xPGhngaCgYKAfISARMSFQHGX2MiK_4R1S3eaNAlJM4ZeEL5XQ0177"; // Mets ton access token valide ici
+
+                    $url = "https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1"; // Ajout du paramètre pour activer Meet
+
+                    $data = [
+                        "summary" => "Réunion Google Meet",
+                        "description" => "Réunion générée via API",
+                        "start" => [
+                            "dateTime" => $event->getDate()->format("Y-m-d\TH:i:s"),
+                            "timeZone" => "Europe/Paris"
+                        ],
+                        "end" => [
+                            "dateTime" => $event->getDate()->modify('+1 hour')->format("Y-m-d\TH:i:s"),
+                            "timeZone" => "Europe/Paris"
+                        ],
+                        "conferenceData" => [
+                            "createRequest" => [
+                                "requestId" => uniqid(),
+                                "conferenceSolutionKey" => ["type" => "hangoutsMeet"]
+                            ]
+                        ]
+                    ];
+
+                    $options = [
+                        "http" => [
+                            "header" => "Authorization: Bearer " . $accessToken . "\r\n" .
+                                "Content-Type: application/json\r\n",
+                            "method" => "POST",
+                            "content" => json_encode($data)
+                        ]
+                    ];
+
+                    $context = stream_context_create($options); // Création du contexte
+                    $response = file_get_contents($url, false, $context); // Envoi de la requête
+                    $result = json_decode($response, true); // Récupération de la réponse
+
+                    if (isset($result["conferenceData"]["entryPoints"][0]["uri"])) {
+                        $event->setLienMeet($result["conferenceData"]["entryPoints"][0]["uri"]);
+                    }
+                }
+
                 $this->em->persist($event);
                 $this->em->flush();
-                $this->addFlash("message", "Événement ajouté avec succès.");
 
                 return $this->redirectToRoute('display_event');
             }
@@ -82,6 +131,8 @@ final class EventController extends AbstractController
 
         return $this->render('backOffice/evenement/addEvenement.html.twig', [
             "form" => $form->createView(),
+            "action" => "add",
+
         ]);
     }
 
@@ -146,6 +197,7 @@ final class EventController extends AbstractController
         return $this->render('backOffice/evenement/addEvenement.html.twig', [
             "form" => $form->createView(),
             "image" => $event->getImage(),
+            "action" => "edit",
         ]);
     }
 
@@ -154,8 +206,8 @@ final class EventController extends AbstractController
     public function delete($id, ManagerRegistry $managerRegistry, EventRepository $EventRepository): Response
     {
         $em = $managerRegistry->getManager();
-        $play = $EventRepository->find($id);
-        $this->em->remove($play);
+        $event = $EventRepository->find($id);
+        $this->em->remove($event);
         $this->em->flush();
         return $this->redirectToRoute('display_event');
     }
@@ -209,9 +261,25 @@ final class EventController extends AbstractController
         }
 
         $event->addParticipant($this->getUser());
-        
+        $this->getUser()->setScore($this->getUser()->getScore() + 10);
+
+
         $data = json_decode($request->getContent(), true);
         $nbrPlaces = $data['nbr_places'] ?? null;
+
+        if ($event->getType() == "en_ligne") {
+            $subject = "Your Verification Code";
+            $user = $this->getUser();
+            $this->mailer->sendEmail(
+                $user->getEmail(),
+                $subject,
+                'emailTemplates/eventMail.html.twig',
+                [
+                    'event' => $event,
+                ]
+            );
+        }
+
 
         if ($nbrPlaces !== null && $nbrPlaces >= 0) {
             $event->setNbrPlaces($nbrPlaces); // Assuming the Event entity has a setNbrPlaces method
@@ -222,5 +290,22 @@ final class EventController extends AbstractController
         }
 
         return new JsonResponse(['error' => 'Invalid data'], 400);
+    }
+
+    #[IsGranted('ROLE_AGRICULTURE')]
+    #[IsGranted('ROLE_RECYCLING_INVESTOR')]
+    #[IsGranted('ROLE_RESOURCE_INVESTOR')]
+    #[Route('/leave-event/{id}', name: 'leave_event', methods: ['GET', 'POST'])]
+    public function leaveEvent(int $id, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    {
+        $event = $eventRepository->find($id);
+        $user = $this->getUser();
+        $event->removeParticipant($user);
+        $event->setNbrPlaces($event->getNbrPlaces() + 1);
+        $this->getUser()->setScore($this->getUser()->getScore() - 10);
+
+        $em->persist($event);
+        $em->flush();
+        return $this->redirectToRoute('app_profilee', ['id' => $user->getId()]);
     }
 }

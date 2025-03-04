@@ -1,0 +1,107 @@
+{% extends 'backoffice/base.html.twig'%}
+{% block title %}List Ressource{% endblock %}
+{% block content %}
+<div class="col-lg-12">
+    <form method="GET" action="{{ path('app_resourceback') }}" class="form-inline mb-4">
+        <div class="form-group mr-3">
+            <label for="owner_id_id" class="mr-2">Filtrer par ID propriétaire :</label>
+            <input type="text" name="owner_id_id" id="owner_id_id" class="form-control" value="{{ app.request.query.get('owner_id_id') }}">
+        </div>
+        <div class="form-group mr-3">
+            <label for="type" class="mr-2 font-weight-bold">Filtrer par type de ressource :</label>
+            <select name="type" id="type" class="form-control custom-select">
+            <option value="">-- Sélectionner --</option>
+            <option value="terrain" {% if app.request.query.get('type') == 'terrain' %}selected{% endif %}>Terrain</option>
+            <option value="materiel" {% if app.request.query.get('type') == 'materiel' %}selected{% endif %}>Matériel</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+    </form>
+    <div class="table-responsive rounded mb-3">
+    <table class="data-table table mb-0 tbl-server-info">
+        <thead class="bg-white text-uppercase">
+            <tr class="ligth ligth-data">
+                <th>
+                    <div class="checkbox d-inline-block">
+                        <input type="checkbox" class="checkbox-input" id="checkbox1">
+                        <label for="checkbox1" class="mb-0"></label>
+                    </div>
+                </th>
+                <th>Nom du ressource</th>
+                <th>Images</th>
+                <th>Type ressource</th>
+                <th>Détails</th>
+                <th>status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class="ligth-body">
+            {% for ressource in ressources %}
+            <tr>
+                <td>
+                    <div class="checkbox d-inline-block">
+                        <input type="checkbox" class="checkbox-input" id="checkbox2">
+                        <label for="checkbox2" class="mb-0"></label>
+                    </div>
+                </td>
+                <td>{{ ressource.getNameR}}</td>
+                <td> 
+                    {% if ressource.image %}
+                    <img src="{{ asset('uploads/images/' ~ ressource.image) }}" alt="Image de la ressource" 
+                         style="width: 100%; height: auto; max-width:100px; max-height: 100px; object-fit: cover;">
+                    {% else %}
+                    <p>No image available</p>
+                    {% endif %}
+                </td>
+                <td>{{ ressource.type }}</td>
+
+                <td>   
+                    <button class="btn btn-info" data-toggle="modal" data-target="#resourceDetailsModal{{ ressource.id }}">
+                       Voir Détails
+                    </button>
+                </td>
+
+                <td>{{ ressource.status }}</td>
+               
+                <td>
+                    <div class="d-flex align-items-center list-action">
+                       
+                      
+                            <form method="POST" action="{{ path('app_resourcedelete', {id: ressource.id}) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?');">
+                                <button type="submit" class="badge bg-warning border-0" data-toggle="tooltip" data-placement="top" title="Delete">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </form>
+                    </div>
+                </td>
+            </tr>
+            <div class="modal fade" id="resourceDetailsModal{{ ressource.id }}" tabindex="-1" role="dialog" aria-labelledby="resourceDetailsModalLabel{{ ressource.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="resourceDetailsModalLabel{{ ressource.id }}">Détails de la ressource</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Superficie:</strong> {{ ressource.superficie }}</p>
+                            <p><strong>Prix Location:</strong> {{ ressource.getPrixLocation }}</p>
+                            <p><strong>Marque:</strong> {{ ressource.marque }}</p>
+                            <p><strong>Adresse:</strong> {{ ressource.adresse }}</p>
+                            <p><strong>Description:</strong> {{ ressource.description }}</p>
+                            <p><strong>Owner:</strong> {{ ressource.userID.nom }} {{ ressource.userID.prenom }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+               
+          {% endfor %} 
+        </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}

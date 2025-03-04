@@ -5,10 +5,11 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
   images_directory: "%kernel.project_dir%/public/uploads/images"
-
+  rapid_api_key: "%env(RAPID_API_KEY)%" # Ajoutez cette ligne pour configurer la clé API
+  huggingface_api_key: "%env(HUGGINGFACE_API_KEY)%"
 services:
   App\Service\NotificationService: ~
-
+  App\Security\RoleVoter:
   # default configuration for services in *this* file
   _defaults:
     autowire: true # Automatically injects dependencies in your services.
@@ -22,6 +23,17 @@ services:
       - "../src/DependencyInjection/"
       - "../src/Entity/"
       - "../src/Kernel.php"
-
+  App\Controller\GestionReclamation\ReponsesController:
+    arguments:
+      $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface' # Injecte HttpClientInterface
+      $rapidApiKey: "%env(RAPID_API_KEY)%" # Injecte la clé API à partir de l'environnement
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
+  App\Service\TwilioService:
+          arguments:
+              $twilioSid: '%env(TWILIO_SID)%'
+              $twilioAuthToken: '%env(TWILIO_AUTH_TOKEN)%'
+
+  App\Service\HuggingFaceImageService:
+    arguments:
+      $apiKey: '%env(HUGGINGFACE_API_KEY)%'

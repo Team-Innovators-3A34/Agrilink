@@ -198,9 +198,15 @@
                   data-parent="#iq-sidebar-toggle"
                 >
                   <li class="">
-                    <a href="../backend/page-list-category.html">
+                    <a href="{{path('display_point')}}">
                       <i class="las la-minus"></i
                       ><span>List Recylcing Points</span>
+                    </a>
+                  </li>
+                  <li class="">
+                    <a href="{{path('display_produit')}}">
+                      <i class="las la-minus"></i
+                      ><span>List des Produits</span>
                     </a>
                   </li>
                 </ul>
@@ -251,8 +257,13 @@
                   data-parent="#iq-sidebar-toggle"
                 >
                   <li class="">
-                    <a href="../backend/page-list-sale.html">
+                    <a href="{{path("app_resourceback")}}">
                       <i class="las la-minus"></i><span>List Ressources</span>
+                    </a>
+                  </li>
+                  <li class="">
+                    <a href="{{path("app_demandeback")}}">
+                      <i class="las la-minus"></i><span>List Demandes</span>
                     </a>
                   </li>
                 </ul>
@@ -315,15 +326,12 @@
                     </a>
                   </li>
                   <li class="">
-                    <a href="../backend/page-list-purchase.html">
+                    <a href="{{path("app_type_rec_index")}}">
                       <i class="las la-minus"></i><span>List Categories</span>
                     </a>
                   </li>
-                  <li class="">
-                    <a href="../backend/page-list-purchase.html">
-                      <i class="las la-minus"></i><span>Add Categories</span>
-                    </a>
-                  </li>
+                 
+                  
                 </ul>
               </li>
               <li class=" ">
@@ -374,23 +382,8 @@
                   data-parent="#iq-sidebar-toggle"
                 >
                   <li class="">
-                    <a href="../backend/page-list-returns.html">
+                    <a href="{{path('app_postsback')}}">
                       <i class="las la-minus"></i><span>List Post</span>
-                    </a>
-                  </li>
-                  <li class="">
-                    <a href="../backend/page-add-return.html">
-                      <i class="las la-minus"></i><span>Add Post</span>
-                    </a>
-                  </li>
-                  <li class="">
-                    <a href="../backend/page-list-returns.html">
-                      <i class="las la-minus"></i><span>List Categories</span>
-                    </a>
-                  </li>
-                  <li class="">
-                    <a href="../backend/page-add-return.html">
-                      <i class="las la-minus"></i><span>Add Categories</span>
                     </a>
                   </li>
                 </ul>
@@ -623,17 +616,17 @@
                   <li class="nav-item nav-icon dropdown">
                     <a
                       href="#"
-                      class="search-toggle dropdown-toggle"
+                      class="search-toggle dropdown-toggle position-relative"
                       id="dropdownMenuButton"
                       data-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span class="bg-primary" id="notification-badge"></span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                      </svg>
+                      <span class="bg-primary position-absolute top-0 start-100 translate-middle badge rounded-pill" id="notification-badge" style="top: 10px; right: -12px;">{{ getNotificationsBackoffice()|length }}</span>
                     </a>
                     <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <div class="card shadow-none m-0">
@@ -685,7 +678,7 @@
                 </li>
                 
                 
-                  <li class="nav-item nav-icon dropdown caption-content">
+                  <li class="nav-item nav-icon dropdown caption-content" style="margin-left: 20px;">
                     <a
                       href="#"
                       class="search-toggle dropdown-toggle"
@@ -719,8 +712,8 @@
                             />
                           </div>
                           <div class="p-3">
-                            <h5 class="mb-1">JoanDuo@property.com</h5>
-                            <p class="mb-0">Since 10 march, 2020</p>
+                            <h5 class="mb-1">{{app.user.email}}</h5>
+                            <p class="mb-0">{{app.user.nom}} {{app.user.prenom}}</p>
                             <div
                               class="d-flex align-items-center justify-content-center mt-3"
                             >
@@ -833,7 +826,7 @@
 
     <script>
     // Connect to the Mercure hub
-    const eventSource = new EventSource("{{ mercure('https://example.com/books/1')|escape('js') }}");
+    const eventSource = new EventSource("http://localhost:3000/.well-known/mercure?topic=https://example.com/books/1");
 
     // This function will handle new incoming notifications
     eventSource.onmessage = (event) => {

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -18,6 +17,46 @@
     <link rel="stylesheet" href="css/emoji.css" />
 
     <link rel="stylesheet" href="css/lightbox.css" />
+ <style>
+  /* Ensure search results are directly under the input field */
+  #searchResults {
+    position: absolute;
+    top: 100%; /* Place directly below the input */
+    left: 0;
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    display: none; /* Hide initially */
+    z-index: 1000;
+  }
+
+  .search-item {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .search-item:last-child {
+    border-bottom: none;
+  }
+
+  .search-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .search-name {
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+  }
+</style>
   </head>
 
   <body class="color-theme-blue mont-font">
@@ -27,7 +66,7 @@
       <!-- navigation top-->
       <div class="nav-header bg-white shadow-xs border-0">
         <div class="nav-top">
-          <a href="index.html">
+          <a href="{{path("app_home")}}" >
             <img
               src="images/logo_agrilink.png"
               alt="Agrilink Logo"
@@ -35,9 +74,10 @@
                 max-width: 50px;
                 height: auto;
                 border-radius: 50%;
-                margin-left: 60px;
+                margin-left: 50px;
               "
             />
+
           </a>
           <a href="#" class="mob-menu ms-auto me-2 chat-active-btn"
             ><i
@@ -57,16 +97,21 @@
           <button class="nav-menu me-0 ms-2"></button>
         </div>
 
-        <form action="#" class="float-left header-search">
+        <form action="#" class="float-left header-search position-relative">
           <div class="form-group mb-0 icon-input">
             <i class="feather-search font-sm text-grey-400"></i>
             <input
               type="text"
+              id="searchInput"
               placeholder="Start typing to search.."
               class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg"
+              onkeyup="searchUsers()"
             />
           </div>
+          <!-- Search results appear here -->
+          <div id="searchResults"></div>
         </form>
+
         <a
           href="{{path("app_home")}}"
           class="p-2 text-center ms-3 menu-icon center-menu-icon"
@@ -117,71 +162,34 @@
           aria-labelledby="dropdownMenu3"
         >
           <h4 class="fw-700 font-xss mb-4">Notification</h4>
-          <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
+          <div           id="notification-container"
+          >
+            {% if app.user.getToNotifications() is not empty %} 
+            {% for notification in app.user.getToNotifications()|slice(0, 3) %}
+          <div class="card {% if notification.isRead() %} bg-transparent-card {% else %} bg-lightblue {% endif %} w-100 border-0 ps-5 mb-3">
+            <a href="{{
+                    path('app_read_notification', { id: notification.id })
+                  }}">
             <img
-              src="images/user-8.png"
-              alt="user"
+            src="{{ asset('uploads/images/' ~ notification.getUserNotif.image) }}"
+            alt="user"
               class="w40 position-absolute left-0"
             />
             <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
-              Hendrix Stamp
+              {{ notification.getUserNotif.nom }}{{ notification.getUserNotif.prenom }}
+
               <span class="text-grey-400 font-xsssss fw-600 float-right mt-1">
                 3 min</span
               >
             </h5>
             <h6 class="text-grey-500 fw-500 font-xssss lh-4">
-              There are many variations of pass..
+                {{ notification.message | slice(0, 32) ~ '...' }}
             </h6>
+          </a>
           </div>
-          <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
-            <img
-              src="images/user-4.png"
-              alt="user"
-              class="w40 position-absolute left-0"
-            />
-            <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
-              Goria Coast
-              <span class="text-grey-400 font-xsssss fw-600 float-right mt-1">
-                2 min</span
-              >
-            </h5>
-            <h6 class="text-grey-500 fw-500 font-xssss lh-4">
-              Mobile Apps UI Designer is require..
-            </h6>
-          </div>
-
-          <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
-            <img
-              src="images/user-7.png"
-              alt="user"
-              class="w40 position-absolute left-0"
-            />
-            <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
-              Surfiya Zakir
-              <span class="text-grey-400 font-xsssss fw-600 float-right mt-1">
-                1 min</span
-              >
-            </h5>
-            <h6 class="text-grey-500 fw-500 font-xssss lh-4">
-              Mobile Apps UI Designer is require..
-            </h6>
-          </div>
-          <div class="card bg-transparent-card w-100 border-0 ps-5">
-            <img
-              src="images/user-6.png"
-              alt="user"
-              class="w40 position-absolute left-0"
-            />
-            <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
-              Victor Exrixon
-              <span class="text-grey-400 font-xsssss fw-600 float-right mt-1">
-                30 sec</span
-              >
-            </h5>
-            <h6 class="text-grey-500 fw-500 font-xssss lh-4">
-              Mobile Apps UI Designer is require..
-            </h6>
-          </div>
+          {% endfor %} {% endif %}
+        </div>
+          
         </div>
         <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"
           ><i class="feather-message-square font-xl text-current"></i
@@ -371,7 +379,7 @@
         </div>
 
         <a href="{{path("app_settings")}}" class="p-0 ms-3 menu-icon"
-          ><img src="{{ asset('uploads/images/' ~ app.user.image) }}" alt="user" class="w40 mt--1" style="border-radius: 50%;" />
+          ><img src="{{ asset('uploads/images/' ~ app.user.image) }}" alt="user" class="w40 mt--1" style="border-radius: 50%;max-height:40px" />
         </a>
       </div>
       <!-- navigation top -->
@@ -393,14 +401,14 @@
                   href="{{path("app_home")}}"
                   class="nav-content-bttn open-font"
                     ><i
-                      class="feather-tv btn-round-md bg-blue-gradiant me-3"
+                      class="feather-tv btn-round-md bg-gold-gradiant me-3"
                     ></i
                     ><span>Newsfeed</span></a
                   >
                 </li>
                 <li>
                   <a
-                    href="default-badge.html"
+                    href="{{path("app_badge")}}"
                     class="nav-content-bttn open-font"
                     ><i
                       class="feather-award btn-round-md bg-red-gradiant me-3"
@@ -410,11 +418,11 @@
                 </li>
 
                 <li>
-                  <a href="user-page.html" class="nav-content-bttn open-font"
+                    <a href="{{ path('app_profilee', {'id': app.user.id}) }}" class="nav-content-bttn open-font"
                     ><i
                       class="feather-user btn-round-md bg-primary-gradiant me-3"
                     ></i
-                    ><span>Author Profile </span></a
+                    ><span>Mon profile </span></a
                   >
                 </li>
               </ul>
@@ -438,7 +446,7 @@
                 </li>
                 <li>
                   <a
-                    href="default-hotel.html"
+                    href="{{path("display_point_front")}}"
                     class="nav-content-bttn open-font"
                     ><i class="font-xl text-current feather-refresh-cw me-3"></i
                     ><span>Near Point</span></a
@@ -540,17 +548,20 @@
               CONTACTS
             </h4>
             <ul class="list-group list-group-flush">
+              {% if getAllMyContact()  %}
+              {% for user in getAllMyContact() %}
+              {% if user.friend == app.user %}
               <li
                 class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
               >
                 <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-8.png" alt="image" class="w35" />
+                  <img src="{{ asset('uploads/images/' ~ user.user.image) }}" alt="user" class="w40 mt--1" style="border-radius: 50%;max-height:40px" />
                 </figure>
                 <h3 class="fw-700 mb-0 mt-0">
                   <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Hurin Seary</a
+                    class="font-xssss text-grey-600 d-block text-dark "
+                    href="{{path('app_profilee', {'id': user.user.id})}}"
+                    >{{ user.user.nom }} {{ user.user.prenom }}</a
                   >
                 </h3>
                 <span
@@ -558,117 +569,31 @@
                   >2</span
                 >
               </li>
+              {% endif %}
+              {% if user.user == app.user %}
               <li
                 class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
               >
                 <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-7.png" alt="image" class="w35" />
+                  <img src="{{ asset('uploads/images/' ~ user.friend.image) }}" alt="user" class="w40 mt--1" style="border-radius: 50%;max-height:40px" />
                 </figure>
                 <h3 class="fw-700 mb-0 mt-0">
                   <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Victor Exrixon</a
-                  >
-                </h3>
-                <span class="bg-success ms-auto btn-round-xss"></span>
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-6.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Surfiya Zakir</a
-                  >
-                </h3>
-                <span class="bg-warning ms-auto btn-round-xss"></span>
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-5.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Goria Coast</a
-                  >
-                </h3>
-                <span class="bg-success ms-auto btn-round-xss"></span>
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-4.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Hurin Seary</a
+                    class="font-xssss text-grey-600 d-block text-dark "
+                    href="{{path('app_profilee', {'id': user.friend.id})}}"
+                    >{{ user.friend.nom }} {{ user.friend.prenom }}</a
                   >
                 </h3>
                 <span
-                  class="badge mt-0 text-grey-500 badge-pill pe-0 font-xsssss"
-                  >4:09 pm</span
+                  class="badge badge-primary text-white badge-pill fw-500 mt-0"
+                  >2</span
                 >
               </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-3.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >David Goria</a
-                  >
-                </h3>
-                <span
-                  class="badge mt-0 text-grey-500 badge-pill pe-0 font-xsssss"
-                  >2 days</span
-                >
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-2.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Seary Victor</a
-                  >
-                </h3>
-                <span class="bg-success ms-auto btn-round-xss"></span>
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-12.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Ana Seary</a
-                  >
-                </h3>
-                <span class="bg-success ms-auto btn-round-xss"></span>
-              </li>
+              {% endif %}
+              
+              {% endfor %}
+              {% endif %}
+
             </ul>
           </div>
           <div
@@ -772,6 +697,11 @@
               </li>
             </ul>
           </div>
+          <div id="chatbot-icon" class="fmodel-popup-chat"
+          style="margin-right:270px"
+          >
+        </div>
+        
         </div>
       </div>
 
@@ -824,6 +754,8 @@
           </div>
         </form>
       </div>
+
+     
     </div>
 
     <div
@@ -882,69 +814,162 @@
       </div>
     </div>
 
-    <div class="modal-popup-chat">
+    <div class="modal-popup-chat" id="chatbot" style="margin-bottom:70px;margin-right:45px">
       <div class="modal-popup-wrap bg-white p-0 shadow-lg rounded-3">
-        <div class="modal-popup-header w-100 border-bottom">
-          <div class="card p-3 d-block border-0 d-block">
-            <figure class="avatar mb-0 float-left me-2">
-              <img src="images/user-12.png" alt="image" class="w35 me-1" />
-            </figure>
-            <h5 class="fw-700 text-primary font-xssss mt-1 mb-1">
-              Hendrix Stamp
-            </h5>
-            <h4 class="text-grey-500 font-xsssss mt-0 mb-0">
-              <span class="d-inline-block bg-success btn-round-xss m-0"></span>
-              Available
-            </h4>
-            <a
-              href="#"
-              class="font-xssss position-absolute right-0 top-0 mt-3 me-4"
-              ><i class="ti-close text-grey-900 mt-2 d-inline-block"></i
-            ></a>
+          <div class="modal-popup-header w-100 border-bottom">
+              <div class="card p-3 d-block border-0">
+                  <figure class="avatar mb-0 float-left me-2">
+                      <img src="{{ asset('images/lazherArouch.png') }}" alt="Chatbot" class="w35 me-1" />
+                  </figure>
+                  <h5 class="fw-700 text-primary font-xssss mt-1 mb-1">AgriLink Chatbot</h5>
+                  <h4 class="text-grey-500 font-xsssss mt-0 mb-0">
+                      <span class="d-inline-block bg-success btn-round-xss m-0"></span> Online
+                  </h4>
+                  <a href="#" class="font-xssss position-absolute right-0 top-0 mt-3 me-4" id="close-chatbot">
+                      <i class="ti-close text-grey-900 mt-2 d-inline-block"></i>
+                  </a>
+              </div>
           </div>
-        </div>
-        <div class="modal-popup-body w-100 p-3 h-auto">
-          <div class="message">
-            <div class="message-content font-xssss lh-24 fw-500">
-              Hi, how can I help you?
-            </div>
+          <div class="modal-popup-body w-100 p-3 h-auto" id="chat-window">
+              <div class="message">
+                  <div class="message-content font-xssss lh-24 fw-500">
+                      Hi, how can I help you?
+                  </div>
+              </div>
           </div>
-          <div
-            class="date-break font-xsssss lh-24 fw-500 text-grey-500 mt-2 mb-2"
-          >
-            Mon 10:20am
+          <div class="modal-popup-footer w-100 border-top">
+              <div class="card p-3 d-block border-0">
+                  <div class="form-group icon-right-input style1-input mb-0">
+                      <input
+                          type="text"
+                          id="chat-input"
+                          placeholder="Start typing..."
+                          class="form-control rounded-xl bg-greylight border-0 font-xssss fw-500 ps-3"
+                      />
+                      <i class="feather-send text-grey-500 font-md" id="chat-send"></i>
+                  </div>
+              </div>
           </div>
-          <div class="message self text-right mt-2">
-            <div class="message-content font-xssss lh-24 fw-500">
-              I want those files for you. I want you to send 1 PDF and 1 image
-              file.
-            </div>
-          </div>
-          <div
-            class="snippet pt-3 ps-4 pb-2 pe-3 mt-2 bg-grey rounded-xl float-right"
-            data-title=".dot-typing"
-          >
-            <div class="stage"><div class="dot-typing"></div></div>
-          </div>
-          <div class="clearfix"></div>
-        </div>
-        <div class="modal-popup-footer w-100 border-top">
-          <div class="card p-3 d-block border-0 d-block">
-            <div class="form-group icon-right-input style1-input mb-0">
-              <input
-                type="text"
-                placeholder="Start typing.."
-                class="form-control rounded-xl bg-greylight border-0 font-xssss fw-500 ps-3"
-              /><i class="feather-send text-grey-500 font-md"></i>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
+  </div>
+  <style>
+    #chatbot-icon {
+    position: fixed;
+    bottom: 20px;  /* Distance par rapport au bas */
+    right: 20px;   /* Distance par rapport à la droite */
+    width: 60px;   /* Taille de l'icône */
+    height: 60px;
+    border-radius: 50%; /* Forme ronde */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* S'assure qu'elle est au-dessus des autres éléments */
+    background-image: url('{{ asset('images/lazherArouch.png') }}'); /* Replace with your image path */
+    background-size: cover; /* Ensure the image covers the entire icon */
+  }
 
+/* Style de l'icône à l'intérieur */
+#chatbot-icon i {
+    color: white;
+    font-size: 24px;
+}
+
+    #chat-window {
+    max-height: 250px; /* Ajuste la hauteur selon tes besoins */
+    overflow-y: auto; /* Ajoute un défilement si le contenu dépasse */
+    padding-right: 10px;
+}
+
+/* Réduit la largeur des messages pour éviter qu'ils ne prennent toute la place */
+.message {
+    max-width: 100%; 
+    word-wrap: break-word; /* Coupe les mots longs pour éviter les débordements */
+}
+
+/* Ajuste la taille du texte */
+.message-content {
+    font-size: 14px; /* Réduit la taille du texte */
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* Ajoute une troncature si nécessaire */
+.message-content.long-message {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px; /* Ajuste la largeur max */
+    display: inline-block;
+    cursor: pointer;
+}
+</style>
+  <script src="{{ asset('chatbot.js') }}"></script>
     <script src="js/plugin.js"></script>
 
     <script src="js/lightbox.js"></script>
     <script src="js/scripts.js"></script>
+   
+<script>
+  function searchUsers() {
+    let query = document.getElementById("searchInput").value;
+    let resultsContainer = document.getElementById("searchResults");
+
+    if (query.length < 2) {
+      resultsContainer.innerHTML = "";
+      resultsContainer.style.display = "none";
+      return;
+    }
+
+    fetch(`/search-users?query=${query}`)
+      .then((response) => response.json())
+      .then((data) => {
+        resultsContainer.innerHTML = "";
+        resultsContainer.style.display = "block";
+
+        data.forEach((user) => {
+          resultsContainer.innerHTML += `
+            <div class="search-item">
+              <img src="/uploads/images/${user.image}" class="search-avatar" />
+              <a href="/profilee/${user.id}" class="search-name">${user.nom} ${user.prenom}</a>
+            </div>`;
+        });
+      });
+  }
+</script>
+
+<script>
+
+
+    const eventSource = new EventSource("http://localhost:3000/.well-known/mercure?topic=https://example.com/notificationfront/{{ app.user.id }}");
+
+    eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("Nouvelle notification reçue :", data);
+
+        // Ajouter dynamiquement la notification dans la liste
+        const container = document.getElementById("notification-container");
+        if (container) {
+            const notificationElement = document.createElement("div");
+            notificationElement.classList.add("card", "bg-lightblue", "w-100", "border-0", "ps-5", "mb-3");
+            notificationElement.innerHTML = `
+                <a href="/notification/${data.id}">
+                    <img src="/uploads/images/${data.image}" alt="user" class="w40 position-absolute left-0" />
+                    <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
+                        ${data.username}
+                        <span class="text-grey-400 font-xsssss fw-600 float-right mt-1">Just now</span>
+                    </h5>
+                    <h6 class="text-grey-500 fw-500 font-xssss lh-4">
+                        ${data.status}
+                    </h6>
+                </a>
+            `;
+            container.prepend(notificationElement);
+        }
+    };
+</script>
+
   </body>
 </html>

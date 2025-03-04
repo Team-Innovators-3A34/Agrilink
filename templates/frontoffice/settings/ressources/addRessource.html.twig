@@ -1,0 +1,135 @@
+{% extends "frontOffice/base.html.twig" %}{% block title %} {% if (action
+=="Ajouter")%}Ajouter {% else %} Modifier {% endif %} Ressource{% endblock %} {%
+block content %}
+<div class="main-content bg-lightblue theme-dark-bg right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      <div class="middle-wrap">
+        <div class="card w-100 border-0 bg-white shadow-xs p-0 mb-4">
+          <div class="card-body p-4 w-100 bg-current border-0 d-flex rounded-3">
+            <a href="{{ path('app_my_resource') }}" class="d-inline-block mt-2">
+              <i class="ti-arrow-left font-sm text-white"></i>
+            </a>
+            <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">
+              {% if (action =="Ajouter")%}Ajouter {% else %} Modifier {% endif
+              %}Ressource
+            </h4>
+          </div>
+          <div class="card-body p-lg-5 p-4 w-100 border-0">
+            <form method="post" enctype="multipart/form-data">
+              {{ form_start(form) }}
+              
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.name_r) }}
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.type) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.marque) }}
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.adresse) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.description) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.prix_location) }}
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.superficie) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.status) }}
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.images, {'attr': {'style': 'margin-top: -8px', 'value': action == 'Modifier' ? image : ''
+                    }}) }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12 mb-0">
+                  <button
+                    type="submit"
+                    class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block"
+                  >
+                    Comfirmer
+                  </button>
+                </div>
+              </div>
+              {{ form_end(form) }}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function verifierTexte() {
+      let description = document.getElementById("description").value;
+  
+      // Vérification de la longueur et de la répétition excessive du texte
+      if (description.length < 10) {
+          alert("La description est trop courte. Veuillez entrer plus de texte.");
+          return false;
+      }
+  
+      if (/^(.)\1{4,}$/.test(description)) {
+          alert("Le texte contient des répétitions excessives. Veuillez reformuler.");
+          return false;
+      }
+  
+      // Appel API HuggingFace pour analyser le sentiment du texte
+      const response = await fetch('https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english', {
+          method: 'POST',
+          headers: {
+              'Authorization': 'Bearer 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',  // Remplacez par votre clé API HuggingFace
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ inputs: description })
+      });
+  
+      const result = await response.json();
+  
+      // Analyser la réponse de l'API pour déterminer si le texte est approprié
+      if (result[0].label === "NEGATIVE") {
+          alert("Le texte semble négatif ou inapproprié. Veuillez reformuler.");
+          return false;
+      }
+  
+      // Si tout est ok, soumettre le formulaire
+      return true;
+  }
+  </script>
+{% endblock %}
