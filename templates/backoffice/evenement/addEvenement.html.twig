@@ -1,0 +1,211 @@
+{% extends "backOffice/base.html.twig" %} {% block title %} Add Event {%
+endblock %} {% block content %}
+<style>
+  #map {
+    position: sticky;
+    top: 0;
+  }
+</style>
+<div class="container-fluid add-form-list">
+  <div class="row">
+    <div class="col-sm-7">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <div class="header-title">
+            <h4 class="card-title">
+              {% if (action == "edit") %}Edit Event{% elseif (action
+              =="add")%}Add Event{% endif %}
+            </h4>
+          </div>
+        </div>
+        <div class="card-body">
+          {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Event Type *</label>
+                {{ form_widget(form.categorie, {'attr': {'class': 'selectpicker form-control', 'data-style': 'py-0'
+                }}) }}
+                <div class="text-danger">
+                  {{ form_errors(form.categorie) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ form_label(form.nom, "Nom de l'événement") }}
+                {{ form_widget(form.nom, { attr: { class: "form-control" } }) }}
+                <div class="text-danger">
+                  {{ form_errors(form.nom) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Address *</label>
+                {{ form_widget(form.adresse) }}
+                <div class="text-danger">
+                  {{ form_errors(form.adresse) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Longitude *</label>
+                {{
+                  form_widget(form.longitude, {
+                    attr: { id: "longitude", class: "form-control" }
+                  })
+                }}
+                <div class="text-danger">
+                  {{ form_errors(form.longitude) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Latitude *</label>
+                {{
+                  form_widget(form.latitude, {
+                    attr: { id: "latitude", class: "form-control" }
+                  })
+                }}
+                <div class="text-danger">
+                  {{ form_errors(form.latitude) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Event Date *</label>
+                {{ form_widget(form.date) }}
+                <div class="text-danger">
+                  {{ form_errors(form.date) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Max Number Of Places *</label>
+                {{ form_widget(form.nbr_places) }}
+                <div class="text-danger">
+                  {{ form_errors(form.nbr_places) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Image</label>
+                {{ form_widget(form.image) }}
+                <div class="text-danger">
+                  {{ form_errors(form.image) }}
+                </div>
+                {% if form.image %}
+                <p>Image actuelle :</p>
+                <img
+                  src="{{ asset('uploads/images/' ~ form.vars.value.image) }}"
+                  alt="Image de l'événement"
+                  width="150"
+                />
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Description / Event Details</label>
+                {{ form_widget(form.description) }}
+                <div class="text-danger">
+                  {{ form_errors(form.description) }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary mr-2">Confirm</button>
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-5">
+      <div id="map" style="height: 700px; margin-top: 150px"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<script>
+  // Initialize the map
+  let map;
+
+  // Check if latitude and longitude are available
+  let latitude = document.getElementById("event_latitude")
+    ? document.getElementById("event_latitude").value
+    : null;
+  let longitude = document.getElementById("event_longitude")
+    ? document.getElementById("event_longitude").value
+    : null;
+
+  if (latitude && longitude) {
+    // Edit Action: Use existing coordinates from the form
+    map = L.map("map").setView([latitude, longitude], 10);
+
+    // Add the marker at the existing position
+    let marker = L.marker([latitude, longitude], { draggable: true }).addTo(
+      map
+    );
+
+    // Update form fields when the marker is dragged
+    marker.on("dragend", function () {
+      const position = marker.getLatLng();
+      document.getElementById("event_latitude").value = position.lat.toFixed(6);
+      document.getElementById("event_longitude").value =
+        position.lng.toFixed(6);
+    });
+  } else {
+    // Add Action: No coordinates, center map on Tunisia
+    map = L.map("map").setView([36.8065, 10.1815], 10); // Coordinates for Tunisia (can adjust)
+
+    // Default marker will not be placed yet
+
+    // Add a default tile layer (OpenStreetMap)
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Add a click event to the map to place the marker and update form inputs
+    map.on("click", function (event) {
+      const { lat, lng } = event.latlng;
+
+      // Remove existing marker if any
+      if (window.marker) {
+        map.removeLayer(window.marker);
+      }
+
+      // Place a new marker at the clicked location
+      window.marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+      // Update form fields with the new latitude and longitude
+      document.getElementById("event_latitude").value = lat.toFixed(6);
+      document.getElementById("event_longitude").value = lng.toFixed(6);
+
+      // Update marker position when dragged
+      window.marker.on("dragend", function () {
+        const position = window.marker.getLatLng();
+        document.getElementById("event_latitude").value =
+          position.lat.toFixed(6);
+        document.getElementById("event_longitude").value =
+          position.lng.toFixed(6);
+      });
+    });
+  }
+
+  // Add a tile layer to the map (OpenStreetMap tiles)
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+  }).addTo(map);
+</script>
+{% endblock %}

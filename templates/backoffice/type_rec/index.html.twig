@@ -1,0 +1,72 @@
+{% extends "backOffice/base.html.twig" %}
+
+{% block title %}
+    List Category
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+        <div>
+          <h4 class="mb-3">Type Category List</h4>
+        </div>
+        <a href="{{ path('app_type_rec_new') }}" class="btn btn-primary add-list">
+          <i class="las la-plus mr-3"></i>Add Category
+        </a>
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <div class="table-responsive rounded mb-3">
+        <table class="data-tables table mb-0 tbl-server-info">
+          <thead class="bg-white text-uppercase">
+            <tr class="ligth ligth-data">
+              <th>Category</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody class="ligth-body">
+            {% for type_rec in type_recs %}
+              <tr>
+                <td>{{ type_rec.nom }}</td>
+                <td>{{ type_rec.description }}</td>
+                <td>
+                  <div class="d-flex align-items-center list-action">
+                    {# Bouton Show #}
+                    <a class="badge bg-info mr-2"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="Show"
+                       data-original-title="Show"
+                       href="{{ path('app_type_rec_show', { id: type_rec.id }) }}">
+                      <i class="ri-eye-line mr-0"></i>
+                    </a>
+                    {# Bouton Edit #}
+                    <a class="badge bg-success mr-2"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="Edit"
+                       data-original-title="Edit"
+                       href="{{ path('app_type_rec_edit', { id: type_rec.id }) }}">
+                      <i class="ri-pencil-line mr-0"></i>
+                    </a>
+                    {# Inclusion du formulaire de suppression #}
+                    {{ include('backoffice/type_rec/_delete_form.html.twig', { type_rec: type_rec }) }}
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="3">No categories found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Page end -->
+</div>
+{% endblock %}

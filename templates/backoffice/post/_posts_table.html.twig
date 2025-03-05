@@ -1,0 +1,167 @@
+<div class="table-responsive rounded mb-3 data-table">
+  <table class="table mb-0 tbl-server-info">
+    <thead>
+      <tr>
+        <th>
+          <div class="checkbox d-inline-block">
+            <input type="checkbox" class="checkbox-input" id="checkbox1" />
+            <label for="checkbox1" class="mb-0"></label>
+          </div>
+        </th>
+        <th>User</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Sentiment</th>
+        <th>Comments</th>
+        <th>Reactions</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if posts|length > 0 %}
+        {% for post in posts %}
+        <tr>
+          <td>
+            <div class="checkbox d-inline-block">
+              <input type="checkbox" class="checkbox-input" id="checkbox{{ post.id }}" />
+              <label for="checkbox{{ post.id }}" class="mb-0"></label>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+              {% if post.userId.image is defined %}
+              <img src="{{ asset('uploads/images/' ~ post.userId.image) }}" class="img-fluid rounded-circle avatar-40 me-2" alt="image" />
+              {% else %}
+              <div class="avatar-40 rounded-circle bg-soft-primary text-center me-2" style="line-height: 40px; width: 40px; height: 40px;">
+                {% if post.userId.prenom is defined %}
+                  {{ post.userId.prenom|slice(0, 1)|upper }}
+                {% else %}
+                  U
+                {% endif %}
+              </div>
+              {% endif %}
+              <div>
+                {% if post.userId.nom is defined and post.userId.prenom is defined %}
+                  {{ post.userId.nom }} {{ post.userId.prenom }}
+                {% else %}
+                  {{ post.userId.username|default('User') }}
+                {% endif %}
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="fw-medium">{{ post.title }}</span>
+          </td>
+          <td>{{ post.description|slice(0, 50) }}{% if post.description|length > 50 %}...{% endif %}</td>
+          <td>
+            <span class="badge {% if post.type == 'article' %}bg-info{% elseif post.type == 'question' %}bg-warning{% else %}bg-secondary{% endif %}">
+              {{ post.type|capitalize }}
+            </span>
+          </td>
+          <td>{{ post.createdAt|date('Y-m-d') }}<br><small class="text-muted">{{ post.createdAt|date('H:i') }}</small></td>
+          <td>
+            {% if post.sentiment %}
+              <span class="badge bg-{{ 
+                post.sentiment == 'positive' ? 'success' : 
+                (post.sentiment == 'negative' ? 'danger' : 'warning') 
+              }}">
+                {{ post.sentiment|capitalize }}
+                {% if post.sentimentScore is defined and post.sentimentScore %}
+                  <span class="ms-1 opacity-75">({{ post.sentimentScore|number_format(2) }})</span>
+                {% endif %}
+              </span>
+            {% else %}
+              <span class="badge bg-secondary">N/A</span>
+            {% endif %}
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary rounded-pill" type="button" data-bs-toggle="modal" data-bs-target="#commentsModal-{{ post.id }}">
+              <i class="ri-chat-3-line me-1"></i> {{ post.comments | length }}
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="commentsModal-{{ post.id }}" tabindex="-1" aria-labelledby="commentsModalLabel-{{ post.id }}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="commentsModalLabel-{{ post.id }}">Comments on "{{ post.title }}"</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    {% if post.comments|length > 0 %}
+                      {% for comment in post.comments %}
+                      <div class="comment p-3 mb-2 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <div>
+                            <strong>
+                              {% if comment.getUserCommented().nom is defined and comment.getUserCommented().prenom is defined %}
+                                {{ comment.getUserCommented().nom }} {{ comment.getUserCommented().prenom }}
+                              {% else %}
+                                {{ comment.getUserCommented().username|default('User') }}
+                              {% endif %}
+                            </strong>
+                            {% if comment.createdAt is defined %}
+                            <small class="text-muted ms-2">{{ comment.createdAt|date('Y-m-d H:i') }}</small>
+                            {% endif %}
+                          </div>
+                          <a href="{{ path('app_comment_delete_back', { id: comment.id }) }}" class="btn btn-sm btn-outline-danger">
+                            <i class="ri-delete-bin-line"></i>
+                          </a>
+                        </div>
+                        <p class="mb-0">{{ comment.content }}</p>
+                      </div>
+                      {% endfor %}
+                    {% else %}
+                      <div class="text-center py-4">
+                        <i class="ri-chat-off-line fs-3 text-muted mb-2"></i>
+                        <p>No comments yet</p>
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <span class="badge bg-light text-dark">
+              <i class="ri-heart-fill text-danger me-1"></i>
+              {% if post.reactions is defined %}
+                {{ post.reactions|length }}
+              {% else %}
+                0
+              {% endif %}
+            </span>
+          </td>
+
+          <td>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-danger" title="Delete" href="{{ path('app_posts_delete_back', { id: post.id }) }}">
+                <i class="ri-delete-bin-line"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="10" class="text-center py-5">
+            <div class="py-4">
+              <i class="ri-file-search-line fs-1 text-muted mb-3"></i>
+              <h5>No posts found</h5>
+              <p class="text-muted">Try adjusting your filter criteria</p>
+              <a href="{{ path('app_postsback') }}" class="btn btn-outline-primary mt-2">
+                <i class="ri-refresh-line me-1"></i> Reset Filters
+              </a>
+            </div>
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>

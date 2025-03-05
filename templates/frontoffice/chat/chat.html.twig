@@ -1,0 +1,160 @@
+{% extends "frontOffice/base.html.twig" %}
+
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left pe-0 ps-lg-3 ms-0 me-0" style="max-width: 100%">
+      <div class="row">
+        <div class="col-lg-12 position-relative">
+          <div class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg">
+            <div class="chat-body p-3">
+              <div class="messages-content pb-5">
+                {% for message in messages %}
+                  <div class="message-item {% if message.sender.id == app.user.id %} outgoing-message {% endif %}">
+                    <div class="message-user">
+                      <figure class="avatar">
+                        <img src="{{ asset('uploads/images/' ~ message.sender.image) }}" alt="image" />
+                      </figure>
+                      <div>
+                        <h5>{{ message.sender.nom }}</h5>
+                        <div class="time">
+                          {{ message.dateMessage|date("H:i A") }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="message-wrap">
+                      {{ message.text }}
+                    </div>
+                  </div>
+                {% endfor %}
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-bottom dark-bg p-3 shadow-none theme-dark-bg" style="width: 98%">
+            <form id="send-message-form" action="{{ path('send_message') }}" class="chat-form d-flex align-items-center" method="POST">
+              <button class="bg-grey me-2">
+                <i class="ti-microphone text-grey-600"></i>
+              </button>
+              <input id="conversation-id" type="hidden" name="conversation_id" value="{{ conversation.id }}" />
+              <input
+                id="message-text"
+                type="text"
+                class="form-control me-2"
+                placeholder="Write a message..."
+                name="text"
+                required
+                style="border: 2px solid #ccc; border-radius: 30px; padding: 10px;"
+              />
+              <button class="bg-current">
+                <i class="ti-location-arrow text-white" style="transform: rotate(55deg);"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Ajoutez éventuellement ce style dans votre fichier CSS global si ce n'est pas déjà fait #}
+<style>
+  .messages-content {
+    max-height: 500px; /* Ajustez selon vos besoins */
+    overflow-y: auto;
+  }
+</style>
+
+<script>
+  // Fonction utilitaire pour scroller en bas du conteneur de messages
+  function scrollToBottom() {
+    const messagesContainer = document.querySelector('.messages-content');
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }
+
+  // Lors du chargement de la page, attendre un court instant puis scroller
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(scrollToBottom, 100);
+  });
+
+  // Lors de l'envoi d'un message, vider le champ et scroller vers le bas
+  document.getElementById("send-message-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const form = this;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+      method: form.method,
+      body: formData
+    })
+    .then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        return response.json();
+      }
+    })
+    .then(data => {
+      // Vider le champ de saisie
+      const messageInput = document.getElementById("message-text");
+      messageInput.value = "";
+      
+      // Scroller vers le bas
+      scrollToBottom();
+    })
+    .catch(error => console.error('Error:', error));
+  });
+</script>
+
+<script>
+  // Construire l'URL d'abonnement Mercure avec le topic correspondant à la conversation
+  const mercureUrl = "{{ mercurePublicUrl }}";
+  const topicUrl = "http://localhost:3000/conversations/{{ conversation.id }}";
+  
+  const url = new URL(mercureUrl);
+  url.searchParams.append('topic', topicUrl);
+
+  // Créer l'EventSource pour écouter les messages en temps réel
+  const eventSource = new EventSource(url.toString());
+
+  eventSource.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    const messagesContainer = document.querySelector('.messages-content');
+
+    // Créer dynamiquement un nouvel élément message
+    let messageDiv = document.createElement('div');
+    messageDiv.classList.add('message-item');
+    if (data.sender.id == {{ app.user.id }}) {
+      messageDiv.classList.add('outgoing-message');
+    }
+
+    messageDiv.innerHTML = `
+      <div class="message-user">
+        <figure class="avatar">
+          <img src="/uploads/images/${data.sender.image}" alt="image" />
+        </figure>
+        <div>
+          <h5>${data.sender.nom}</h5>
+          <div class="time">${data.dateMessage}</div>
+        </div>
+      </div>
+      <div class="message-wrap">
+        ${data.text}
+      </div>
+    `;
+
+    messagesContainer.appendChild(messageDiv);
+    // Scroller vers le bas après réception d'un nouveau message
+    scrollToBottom();
+  };
+
+  eventSource.onerror = function(error) {
+    console.error("Erreur avec l'EventSource Mercure : ", error);
+  };
+</script>
+
+{% endblock %}

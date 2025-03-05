@@ -1,0 +1,7 @@
+{# backoffice/type_rec/_delete_form.html.twig #}
+<form method="post" action="{{ path('app_type_rec_delete', { id: type_rec.id }) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');" style="display:inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ type_rec.id) }}">
+    <button type="submit" class="badge bg-danger mr-2 border-0" style="cursor:pointer;">
+        <i class="ri-delete-bin-line mr-0"></i>
+    </button>
+</form>

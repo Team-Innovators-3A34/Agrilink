@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Envoyer le Code</title>
+
+    <link rel="stylesheet" href="css/themify-icons.css" />
+    <link rel="stylesheet" href="css/feather.css" />
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png" />
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body class="color-theme-blue">
+    <div class="preloader"></div>
+
+    <div class="main-wrap">
+      <div class="nav-header bg-transparent shadow-none border-0">
+        <div class="nav-top w-100">
+          <a href="#" class="mob-menu ms-auto me-2 chat-active-btn"
+            ><i
+              class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"
+            ></i
+          ></a>
+          <a href="default-video.html" class="mob-menu me-2"
+            ><i
+              class="feather-video text-grey-900 font-sm btn-round-md bg-greylight"
+            ></i
+          ></a>
+          <a href="#" class="me-2 menu-search-icon mob-menu"
+            ><i
+              class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"
+            ></i
+          ></a>
+          <button class="nav-menu me-0 ms-2"></button>
+
+          <a
+            href="{{ path('app_login') }}"
+            class="header-btn d-none d-lg-block bg-dark fw-500 text-white font-xsss p-3 ms-auto w100 text-center lh-20 rounded-xl"
+            >Login</a
+          >
+        </div>
+      </div>
+
+      <div class="row">
+        <div
+          class="col-xl-6 d-none d-xl-block p-0 vh-100 bg-image-cover bg-no-repeat"
+          style="background-image: url(images/validation_acc.png)"
+        ></div>
+        <div
+          class="col-xl-5 vh-100 align-items-center d-flex bg-white rounded-3 overflow-hidden"
+          style="margin-left: 50px"
+        >
+          <div class="card shadow-none border-0 ms-auto me-auto login-card">
+            <div
+              class="card-body rounded-0 text-center"
+              style="width: 550px; margin-left: -80px"
+            >
+              <h2 class="fw-700 display1-size display2-md-size mb-4">
+                {% if action == 'SendCodeValidation' %} Send Code Validation
+                Account {% elseif action == 'ResetPassword' %} Reset Password {%
+                endif %}
+              </h2>
+
+              <p
+                class="text-grey-500 mb-4"
+                style="margin-top: -10px; margin-bottom: 20px"
+              >
+                {% if action == 'SendCodeValidation' %} Please enter your email
+                address below, and we will send you a code to validate your
+                account and gain access to our amazing platform. {% elseif
+                action == 'ResetPassword' %} Please enter your email address
+                below, and we will send you a link to reset your password. {%
+                endif %}
+              </p>
+
+              <form
+                action="{% if action == 'SendCodeValidation' %}
+                  {{ path('app_send_code_validation') }}
+              {% elseif action == 'ResetPassword' %}
+                  {{ path('app_send_reset_password') }}
+              {% endif %}"
+                method="POST"
+              >
+                <div class="form-group icon-input mb-3">
+                  <input
+                    type="email"
+                    class="style2-input ps-5 form-control text-grey-900 font-xss ls-3"
+                    placeholder="Your Email"
+                    name="email"
+                    style="margin-bottom: 30px"
+                  />
+                  <i class="font-sm ti-lock text-grey-500 pe-0"></i>
+                </div>
+                {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+                <div class="form-group mb-1">
+                  <button
+                    type="submit"
+                    class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/plugin.js"></script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>
