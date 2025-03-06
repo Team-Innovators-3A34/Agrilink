@@ -29,7 +29,7 @@ class Reaction
     private ?User $user = null;
 
     #[ORM\Column(length: 20)]
-    private ?string $type = null; // 'like', 'bravo', 'soutien', 'instructif', 'drole'
+    private ?string $type = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;

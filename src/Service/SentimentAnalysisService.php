@@ -27,19 +27,19 @@ class SentimentAnalysisService
     
     private function analyzeFrenchTextWithExternalAPI(string $text): array
     {
-        // Set a shorter timeout to fail faster
+        
         $response = $this->httpClient->request('POST', 'http://www.sentiment140.com/api/bulkClassifyJson', [
             'json' => [
                 'data' => [
                     ['text' => $text]
                 ]
             ],
-            'timeout' => 3.0 // Set a short timeout
+            'timeout' => 3.0
         ]);
         
         $data = $response->toArray();
         
-        // Map sentiment140 scores (0=negative, 2=neutral, 4=positive) to our format
+        
         $sentiment = 'neutral';
         $score = 0;
         

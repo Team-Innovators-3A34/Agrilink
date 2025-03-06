@@ -84,7 +84,7 @@ final class PostsController extends AbstractController
             $originalFilename = basename($generatedImagePath);
             $newFilename = 'ai-generated-' . uniqid() . '.jpg';
             
-            // Copier l'image générée vers le dossier images_directory
+
             copy(
                 'public/' . $generatedImagePath,
                 $this->getParameter('images_directory') . '/' . $newFilename
@@ -331,47 +331,5 @@ public function react(Request $request, Posts $post, EntityManagerInterface $ent
     }
 }
 
-    /* #[Route('/post/{id}/react', name: 'app_post_react', methods: ['POST'])]
-    public function react(Request $request, Posts $post, EntityManagerInterface $entityManager): JsonResponse
-    {
-        try {
-            $data = json_decode($request->getContent(), true);
-            $reactionType = $data['type'] ?? null;
-            
-            if (!$reactionType) {
-                return $this->json(['success' => false, 'message' => 'Missing reaction type'], 400);
-            }
-            
-            $user = $this->getUser();
-            if (!$user) {
-                return $this->json(['success' => false, 'message' => 'User not authenticated'], 401);
-            }
-            
-            // Add or update the reaction
-            $this->postService->addReaction($post, $user, $reactionType);
-            
-            // Get updated counts
-            $counts = [
-                'like' => $post->getReactionCountByType('like'),
-                'bravo' => $post->getReactionCountByType('bravo'),
-                'soutien' => $post->getReactionCountByType('soutien'),
-                'instructif' => $post->getReactionCountByType('instructif'),
-                'drole' => $post->getReactionCountByType('drole')
-            ];
-            
-            return $this->json([
-                'success' => true,
-                'counts' => $counts
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error('Reaction error: ' . $e->getMessage());
-            return $this->json([
-                'success' => false,
-                'message' => 'An error occurred: ' . $e->getMessage(),
-                'trace' => $e->getTraceAsString(), // Only include this temporarily for debugging
-                'file' => $e->getFile(),           // Only include this temporarily for debugging
-                'line' => $e->getLine()            // Only include this temporarily for debugging
-            ], 500);
-        }
-    } */
+
 }

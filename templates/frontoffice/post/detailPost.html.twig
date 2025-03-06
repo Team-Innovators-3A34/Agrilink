@@ -1,51 +1,103 @@
-{% extends "frontoffice/base.html.twig" %}
-{% block title %}Post detail
-{%
-endblock %}
-{% block content %}
-	<div class="main-content right-chat-active">
-		<div class="middle-sidebar-bottom">
-			<div class="middle-sidebar-left">
-				<div class="row">
-					<div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
-						<div class="card-body p-0 d-flex">
-							<figure class="avatar me-3">
-								<img src="{{ asset('uploads/images/' ~ post.getUserId().image) }}" alt="image" class="shadow-sm rounded-circle w45"/>
-							</figure>
-							<h4 class="fw-700 text-grey-900 font-xssss mt-1">
-								{{ post.getUserId().nom }}
-								{{ post.getUserId().prenom }}
-								<span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
-									{{ post.createdAt |date("d/m/Y")}}
-								</span>
-							</h4>
+{% extends "frontoffice/base.html.twig" %} {% block title %}Post detail{%
+endblock %} {% block content %}
+<!-- Post Image -->
+<style>
+  .image-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
 
+  .image-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+  }
 
-							{% if (app.user == post.getUserId()) %}
-								<div class="ms-auto d-flex align-items-center">
-									<a href="{{ path('app_posts_edit', { id: post.id }) }}" class="btn btn-primary btn-sm me-2 rounded-circle" title="Edit Post">
-										<i class="feather-edit text-white"></i>
-									</a>
+  .img-count {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
 
-									<form method="post" action="{{ path('app_posts_delete', { id: post.id }) }}" style="display: inline-block" onsubmit="return confirm('Are you sure you want to delete this post?');">
-										<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}"/>
-										<button type="submit" class="btn btn-danger btn-sm rounded-circle" title="Delete Post">
-											<i class="feather-trash text-white"></i>
-										</button>
-									</form>
-								</div>
-							{% endif %}
-						</div>
+  .image-single {
+    width: 50%;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+    max-height: 500px;
+  }
+</style>
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      <div class="row">
+        <div
+          class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3"
+          style="max-width: 700px; margin-left: 150px"
+        >
+          <div class="card-body p-0 d-flex">
+            <figure class="avatar me-3">
+              <img
+                src="{{ asset('uploads/images/' ~ post.getUserId().image) }}"
+                alt="image"
+                class="shadow-sm rounded-circle w45"
+              />
+            </figure>
+            <h4 class="fw-700 text-grey-900 font-xssss mt-1">
+              {{ post.getUserId().nom }} {{ post.getUserId().prenom }}
+              <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                {{ post.createdAt |date("d/m/Y")}}
+              </span>
+            </h4>
 
-						<!-- Right side: Post content -->
+            {% if (app.user == post.getUserId()) %}
+            <div class="ms-auto d-flex align-items-center">
+              <a
+                href="{{ path('app_posts_edit', { id: post.id }) }}"
+                class="btn btn-primary btn-sm me-2 rounded-circle"
+                title="Edit Post"
+              >
+                <i class="feather-edit text-white"></i>
+              </a>
 
-						<div
-							class="card-body p-0 me-lg-5">
-							<!-- Added ms-5 and ps-5 for right side positioning -->
-							<span class="text-grey-500 font-xssss fw-500 mb-1 d-block">{{
+              <form
+                method="post"
+                action="{{ path('app_posts_delete', { id: post.id }) }}"
+                style="display: inline-block"
+                onsubmit="return confirm('Are you sure you want to delete this post?');"
+              >
+                <input
+                  type="hidden"
+                  name="_token"
+                  value="{{ csrf_token('delete' ~ post.id) }}"
+                />
+                <button
+                  type="submit"
+                  class="btn btn-danger btn-sm rounded-circle"
+                  title="Delete Post"
+                >
+                  <i class="feather-trash text-white"></i>
+                </button>
+              </form>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Right side: Post content -->
+          <div class="card-body p-0 me-lg-5">
+            <!-- Added ms-5 and ps-5 for right side positioning -->
+            <span class="text-grey-500 font-xssss fw-500 mb-1 d-block">{{
               post.type
             }}</span>
-							{# Sentiment Analysis Badge #}
+
+            {# Sentiment Analysis Badge #}
 							<div class="ms-auto">
 								{% if post.sentiment == 'positive' %}
 									<span class="badge bg-success rounded-pill px-2 py-1">
@@ -65,28 +117,32 @@ endblock %}
 								{% endif %}
 							</div>
 
+            <!-- Post Title with "Title: " before it -->
+            <p
+              class="post-title"
+              style="
+                text-align: left;
+                font-size: 18px;
+                font-weight: bold;
+                color: black;
+              "
+            >
+              Title: <span style="font-size: 22px">{{ post.title }}</span>
+            </p>
 
-							<!-- Post Title with "Title: " before it -->
-							<p class="post-title" style="
-																																																															                text-align: left;
-																																																															                font-size: 22px;
-																																																															                font-weight: bold;
-																																																															                color: black;
-																																																															              ">
-								Title:
-								<span style="font-size: 22px">{{ post.title }}</span>
-							</p>
-
-							<!-- Post Description with a larger font size -->
-							<p class="post-description" style="
-																																																															                text-align: left;
-																																																															                font-size: 18px;
-																																																															                font-weight: normal;
-																																																															                color: #444;
-																																																															              ">
-								{{ post.description }}
-							</p>
-						</div>
+            <!-- Post Description with a larger font size -->
+            <p
+              class="post-description"
+              style="
+                text-align: left;
+                font-size: 18px;
+                font-weight: normal;
+                color: #444;
+              "
+            >
+              {{ post.description }}
+            </p>
+</div>
 
 						{% if post.aiGeneratedTip is defined and post.aiGeneratedTip is not empty %}
 							<div class="agricultural-tip-container mt-3 p-3" style="
@@ -100,131 +156,203 @@ endblock %}
 								<p class="mb-0" style="font-style: italic;">{{ post.aiGeneratedTip }}</p>
 							</div>
 						{% endif %}
-					
 
+            {% if post.images | length > 1 %}
+            <!-- Multiple Images Display -->
+            <div class="card-body p-0" style="text-align: center">
+              <div class="row ps-2 pe-2 image-container">
+                {% for image in post.images %} {% if loop.index <= 2 %}
+                <div class="col-xs-4 col-sm-4 p-1">
+                  <a
+                    href="{{ asset('uploads/images/' ~ image) }}"
+                    data-lightbox="roadtrip"
+                  >
+                    <img
+                      src="{{ asset('uploads/images/' ~ image) }}"
+                      alt="image"
+                    />
+                  </a>
+                </div>
+                {% endif %} {% endfor %} {% if post.images | length > 2 %}
+                <div class="col-xs-4 col-sm-4 p-1">
+                  <a
+                    href="{{ asset('uploads/images/' ~ post.images[2]) }}"
+                    data-lightbox="roadtrip"
+                    class="position-relative d-block"
+                  >
+                    <img
+                      src="{{ asset('uploads/images/' ~ post.images[2]) }}"
+                      alt="image"
+                    />
+                    {% if ( post.images | length - 3 > 0) %}
+                    <span class="img-count text-white">
+                      +{{ post.images | length - 3 }}
+                    </span>
+                    {% endif %}
+                  </a>
+                </div>
+                {% endif %}
+              </div>
+            </div>
 
-					{% if post.images | length > 1 %}
-						<!-- Affichage multiple -->
-						<div class="card-body d-block p-0">
-							<div class="row ps-2 pe-2 image-container">
-								{% for image in post.images %}
-									{% if loop.index <= 2 %}
-										<div class="col-xs-4 col-sm-4 p-1">
-											<a href="{{ asset('uploads/images/' ~ image) }}" data-lightbox="roadtrip">
-												<img src="{{ asset('uploads/images/' ~ image) }}" class="rounded-3 w-100" alt="image"/>
-											</a>
-										</div>
-									{% endif %}
-								{% endfor %}
-								{% if post.images | length > 2 %}
-									<div class="col-xs-4 col-sm-4 p-1">
-										<a href="{{ asset('uploads/images/' ~ post.images[2]) }}" data-lightbox="roadtrip" class="position-relative d-block">
-											<img src="{{ asset('uploads/images/' ~ post.images[2]) }}" class="rounded-3 w-100" alt="image"/>
-											{% if ( post.images | length - 3 > 0) %}
-												<span class="img-count font-sm text-white ls-3 fw-600">
-													<b>+{{ post.images | length - 3 }}</b>
-												</span>
-											{% endif %}
-										</a>
-									</div>
-								{% endif %}
-							</div>
-						</div>
-					{% elseif post.images | length == 1 %}
-						<!-- Affichage d'une seule image -->
-						<div class="card-body d-block p-0 mb-3">
-							<div class="row ps-2 pe-2">
-								<div class="col-sm-12 p-1">
-									<a href="{{ asset('uploads/images/' ~ post.images[0]) }}" data-lightbox="roadtr">
-										<img src="{{ asset('uploads/images/' ~ post.images[0]) }}" class="image-single" alt="image"/>
-									</a>
-								</div>
-							</div>
-						</div>
-					{% endif %}
+            {% elseif post.images | length == 1 %}
+            <!-- Single Image Display -->
+            <div class="card-body p-0 mb-3" style="text-align: center">
+              <div class="row ps-2 pe-2">
+                <div class="col-sm-12 p-1">
+                  <a
+                    href="{{ asset('uploads/images/' ~ post.images[0]) }}"
+                    data-lightbox="roadtrip"
+                  >
+                    <img
+                      src="{{ asset('uploads/images/' ~ post.images[0]) }}"
+                      class="image-single"
+                      alt="image"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
 
+         
+            {#
+            <a
+              href="#"
+              class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3"
+            >
+              <i
+                class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+              ></i>
+              <i
+                class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"
+              ></i
+              >2.8K Like
+            </a>
+            #}
+<div class="post-interactions d-flex justify-content-between align-items-center border-top pt-2">
+            <div class="card-body d-flex p-0 mt-3">
+              <div class="post-reactions d-flex" data-post-id="{{ post.id }}">
+                <div class="primary-reaction d-flex">
+                  {% set userReaction = app.user ?
+                  post.getUserReactionType(app.user) : null %}
 
-					<div
-						class="card-body d-flex p-0 mt-3">
-						{#  <a
-																																											              href="#"
-																																											              class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3"
-																																											            >
-																																											              <i
-																																											                class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
-																																											              ></i>
-																																											              <i
-																																											                class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"
-																																											              ></i
-																																											              >2.8K Like
-																																											            </a>  #}
+                  <button
+                    type="button"
+                    id="main-reaction-btn-{{ post.id }}"
+                    class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2 {{
+                      userReaction ? 'active' : ''
+                    }}"
+                  >
+                    {% if userReaction %} {% if userReaction == 'like' %}
+                    <i
+                      class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Like {% elseif userReaction == 'bravo' %}
+                    <i
+                      class="feather-award text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Bravo {% elseif userReaction == 'soutien' %}
+                    <i
+                      class="feather-heart text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Soutien {% elseif userReaction == 'instructif' %}
+                    <i
+                      class="feather-info text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Instructif {% elseif userReaction == 'drole' %}
+                    <i
+                      class="bi bi-emoji-laughing text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Drôle {% else %}
+                    <i
+                      class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Like {% endif %} {% else %}
+                    <i
+                      class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Like {% endif %}
+                  </button>
+                </div>
+              </div>
 
-						<div class="card-body d-flex p-0 mt-3">
-							<div class="post-reactions d-flex" data-post-id="{{ post.id }}">
-								<div class="primary-reaction d-flex">
-									{% set userReaction = app.user ? post.getUserReactionType(app.user) : null %}
+              <div
+                class="emoji-wrap reaction-selector"
+                id="reaction-selector-{{ post.id }}"
+                style="display: none"
+              >
+                <ul class="emojis list-inline mb-0">
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'like' ? 'active' : ''
+                    }}"
+                    data-type="like"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="feather-thumbs-up text-white bg-primary-gradiant btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Like</span>
+                  </li>
 
-									<button type="button" id="main-reaction-btn-{{ post.id }}" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2 {{ userReaction ? 'active' : '' }}">
-										{% if userReaction %}
-											{% if userReaction == 'like' %}
-												<i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-												Like
-											{% elseif userReaction == 'bravo' %}
-												<i class="feather-award text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-												Bravo
-											{% elseif userReaction == 'soutien' %}
-												<i class="feather-heart text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-												Soutien
-											{% elseif userReaction == 'instructif' %}
-												<i class="feather-info text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-												Instructif
-											{% elseif userReaction == 'drole' %}
-												<i class="bi bi-emoji-laughing text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-												Drôle
-											{% else %}
-												<i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-												Like
-											{% endif %}
-										{% else %}
-											<i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-											Like
-										{% endif %}
-									</button>
-								</div>
-							</div>
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'bravo' ? 'active' : ''
+                    }}"
+                    data-type="bravo"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="feather-award text-white bg-primary-gradiant btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Bravo</span>
+                  </li>
 
-							<div class="emoji-wrap reaction-selector" id="reaction-selector-{{ post.id }}" style="display: none;">
-								<ul class="emojis list-inline mb-0">
-									<li class="emoji list-inline-item reaction-option {{ userReaction == 'like' ? 'active' : '' }}" data-type="like" data-post-id="{{ post.id }}">
-										<i class="feather-thumbs-up text-white bg-primary-gradiant btn-round-xs font-xss"></i>
-										<span class="reaction-label">Like</span>
-									</li>
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'soutien' ? 'active' : ''
+                    }}"
+                    data-type="soutien"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="feather-heart text-white bg-primary-gradiant btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Soutien</span>
+                  </li>
 
-									<li class="emoji list-inline-item reaction-option {{ userReaction == 'bravo' ? 'active' : '' }}" data-type="bravo" data-post-id="{{ post.id }}">
-										<i class="feather-award text-white bg-primary-gradiant btn-round-xs font-xss"></i>
-										<span class="reaction-label">Bravo</span>
-									</li>
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'instructif' ? 'active' : ''
+                    }}"
+                    data-type="instructif"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="feather-info text-white bg-primary-gradiant btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Instructif</span>
+                  </li>
 
-									<li class="emoji list-inline-item reaction-option {{ userReaction == 'soutien' ? 'active' : '' }}" data-type="soutien" data-post-id="{{ post.id }}">
-										<i class="feather-heart text-white bg-primary-gradiant btn-round-xs font-xss"></i>
-										<span class="reaction-label">Soutien</span>
-									</li>
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'drole' ? 'active' : ''
+                    }}"
+                    data-type="drole"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="bi bi-emoji-laughing text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Drôle</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
 
-									<li class="emoji list-inline-item reaction-option {{ userReaction == 'instructif' ? 'active' : '' }}" data-type="instructif" data-post-id="{{ post.id }}">
-										<i class="feather-info text-white bg-primary-gradiant btn-round-xs font-xss"></i>
-										<span class="reaction-label">Instructif</span>
-									</li>
-
-									<li class="emoji list-inline-item reaction-option {{ userReaction == 'drole' ? 'active' : '' }}" data-type="drole" data-post-id="{{ post.id }}">
-										<i class="bi bi-emoji-laughing text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-										<span class="reaction-label">Drôle</span>
-									</li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="d-flex justify-content-between align-items-center">
-    <a
+           <a
         href="#"
         class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
         onclick="document.getElementById('comments-{{ post.id }}').classList.toggle('d-none'); return false;"
@@ -298,356 +426,332 @@ endblock %}
     </div>
 </div>
 
-						{# Comments Section #}
-            <div id="comments-{{ post.id }}" class="d-none">
-                <h2 class="mb-3">Comments ({{ post.comments|length }})</h2>
 
-                {# Add Comment Form #}
-                {% if is_granted('ROLE_AGRICULTURE') or is_granted('ROLE_RECYCLING_INVESTOR') or is_granted('ROLE_RESOURCE_INVESTOR') %}
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Add a Comment</h5>
-                        <form action="{{ path('app_comment_new', {'post_id': post.id}) }}" method="POST">
-                            <div class="mb-3">
-                                <textarea name="content" class="form-control" rows="3" placeholder="Write your comment..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit Comment</button>
-                        </form>
-                    </div>
-                </div>
-                {% endif %}
-
-                {# Comments List #}
-                {% if post.comments|length > 0 %}
-                    {% for comment in post.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
-                    <div class="card comment-card" id="comment-{{ comment.id }}">
-                        <div class="comment-header">
-                            <div>
-                                <strong>
-                                    {% if comment.userCommented.nom is defined and comment.userCommented.prenom is defined %}
-                                        {{ comment.userCommented.nom }} {{ comment.userCommented.prenom }}
-                                    {% else %}
-                                        {{ comment.userCommented.username|default('User') }}
-                                    {% endif %}
-                                </strong>
-                                <small class="text-muted ms-2">
-                                    {{ comment.createdAt|date('F d, Y H:i') }}
-                                </small>
-                            </div>
-                            
-                            {# Comment Actions #}
-                            <div class="comment-actions">
-                                {# Edit Button (only for comment owner) #}
-                                {% if app.user and app.user == comment.userCommented %}
-                                    <button 
-                                        class="btn btn-sm btn-outline-secondary edit-comment-btn"
-                                        data-comment-id="{{ comment.id }}"
-                                        data-current-content="{{ comment.content }}"
-                                    >
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                {% endif %}
-
-                                {# Delete Button #}
-                                {% if app.user and (app.user == comment.userCommented or is_granted('ROLE_ADMIN')) %}
-                                    <form 
-                                        action="{{ path('app_comment_delete', {'id': comment.id}) }}" 
-                                        method="POST" 
-                                        onsubmit="return confirm('Are you sure you want to delete this comment?');"
-                                    >
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                {% endif %}
-                            </div>
+          {# Comments Section #}
+<div id="comments-{{ post.id }}" class="d-none">
+  {# Add Comment Form #}
+  <div class="d-flex align-items-center mt-3">
+    <form
+      action="{{ path('app_comment_new', { post_id: post.id }) }}"
+      method="post"
+      class="w-100"
+    >
+      <div class="d-flex">
+        <input
+          type="text"
+          name="content"
+          class="form-control me-2"
+          placeholder="Write a comment..."
+        />
+        <button type="submit" class="btn btn-primary">Post</button>
+      </div>
+    </form>
+  </div>
+  {% for message in app.flashes('error') %}
+  <div class="alert alert-danger">{{ message }}</div>
+  {% endfor %} 
+  
+  {# Display Comments #} 
+  {% if post.comments|length > 0 %}
+    {% for comment in post.comments|sort((a, b) => b.createdAt <=> a.createdAt) %}
+      <div class="comment-item d-flex mt-3">
+        <figure class="avatar me-3">
+          <img
+            src="{{ asset('uploads/images/' ~ comment.getUserCommented().image) }}"
+            alt="user"
+            class="shadow-sm rounded-circle w35"
+          />
+        </figure>
+        <div>
+          <div>
+            <!-- Zone de texte dynamique -->
+            <div
+              class="bg-light p-3 rounded comment-text"
+              id="comment-text-{{ comment.id }}"
+            >
+              <div class="comment-body" id="comment-content-{{ comment.id }}">
+                {% if comment.isToxic %}
+                    <div class="toxic-comment" data-comment-id="{{ comment.id }}" data-content="{{ comment.content }}">
+                        <div class="alert alert-warning">
+                            <span>This comment contains inappropriate content and has been filtered to keep our users safe.</span>
                         </div>
-                        {# Modify comment body section #}
-        <div class="comment-body" id="comment-content-{{ comment.id }}">
-            {% if comment.isToxic %}
-                <div class="toxic-comment" data-comment-id="{{ comment.id }}" data-content="{{ comment.content }}">
-                    <div class="alert alert-warning">
-                        <span>This comment may contain inappropriate content.</span>
-                        <button class="btn btn-sm btn-outline-secondary show-comment-btn">
-                            Show Comment
-                        </button>
                     </div>
-                </div>
-            {% else %}
-                {{ comment.content }}
+                {% else %}
+                    <p class="mb-0">{{ comment.content }}</p>
+                {% endif %}
+              </div>
+            </div>
+            
+            <!-- Zone de texte cachée pour édition -->
+            <textarea
+              class="form-control d-none"
+              id="edit-comment-{{ comment.id }}"
+              >{{ comment.content }}</textarea
+            >
+            
+            <span class="font-xssss fw-500 mt-1 text-grey-500">
+              {{ comment.createdAt|date('Y-m-d H:i:s') }}
+            </span>
+            
+            {% if app.user == comment.getUserCommented() %}
+            <div class="comment-actions mt-2">
+              <button
+                class="btn btn-sm btn-outline-primary me-2 edit-btn"
+                data-comment-id="{{ comment.id }}"
+              >
+                Edit
+              </button>
+              
+              <button
+                class="btn btn-sm btn-outline-success d-none save-btn"
+                data-comment-id="{{ comment.id }}"
+              >
+                Save
+              </button>
+              
+              <form
+                method="post"
+                action="{{ path('app_comment_delete', { id: comment.id }) }}"
+                style="display: inline-block"
+                onsubmit="return confirm('Delete this comment?');"
+              >
+                <input
+                  type="hidden"
+                  name="_token"
+                  value="{{ csrf_token('delete' ~ comment.id) }}"
+                />
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  Delete
+                </button>
+              </form>
+            </div>
             {% endif %}
+          </div>
         </div>
-    </div>
+      </div>
     {% endfor %}
-{% else %}
+  {% else %}
     <div class="alert alert-info text-center">
-        No comments yet. Be the first to comment!
+      No comments yet. Be the first to comment!
     </div>
-{% endif %}
-            </div>
-        </div>
-    </div>
+  {% endif %}
 </div>
-
-{# Modal edit comment #}
-<div class="modal fade" id="editCommentModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Comment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <textarea id="editCommentContent" class="form-control" rows="3"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveCommentBtn">Save Changes</button>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
+ </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".edit-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          let commentId = this.dataset.commentId;
+          let textElement = document.getElementById(
+            "comment-text-" + commentId
+          );
+          let textarea = document.getElementById("edit-comment-" + commentId);
+          let saveButton = document.querySelector(
+            ".save-btn[data-comment-id='" + commentId + "']"
+          );
 
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+          // Afficher le champ de texte et masquer l'affichage normal
+          textElement.classList.add("d-none");
+          textarea.classList.remove("d-none");
+          textarea.focus();
 
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-document.querySelectorAll(".edit-btn").forEach((button) => {
-button.addEventListener("click", function () {
-let commentId = this.dataset.commentId;
-let textElement = document.getElementById("comment-text-" + commentId);
-let textarea = document.getElementById("edit-comment-" + commentId);
-let saveButton = document.querySelector(".save-btn[data-comment-id='" + commentId + "']");
-
-    const editButtons = document.querySelectorAll('.edit-comment-btn');
-    const editModal = new bootstrap.Modal(document.getElementById('editCommentModal'));
-    const editCommentContent = document.getElementById('editCommentContent');
-    const saveCommentBtn = document.getElementById('saveCommentBtn');
-    let currentCommentId = null;
-
-    editButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            currentCommentId = this.dataset.commentId;
-            editCommentContent.value = this.dataset.currentContent;
-            editModal.show();
+          // Afficher le bouton "Save" et cacher "Edit"
+          this.classList.add("d-none");
+          saveButton.classList.remove("d-none");
         });
-    });
+      });
 
-    saveCommentBtn.addEventListener('click', function() {
-        const newContent = editCommentContent.value.trim();
-        
-        if (newContent) {
-            fetch(`/comment/edit/${currentCommentId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ content: newContent })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById(`comment-content-${currentCommentId}`).textContent = newContent;
-                    editModal.hide();
-                } else {
-                    alert('Failed to update comment');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred');
-            });
-        }
-    });
-});
+      document.querySelectorAll(".save-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          let commentId = this.dataset.commentId;
+          let textarea = document.getElementById("edit-comment-" + commentId);
+          let newText = textarea.value;
 
- const showCommentButtons = document.querySelectorAll('.show-comment-btn');
-    
-    showCommentButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const commentContainer = this.closest('.toxic-comment');
-            const content = commentContainer.dataset.content;
-            
-            const isAdult = confirm('This comment may contain inappropriate content. Are you sure you want to view it?');
-            
-            if (isAdult) {
-                commentContainer.innerHTML = `<div class="comment-content">${content}</div>`;
+          // Envoi AJAX pour sauvegarder les modifications
+          fetch(
+            "{{ path('app_comment_edit', { id: 0 }) }}".replace("0", commentId),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": "{{ csrf_token('edit_comment') }}",
+              },
+              body: JSON.stringify({ content: newText }),
             }
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                // Mettre à jour le texte affiché
+                document.getElementById(
+                  "comment-text-" + commentId
+                ).innerHTML = <p class="mb-0">${newText}</p>;
+                document
+                  .getElementById("comment-text-" + commentId)
+                  .classList.remove("d-none");
+                textarea.classList.add("d-none");
+
+                // Réafficher "Edit" et cacher "Save"
+                document
+                  .querySelector(
+                    ".edit-btn[data-comment-id='" + commentId + "']"
+                  )
+                  .classList.remove("d-none");
+                button.classList.add("d-none");
+              } else {
+                alert("Erreur lors de la mise à jour.");
+              }
+            });
         });
+      });
     });
-});
+    
 
-// Afficher le champ de texte et masquer l'affichage normal
-textElement.classList.add("d-none");
-textarea.classList.remove("d-none");
-textarea.focus();
+    // New sharing functionality
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(
+        function () {
+          // Optional: Show a success message
+          alert("Link copied to clipboard!");
+        },
+        function (err) {
+          console.error("Could not copy text: ", err);
+        }
+      );
+    }
 
-// Afficher le bouton "Save" et cacher "Edit"
-this.classList.add("d-none");
-saveButton.classList.remove("d-none");
-});
+    // Close dropdown when X is clicked
+    const closeButton = document.querySelector(".feather-x");
+    if (closeButton) {
+      closeButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        const dropdown = document.getElementById("dropdownMenu21");
+        bootstrap.Dropdown.getInstance(dropdown).hide();
+      });
+    }
 
+    // Add click handler for the copy link button
+    const copyLinkButton = document.querySelector(".ti-link");
+    if (copyLinkButton) {
+      copyLinkButton.parentElement.addEventListener("click", function (e) {
+        e.preventDefault();
+        const url = this.getAttribute("data-url");
+        copyToClipboard(url);
+      });
+    }
 
-document.querySelectorAll(".save-btn").forEach((button) => {
-button.addEventListener("click", function () {
-let commentId = this.dataset.commentId;
-let textarea = document.getElementById("edit-comment-" + commentId);
-let newText = textarea.value;
+    // Toggle reaction selector
+    document
+      .querySelectorAll('[id^="main-reaction-btn-"]')
+      .forEach((button) => {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          const postId = this.id.replace("main-reaction-btn-", "");
+          const selector = document.getElementById(
+            reaction-selector-${postId}
+          );
 
-// Envoi AJAX pour sauvegarder les modifications
-fetch("{{ path('app_comment_edit', { id: 0 }) }}".replace("0", commentId), {
-method: "POST",
-headers: {
-"Content-Type": "application/json",
-"X-Requested-With": "XMLHttpRequest",
-"X-CSRF-Token": "{{ csrf_token('edit_comment') }}"
-},
-body: JSON.stringify(
-{content: newText}
-)
-}).then((response) => response.json()).then((data) => {
-if (data.success) { // Mettre à jour le texte affiché
-document.getElementById("comment-text-" + commentId).innerHTML = `<p class="mb-0">${newText}</p>`;
-document.getElementById("comment-text-" + commentId).classList.remove("d-none");
-textarea.classList.add("d-none");
+          if (selector.style.display === "flex") {
+            selector.style.display = "none";
+          } else {
+            selector.style.display = "flex";
+          }
+        });
+      });
 
-// Réafficher "Edit" et cacher "Save"
-document.querySelector(".edit-btn[data-comment-id='" + commentId + "']").classList.remove("d-none");
-button.classList.add("d-none");
-} else {
-alert("Erreur lors de la mise à jour.");
-}
-});
-});
-});
+    // Handle reactions
+    document.querySelectorAll(".reaction-option").forEach((button) => {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        const postId = this.dataset.postId;
+        const reactionType = this.dataset.type;
+        const selector = document.getElementById(reaction-selector-${postId});
 
+        // Send AJAX request
+        fetch(/post/${postId}/react, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: JSON.stringify({ type: reactionType }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Update main button
+              const mainButton = document.getElementById(
+                main-reaction-btn-${postId}
+              );
+              mainButton.classList.add("active");
 
-// New sharing functionality
-function copyToClipboard(text) {
-navigator.clipboard.writeText(text).then(function () { // Optional: Show a success message
-alert('Link copied to clipboard!');
-}, function (err) {
-console.error('Could not copy text: ', err);
-});
-}
+              // Update icon and text based on reaction type
+              let iconClass, buttonText;
 
-// Close dropdown when X is clicked
-const closeButton = document.querySelector('.feather-x');
-if (closeButton) {
-closeButton.addEventListener('click', function (e) {
-e.preventDefault();
-const dropdown = document.getElementById('dropdownMenu21');
-bootstrap.Dropdown.getInstance(dropdown).hide();
-});
-}
+              switch (reactionType) {
+                case "like":
+                  iconClass = "feather-thumbs-up";
+                  buttonText = "Like";
+                  break;
+                case "bravo":
+                  iconClass = "feather-award";
+                  buttonText = "Bravo";
+                  break;
+                case "soutien":
+                  iconClass = "feather-heart";
+                  buttonText = "Soutien";
+                  break;
+                case "instructif":
+                  iconClass = "feather-info";
+                  buttonText = "Instructif";
+                  break;
+                case "drole":
+                  iconClass = "bi bi-emoji-laughing";
+                  buttonText = "Drôle";
+                  break;
+                default:
+                  iconClass = "feather-thumbs-up";
+                  buttonText = "Like";
+              }
 
-// Add click handler for the copy link button
-const copyLinkButton = document.querySelector('.ti-link');
-if (copyLinkButton) {
-copyLinkButton.parentElement.addEventListener('click', function (e) {
-e.preventDefault();
-const url = this.getAttribute('data-url');
-copyToClipboard(url);
-});
-}
+              mainButton.innerHTML = <i class="${iconClass} text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i> ${buttonText};
 
-// Toggle reaction selector
-document.querySelectorAll('[id^="main-reaction-btn-"]').forEach(button => {
-button.addEventListener('click', function (event) {
-event.preventDefault();
-const postId = this.id.replace('main-reaction-btn-', '');
-const selector = document.getElementById (`reaction-selector-${postId}`);
+              // Update active state on reaction buttons
+              document
+                .querySelectorAll(.reaction-option[data-post-id="${postId}"])
+                .forEach((btn) => {
+                  if (btn.dataset.type === reactionType) {
+                    btn.classList.add("active");
+                  } else {
+                    btn.classList.remove("active");
+                  }
+                });
 
-if (selector.style.display === 'flex') {
-selector.style.display = 'none';
-} else {
-selector.style.display = 'flex';
-}
-});
-});
+              // Hide selector after selection
+              selector.style.display = "none";
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    });
 
-// Handle reactions
-document.querySelectorAll('.reaction-option').forEach(button => {
-button.addEventListener('click', function (event) {
-event.preventDefault();
-const postId = this.dataset.postId;
-const reactionType = this.dataset.type;
-const selector = document.getElementById (`reaction-selector-${postId}`);
+    // Close selector when clicking outside
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".post-reactions")) {
+        document.querySelectorAll(".reaction-selector").forEach((selector) => {
+          selector.style.display = "none";
+        });
+      }
+    });
+  </script>
 
-// Send AJAX request
-fetch (`/post/${postId}/react`, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-'X-Requested-With': 'XMLHttpRequest'
-},
-body: JSON.stringify(
-{type: reactionType}
-)
-}).then(response => response.json()).then(data => {
-if (data.success) { // Update main button
-const mainButton = document.getElementById (`main-reaction-btn-${postId}`);
-mainButton.classList.add('active');
-
-// Update icon and text based on reaction type
-let iconClass,
-buttonText;
-
-switch (reactionType) {
-case 'like': iconClass = 'feather-thumbs-up';
-buttonText = 'Like';
-break;
-case 'bravo': iconClass = 'feather-award';
-buttonText = 'Bravo';
-break;
-case 'soutien': iconClass = 'feather-heart';
-buttonText = 'Soutien';
-break;
-case 'instructif': iconClass = 'feather-info';
-buttonText = 'Instructif';
-break;
-case 'drole': iconClass = 'bi bi-emoji-laughing';
-buttonText = 'Drôle';
-break;
-default: iconClass = 'feather-thumbs-up';
-buttonText = 'Like';
-}
-
-mainButton.innerHTML = `<i class="${iconClass} text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i> ${buttonText}`;
-
-// Update active state on reaction buttons
-document.querySelectorAll (`.reaction-option[data-post-id="${postId}"]`).forEach(btn => {
-if (btn.dataset.type === reactionType) {
-btn.classList.add('active');
-} else {
-btn.classList.remove('active');
-}
-});
-
-// Hide selector after selection
-selector.style.display = 'none';
-}
-}).catch(error => {
-console.error('Error:', error);
-});
-});
-});
-
-// Close selector when clicking outside
-document.addEventListener('click', function (event) {
-if (! event.target.closest('.post-reactions')) {
-document.querySelectorAll('.reaction-selector').forEach(selector => {
-selector.style.display = 'none';
-});
-}
-});
-	</script>
-
-{% endblock %}
+  {% endblock %}

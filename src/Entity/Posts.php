@@ -281,7 +281,7 @@ private Collection $reactions;
         return $this;
     }
 
-    // Getter et Setter pour sentiment
+
     public function getSentiment(): ?string
     {
         return $this->sentiment;
@@ -293,7 +293,7 @@ private Collection $reactions;
         return $this;
     }
 
-    // Getter et Setter pour sentimentScore
+   
     public function getSentimentScore(): ?float
     {
         return $this->sentimentScore;
@@ -317,4 +317,3 @@ private Collection $reactions;
         return $this;
     }
 }
-
