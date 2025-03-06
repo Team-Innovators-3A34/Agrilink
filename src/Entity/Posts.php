@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Service\OpenAIService;
 
 
 #[ORM\Entity(repositoryClass: PostsRepository::class)]
@@ -51,11 +52,17 @@ class Posts
     #[ORM\Column(type: 'json', nullable: true)]
     private array $images = [];
 
-    #[ORM\Column(type: 'json', nullable: true)]
-    private array $likes = [];
-    
-    #[ORM\Column(type: 'json', nullable: true)]
-    private array $dislikes = [];
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $sentiment = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $sentimentScore = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $aiGeneratedTip = null;
+
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Reaction::class, orphanRemoval: true)]
+    private Collection $reactions;
 
     public function getId(): ?int
     {
@@ -190,103 +197,113 @@ class Posts
     }
 
 
-public function getLikes(): array
-{
-    return $this->likes;
-}
-
-public function setLikes(array $likes): self
-{
-    $this->likes = $likes;
-    return $this;
-}
-
-public function addLike(int $userId): self
-{
-    if (!in_array($userId, $this->likes)) {
-        $this->likes[] = $userId;
-        // Remove from dislikes if present
-        $this->removeDislike($userId);
+    public function getReactions(): Collection
+    {
+        return $this->reactions;
     }
-    return $this;
-}
 
-public function removeLike(int $userId): self
-{
-    if (($key = array_search($userId, $this->likes)) !== false) {
-        unset($this->likes[$key]);
-        $this->likes = array_values($this->likes); // Reindex array
+    /**
+     * Get reactions of a specific type
+     */
+    public function getReactionsByType(string $type): array
+    {
+        return $this->reactions->filter(
+            fn(Reaction $reaction) => $reaction->getType() === $type
+        )->toArray();
     }
-    return $this;
-}
 
-public function getDislikes(): array
-{
-    return $this->dislikes;
-}
-
-public function setDislikes(array $dislikes): self
-{
-    $this->dislikes = $dislikes;
-    return $this;
-}
-
-public function addDislike(int $userId): self
-{
-    if (!in_array($userId, $this->dislikes)) {
-        $this->dislikes[] = $userId;
-        // Remove from likes if present
-        $this->removeLike($userId); // Correct method name
+    /**
+     * Count reactions of a specific type
+     */
+    public function getReactionCountByType(string $type): int
+    {
+        return count($this->getReactionsByType($type));
     }
-    return $this;
-}
 
-public function removeDislike(int $userId): self
-{
-    if (($key = array_search($userId, $this->dislikes)) !== false) {
-        unset($this->dislikes[$key]);
-        $this->dislikes = array_values($this->dislikes); // Reindex array
+    /**
+     * Check if a user has reacted with a specific type
+     */
+    public function hasUserReaction(User $user, ?string $type = null): bool
+    {
+        foreach ($this->reactions as $reaction) {
+            if ($reaction->getUser() === $user) {
+                if ($type === null || $reaction->getType() === $type) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
-    return $this;
-}
 
-// Helper methods
-public function getLikesCount(): int
-{
-    return count($this->likes);
-}
-
-public function getDislikesCount(): int
-{
-    return count($this->dislikes);
-}
-
-public function getUserReaction(?User $user): ?string
-{
-    if (!$user) {
+    /**
+     * Get the reaction type for a specific user
+     */
+    public function getUserReactionType(User $user): ?string
+    {
+        foreach ($this->reactions as $reaction) {
+            if ($reaction->getUser() === $user) {
+                return $reaction->getType();
+            }
+        }
         return null;
     }
-    
-    $userId = $user->getId();
-    
-    if (in_array($userId, $this->likes)) {
-        return 'like';
-    }
-    
-    if (in_array($userId, $this->dislikes)) {
-        return 'dislike';
-    }
-    
-    return null;
-    if ($type === 'like') {
-        // Débogage
-        error_log('Adding like for user ' . $userId);
-        try {
-            $post->addLike($userId);
-        } catch (\Exception $e) {
-            error_log('Error adding like: ' . $e->getMessage());
-            throw $e;
+
+    public function addReaction(Reaction $reaction): self
+    {
+        if (!$this->reactions->contains($reaction)) {
+            $this->reactions->add($reaction);
+            $reaction->setPost($this);
         }
+
+        return $this;
+    }
+
+    public function removeReaction(Reaction $reaction): self
+    {
+        if ($this->reactions->removeElement($reaction)) {
+            // set the owning side to null (unless already changed)
+            if ($reaction->getPost() === $this) {
+                $reaction->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    // Getter et Setter pour sentiment
+    public function getSentiment(): ?string
+    {
+        return $this->sentiment;
+    }
+
+    public function setSentiment(?string $sentiment): self
+    {
+        $this->sentiment = $sentiment;
+        return $this;
+    }
+
+    // Getter et Setter pour sentimentScore
+    public function getSentimentScore(): ?float
+    {
+        return $this->sentimentScore;
+    }
+
+    public function setSentimentScore(?float $sentimentScore): self
+    {
+        $this->sentimentScore = $sentimentScore;
+        return $this;
+    }
+
+
+    public function getAiGeneratedTip(): ?string
+    {
+        return $this->aiGeneratedTip;
+    }
+
+    public function setAiGeneratedTip(?string $aiGeneratedTip): self
+    {
+        $this->aiGeneratedTip = $aiGeneratedTip;
+
+        return $this;
     }
 }
- }

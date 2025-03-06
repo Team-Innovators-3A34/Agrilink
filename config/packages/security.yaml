@@ -3,6 +3,7 @@ security:
     Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
 
   role_hierarchy:
+    ROLE_ADMIN: []
     ROLE_AGRICULTURE: []
     ROLE_RECYCLING_INVESTOR: []
     ROLE_RESOURCE_INVESTOR: []
@@ -34,3 +35,6 @@ security:
   access_control: # <-- Correct indentation ici !
     - { path: ^/api/users, roles: PUBLIC_ACCESS }
     - { path: ^/matched-users, roles: PUBLIC_ACCESS }
+    - { path: ^/dashboard, roles: ROLE_ADMIN }
+
+    

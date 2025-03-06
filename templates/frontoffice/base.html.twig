@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>{% block title %} {% endblock %}</title>
     <base href="{{ app.request.schemeAndHttpHost }}/">
 
@@ -17,6 +18,9 @@
     <link rel="stylesheet" href="css/emoji.css" />
 
     <link rel="stylesheet" href="css/lightbox.css" />
+    <link rel="stylesheet" href="{{ asset('css/reaction.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
  <style>
   /* Ensure search results are directly under the input field */
   #searchResults {
@@ -84,7 +88,7 @@
               class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"
             ></i
           ></a>
-          <a href="default-video.html" class="mob-menu me-2"
+          <a href="" class="mob-menu me-2"
             ><i
               class="feather-video text-grey-900 font-sm btn-round-md bg-greylight"
             ></i
@@ -120,33 +124,35 @@
           ></i
         ></a>
         <a
-          href="default-storie.html"
+          href="{{path("tiktok_videos")}}"
           class="p-2 text-center ms-0 menu-icon center-menu-icon"
           ><i
             class="feather-zap font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500"
           ></i
         ></a>
+       
+       <a
+  id="voice-btn"
+  class="p-2 text-center ms-0 menu-icon center-menu-icon"
+>
+  <i
+    class="feather-mic font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500"
+  ></i>
+</a>
+
         <a
-          href="default-video.html"
+          href="{{path('app_features')}}"
           class="p-2 text-center ms-0 menu-icon center-menu-icon"
-          ><i
-            class="feather-video font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500"
+            ><i
+            class="feather-grid font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500"
           ></i
         ></a>
-        <a
-          href="default-group.html"
-          class="p-2 text-center ms-0 menu-icon center-menu-icon"
-          ><i
-            class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500"
-          ></i
-        ></a>
-        <a
-          href="shop-2.html"
-          class="p-2 text-center ms-0 menu-icon center-menu-icon"
-          ><i
-            class="feather-shopping-bag font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500"
-          ></i
-        ></a>
+       <a
+  href="{{ path('vr_room') }}"
+  class="p-2 text-center ms-0 menu-icon center-menu-icon"
+>
+  <i class="bi bi-headset-vr font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500"></i>
+</a>
 
         <a
           href="#"
@@ -403,7 +409,7 @@
                     ><i
                       class="feather-tv btn-round-md bg-gold-gradiant me-3"
                     ></i
-                    ><span>Newsfeed</span></a
+                    ><span>Fil d'actualités</span></a
                   >
                 </li>
                 <li>
@@ -437,27 +443,38 @@
               <ul class="mb-3">
                 <li>
                   <a
-                    href="default-email-box.html"
+                    href="{{path('app_notification')}}"
                     class="nav-content-bttn open-font"
-                    ><i class="font-xl text-current feather-inbox me-3"></i
-                    ><span>Email Box</span
-                    ><span class="circle-count bg-warning mt-1">584</span></a
+                    ><i class="font-xl text-current feather-bell me-3"></i
+                    ><span>Notification</span
+                    >
+
+                    {% if app.user.getUnreadToNotifications() | length >
+                      0 %}
+                      <span class="circle-count bg-warning mt-1">
+                      {{ app.user.getUnreadToNotifications() | length }}</span
+                      >
+                      {% endif %}
+
+
+                    
+                    </a
                   >
                 </li>
                 <li>
-                  <a
+                    <a
                     href="{{path("display_point_front")}}"
                     class="nav-content-bttn open-font"
                     ><i class="font-xl text-current feather-refresh-cw me-3"></i
-                    ><span>Near Point</span></a
+                    ><span>Point Proche</span></a
                   >
                 </li>
                 <li>
-                  <a
+                    <a
                     href="{{path("display_event_front")}}"
                     class="nav-content-bttn open-font"
                     ><i class="font-xl text-current feather-map-pin me-3"></i
-                    ><span>Latest Event</span></a
+                    ><span>Dernier Événement</span></a
                   >
                 </li>
               </ul>
@@ -475,7 +492,7 @@
                     href="{{path("app_settings")}}"
                     class="nav-content-bttn open-font h-auto pt-2 pb-2"
                     ><i class="font-sm feather-settings me-3 text-grey-500"></i
-                    ><span>Settings</span></a
+                    ><span>Paramètres</span></a
                   >
                 </li>
                 <li>
@@ -911,7 +928,40 @@
 
     <script src="js/lightbox.js"></script>
     <script src="js/scripts.js"></script>
-   
+   <script>
+document.addEventListener("DOMContentLoaded", function () {
+      const voiceButton = document.getElementById("voice-btn");
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  
+  recognition.continuous = false;
+  recognition.lang = "en-US"; 
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  voiceButton.addEventListener("click", () => {
+    recognition.start();
+  });
+
+  recognition.onresult = (event) => {
+    const command = event.results[0][0].transcript.toLowerCase();
+
+    fetch(`/voice-command`, {
+      method: "POST",
+      body: JSON.stringify({ command: command }),
+      headers: { "Content-Type": "application/json" }
+    }).then(response => response.json())
+      .then(data => {
+        if (data.redirect) {
+          window.location.href = data.redirect;
+        }
+      });
+  };
+
+
+});
+  </script>
 <script>
   function searchUsers() {
     let query = document.getElementById("searchInput").value;

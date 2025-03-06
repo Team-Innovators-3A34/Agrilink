@@ -108,9 +108,14 @@
                   >
                     <i class="feather-mail font-md"></i>
                   </a>
-            
+                  <a href="{{ path('app_profilee_pdf', {'id': user.id}) }}" class="d-none d-lg-block bg-gold-gradiant  btn-round-lg ms-2 rounded-3 text-white"
+                  >
+                    <i class="feather-download font-xs me-1"></i>
+                    
+                </a>
                 </div>
               {% endif %}
+                 
             </div>
             
 
@@ -246,31 +251,23 @@
                           A Propos
                         </h4>
                         <p class="fw-500 text-grey-500 lh-24 font-xssss mb-0">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. Morbi nulla dolor, ornare at commodo non,
-                          feugiat non nisi. Phasellus faucibus mollis pharetra.
-                          Proin blandit ac massa sed rhoncus
+                          {% if user.description %}
+                          {{user.description}}
+                          {% else %}
+                          e suis un entrepreneur agricole à la recherche d'investisseurs pour soutenir mes projets visant à améliorer la production et promouvoir des pratiques durables. Si vous êtes intéressé par l'innovation dans le secteur agricole, contactez-moi pour explorer les opportunités.
+                          {% endif %}
                         </p>
                       </div>
-                      <div class="card-body border-top-xs d-flex">
-                        <i class="feather-lock text-grey-500 me-3 font-lg"></i>
-                        <h4 class="fw-700 text-grey-900 font-xssss mt-0">
-                          Private
-                          <span
-                            class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500"
-                            >What's up, how are you?</span
-                          >
-                        </h4>
-                      </div>
+                     
 
                       <div class="card-body d-flex pt-0">
                         <i class="feather-eye text-grey-500 me-3 font-lg"></i>
                         <h4 class="fw-700 text-grey-900 font-xssss mt-0">
                           Visble
-                          <span
+                            <span
                             class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500"
-                            >Anyone can find you</span
-                          >
+                            >Visible par tout le monde</span>
+                          
                         </h4>
                       </div>
                       <div class="card-body d-flex pt-0">
@@ -278,13 +275,14 @@
                           class="feather-map-pin text-grey-500 me-3 font-lg"
                         ></i>
                         <h4 class="fw-700 text-grey-900 font-xssss mt-1">
-                          Flodia, Austia
+                          {{ user.adresse|slice(0, 18) ~ '...' }}
+
                         </h4>
                       </div>
                       <div class="card-body d-flex pt-0">
                         <i class="feather-users text-grey-500 me-3 font-lg"></i>
                         <h4 class="fw-700 text-grey-900 font-xssss mt-1">
-                          Genarel Group
+                          {{ user.getFriendsCount() }} Amis
                         </h4>
                       </div>
                     </div>
@@ -451,11 +449,30 @@
                       
                       
                       </div>
+                   <div class="card-body p-0 me-lg-5">
+    <p class="fw-bold text-grey-500 lh-26 font-xssss w-100">
+        {{ post.type }}
+    </p>
+</div>
+
                       <div class="card-body p-0 me-lg-5">
                         <p class="fw-500 text-grey-500 lh-26 font-xssss w-100">
                           {{ post.description }}
                         </p>
                       </div>
+
+                      {% if post.aiGeneratedTip is defined and post.aiGeneratedTip is not empty %}
+															<div class="agricultural-tip-container mt-3 p-3" style="
+																																		        background-color: #f8f9fa;
+																																		        border-left: 4px solid #28a745;
+																																		        border-radius: 4px;
+																																		    ">
+																<h5 style="color: #28a745;">
+																	<i class="fas fa-leaf mr-2"></i>
+																	Conseil agricole</h5>
+																<p class="mb-0" style="font-style: italic;">{{ post.aiGeneratedTip }}</p>
+															</div>
+														{% endif %}
 
                       {% if post.images | length > 1 %}
     <!-- Affichage multiple -->
@@ -500,7 +517,7 @@
 
                       
                       <div class="card-body d-flex p-0 mt-3">
-                        <a
+                        {# <a
                           href="#"
                           class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3"
                           ><i
@@ -510,7 +527,12 @@
                             class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"
                           ></i
                           >2.8K Like</a
-                        >
+                        > #}
+                        <a href="#" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
+																<i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
+																{{ post.reactions|length }}
+																Reaction{{ post.reactions|length != 1 ? 's' : '' }}
+															</a>
                         <a
                           href="#"
                           class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
@@ -864,6 +886,9 @@
                             <a href="{{ path('reclamationDetails', { id: reclamation.id }) }}" class="badge bg-info mr-2">
                               <i class="feather-eye mr-0"></i>
                             </a>
+                            <a href="{{ path('reclamation_pdf', { id: reclamation.id }) }}" class="badge bg-primary mr-2" target="_blank">
+                              <i class="feather-download mr-0"></i>
+                            </a>
                             </td>
                           </tr>
                           {% endfor %}
@@ -1179,7 +1204,7 @@
       });
 
 async function verifierTexte() {
-    let description = document.getElementById("description").value;
+    let description = document.getElementById("resource_description").value;
 
     // Vérification de la longueur et de la répétition excessive du texte
     if (description.length < 10) {
@@ -1196,7 +1221,7 @@ async function verifierTexte() {
     const response = await fetch('https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english', {
         method: 'POST',
         headers: {
-            'Authorization': 'Bearer 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',  
+            'Authorization': 'Bearer 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',  
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ inputs: description })

@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Posts;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Service\WeatherService;
 use Symfony\Component\Routing\Attribute\Route;
@@ -44,4 +45,27 @@ final class HomeController extends AbstractController
             'city' => $city
         ]);
     }
+
+    #[Route('/get-weather', name: 'get_weather', methods: ['POST'])]
+public function getWeather(Request $request,WeatherService $weatherService): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+    $city = $data['city'] ?? null;
+
+    if (!$city) {
+        return $this->json(["error" => "Ville requise"], 400);
+    }
+
+    $weatherData = $weatherService->getWeather($city);
+
+
+    // Format response to match your expected JSON format
+    return $this->json([
+        "temperature" => $weatherData["main"]["temp"],
+        "humidity" => $weatherData["main"]["humidity"],
+        "description" => $weatherData["weather"][0]["description"],
+        "wind" => $weatherData["wind"]["speed"]
+    ]);
+}
+
 }

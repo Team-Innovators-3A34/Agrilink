@@ -1,0 +1,126 @@
+{% extends "backOffice/base.html.twig" %} {% block title %} Claims List {%
+endblock %} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div
+        class="d-flex flex-wrap align-items-center justify-content-between mb-4"
+      >
+        <div>
+          <h4 class="mb-3">Claim List</h4>
+          <p class="mb-0">
+            The claim list effectively dictates claim presentation and provides
+            space<br />
+            to list your claims and offering in the most appealing way.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="table-responsive rounded mb-3">
+        <table class="data-tables table mb-0 tbl-server-info">
+          <thead class="bg-white text-uppercase">
+            <tr class="light light-data">
+              <th>#</th>
+              <th>Claim</th>
+              <th>Email User</th>
+              <th>Statut</th>
+              <th>Type</th>
+              <th>Priorité</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody class="light-body">
+            {% set hasClaims = false %} {% for reclamation in reclamations %} {%
+            if reclamation.archive == 'oui' %} {% set hasClaims = true %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  {% if reclamation.image %}
+                  <img
+                    src="{{ asset('uploads/images/' ~ reclamation.image) }}"
+                    alt="Image de la réclamation"
+                    class="img-fluid rounded avatar-50 mr-3"
+                  />
+                  {% else %} Non disponible {% endif %}
+                  <div>{{ reclamation.title }}</div>
+                </div>
+              </td>
+              <td>{{ reclamation.mailUser }}</td>
+              <td>
+                <span
+                  class="badge {% if reclamation.status == 'En cours' %}badge-warning {% elseif reclamation.status == 'Terminé' %}badge-success {% else %}badge-danger{% endif %}"
+                >
+                  {{ reclamation.status }}
+                </span>
+              </td>
+              <td>{{ reclamation.type.nom ?? "Non spécifié" }}</td>
+              <td>{{ reclamation.priorite ?? "Non spécifiée" }}</td>
+              <td>{{ reclamation.date|date('d/m/Y') }}</td>
+              <td>
+                <div class="d-flex align-items-center list-action">
+                  <a
+                    class="badge badge-info mr-2"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="View Details"
+                    href="{{
+                      path('reclamationDetailsback', { id: reclamation.id })
+                    }}"
+                  >
+                    <i class="ri-eye-line mr-0"></i>
+                  </a>
+                  <a
+                    class="badge bg-success mr-2"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Answer"
+                    href="{{
+                      path('reclamation_repondre', { id: reclamation.id })
+                    }}"
+                  >
+                    <i class="ri-pencil-line mr-0"></i>
+                  </a>
+                  <a
+                    class="badge bg-warning mr-2"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Delete"
+                    href="{{
+                      path('app_reclamation_delete', { id: reclamation.id })
+                    }}"
+                  >
+                    <i class="ri-delete-bin-line mr-0"></i>
+                  </a>
+                  <a
+                    class="badge bg-primary mr-2"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="View Answers"
+                    href="{{
+                      path('reclamation_reponses', { id: reclamation.id })
+                    }}"
+                  >
+                    <i class="ri-question-answer-line mr-0"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endif %} {% endfor %} {% if not hasClaims %}
+            <tr>
+              <td colspan="8" class="text-center text-muted">
+                Aucune réclamation trouvée.
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Page end  -->
+</div>
+{% endblock %}

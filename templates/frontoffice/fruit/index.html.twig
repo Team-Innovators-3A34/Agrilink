@@ -1,0 +1,176 @@
+{% extends "frontOffice/base.html.twig" %}
+{% block title %}Prédiction de Fruits, Légumes et Calories{% endblock %}
+
+{% block content %}
+<!-- Espace fixe en haut -->
+<div style="height: 10px;"></div>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="row justify-content-center w-100">
+    <div class="col-md-10">
+      <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+        <div class="card-header bg-white text-dark text-center py-3">
+          <h2 class="h4 m-0 fw-bold">🌱 Prédiction de Fruits, Légumes et Calories</h2>
+        </div>
+        <div class="card-body p-4">
+          {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+          {% endfor %}
+
+          <form id="predictionForm" action="{{ path('fruit_predict') }}" method="POST" enctype="multipart/form-data">
+            <!-- Zone de Drag-and-Drop -->
+            <div class="drop-zone text-center p-5 rounded border border-primary bg-light">
+              <p class="text-muted"><i class="fas fa-cloud-upload-alt fa-2x"></i></p>
+              <p class="fw-bold">Glissez-déposez une image ici ou cliquez pour sélectionner</p>
+              <input type="file" id="image" name="file" class="form-control d-none"
+                     accept="image/jpeg, image/png, image/jpg" required>
+              <div class="preview mt-3" id="imagePreview"></div>
+            </div>
+
+            <div class="text-center mt-3">
+              <button type="submit" id="submitBtn" class="btn btn-primary" disabled>🔍 Prédire</button>
+            </div>
+          </form>
+
+          {% if prediction is defined and prediction is not null %}
+            <div class="text-center mt-4">
+              <img src="{{ imageDataUrl }}" alt="Image soumise" class="img-fluid rounded shadow"
+                   style="max-width: 250px; height: auto;">
+            </div>
+            <div class="alert alert-info text-center mt-4">
+              <h4>Résultat de la Prédiction</h4>
+              <p><strong>Type :</strong> {{ prediction.model1_prediction }}</p>
+              <p><strong>Calories (100g) :</strong> {{ prediction.calories_per_100g }}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS pour styliser la zone de drag-and-drop -->
+<style>
+  .drop-zone {
+    width: 100%;
+    height: 300px;
+    border: 2px dashed #007bff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  .drop-zone:hover {
+    background-color: #e9f5ff;
+  }
+  .drop-zone img {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+</style>
+
+<!-- Inclusion de TensorFlow.js et MobileNet -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+
+<script>
+  let model;
+  // Charger le modèle MobileNet dès le chargement de la page
+  async function loadModel() {
+    model = await mobilenet.load();
+    console.log("Modèle MobileNet chargé !");
+  }
+
+  // Fonction de contrôle de l'image : retourne true si l'image représente un fruit ou légume
+  async function checkImage(file) {
+    if (!model) {
+      console.error("Le modèle n'est pas chargé !");
+      return false;
+    }
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    return new Promise((resolve) => {
+      img.onload = async () => {
+        const predictions = await model.classify(img);
+        console.log("🔍 Prédictions :", predictions);
+        const labels = predictions.map(p => p.className.toLowerCase());
+        const validKeywords = [
+          "apple", "banana", "beetroot", "bell pepper", "cabbage", "capsicum", "carrot",
+          "cauliflower", "chilli pepper", "corn", "cucumber", "eggplant", "garlic", "ginger",
+          "grapes", "jalepeno", "kiwi", "lemon", "lettuce", "mango", "onion", "orange",
+          "paprika", "pear", "peas", "pineapple", "pomegranate", "potato", "raddish",
+          "soy beans", "spinach", "sweetcorn", "sweetpotato", "tomato", "turnip", "watermelon",
+          "apple rotten"
+        ].map(keyword => keyword.toLowerCase());
+        const isValid = labels.some(label => validKeywords.some(keyword => label.includes(keyword)));
+        resolve(isValid);
+      };
+    });
+  }
+
+  // Fonction d'affichage de l'image dans le drop-zone (prévisualisation)
+  function previewImage(file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      document.getElementById("imagePreview").innerHTML =
+        `<img src="${event.target.result}" class="img-fluid shadow">`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const dropZone = document.querySelector('.drop-zone');
+  const imageInput = document.getElementById('image');
+  const submitBtn = document.getElementById('submitBtn');
+  const predictionForm = document.getElementById('predictionForm');
+
+  // Clique sur la zone pour ouvrir l'explorateur de fichiers
+  dropZone.addEventListener('click', () => imageInput.click());
+  // Survol de la drop-zone
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('bg-primary', 'text-white');
+  });
+  // Quitter la drop-zone
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('bg-primary', 'text-white');
+  });
+  // Gestion du drop d'image
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('bg-primary', 'text-white');
+    if (e.dataTransfer.files.length) {
+      imageInput.files = e.dataTransfer.files;
+      previewImage(e.dataTransfer.files[0]);
+      checkImage(e.dataTransfer.files[0]).then(isValid => {
+        submitBtn.disabled = !isValid;
+        if (!isValid) {
+          alert("L'image ne semble pas être un fruit ou légume. Veuillez choisir une image valide.");
+          imageInput.value = "";
+          document.getElementById("imagePreview").innerHTML = "";
+        }
+      });
+    }
+  });
+  // Prévisualisation lors de la sélection via l'explorateur
+  imageInput.addEventListener('change', function() {
+    if (this.files[0]) {
+      previewImage(this.files[0]);
+      checkImage(this.files[0]).then(isValid => {
+        submitBtn.disabled = !isValid;
+        if (!isValid) {
+          alert("L'image ne semble pas être un fruit ou légume. Veuillez choisir une image valide.");
+          this.value = "";
+          document.getElementById("imagePreview").innerHTML = "";
+        }
+      });
+    }
+  });
+
+  // Charger le modèle MobileNet
+  loadModel();
+</script>
+{% endblock %}

@@ -1073,4 +1073,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             return !$notification->isRead();
         });
     }
+
+    public function getFriendsCount(): int
+    {
+        return $this->friendships->count() + $this->myfriendships->count();
+    }
 }

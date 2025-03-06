@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
 
 class PostsType extends AbstractType
 {
@@ -34,6 +36,7 @@ class PostsType extends AbstractType
                     'placeholder' => 'Enter title'
                 ]
             ])
+            ->add('aiGeneratedTip', HiddenType::class)
             /* ->add('description', TextareaType::class, [
                 'attr' => [
                     'required' => false,

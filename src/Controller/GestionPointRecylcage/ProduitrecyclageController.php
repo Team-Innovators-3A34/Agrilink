@@ -96,6 +96,7 @@ final class ProduitrecyclageController extends AbstractController
         $prod = new Produitrecyclage();
         $form = $this->createForm(ProduitrecyclageType::class, $prod);
         $form->handleRequest($request);
+        $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $existing = $this->em->getRepository(Produitrecyclage::class)->findOneBy(['name' => $prod->getName()]);
@@ -123,17 +124,20 @@ final class ProduitrecyclageController extends AbstractController
                     } catch (FileException $e) {
                         $this->addFlash('error', 'Erreur lors de l\'enregistrement de l\'image.');
                     }
+                    $prod->setUser($user);
+
                     $this->em->persist($prod);
                     $this->em->flush();
                     $this->addFlash("message", "produit ajoutée avec succès.");
                     return $this->redirectToRoute('display_produit');
                 }
             }
-
-            return $this->render('backOffice/pointrecyclage/addProduit.html.twig', [
-                "form" => $form->createView()
-            ]);
         }
+
+        return $this->render('backOffice/pointrecyclage/addProduit.html.twig', [
+            "form" => $form->createView(),
+            "action" => "add",
+        ]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -158,7 +162,9 @@ final class ProduitrecyclageController extends AbstractController
             }
         }
         return $this->render('backOffice/pointrecyclage/addProduit.html.twig', [
-            "form" => $form->createView()
+            "form" => $form->createView(),
+            "action" => "edit",
+
         ]);
     }
 

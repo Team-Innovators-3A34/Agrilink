@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PredictionController extends AbstractController
 {
-    #[Route('/predict', name: 'predict_crop', methods: ['GET', 'POST'])]
+    #[Route('/features/predict_crop', name: 'predict_crop', methods: ['GET', 'POST'])]
     public function predict(Request $request): Response
     {/*
         $data = json_decode($request->getContent(), true);
@@ -27,5 +27,11 @@ class PredictionController extends AbstractController
 
         return new JsonResponse($prediction);*/
         return $this->render('frontoffice/features/cropRecommendation.html.twig', []);
+    }
+
+    #[Route('/features', name: 'app_features', methods: ['GET', 'POST'])]
+    public function features(Request $request): Response
+    {
+        return $this->render('frontoffice/features/features.html.twig', []);
     }
 }

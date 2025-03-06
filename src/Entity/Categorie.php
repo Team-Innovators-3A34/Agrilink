@@ -24,8 +24,7 @@ class Categorie
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'categorie')]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'categorie', cascade: ['persist', 'remove'])]
     private Collection $events;
 
     public function __construct()

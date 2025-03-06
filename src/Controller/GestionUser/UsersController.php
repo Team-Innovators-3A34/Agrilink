@@ -10,12 +10,16 @@ use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\MailerService;
+use App\Repository\UserRepository;
 use App\Entity\Friendship;
 use App\Entity\Demandes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use phpDocumentor\Reflection\Types\This;
 use DateTime;
+use App\Service\FriendshipService;
+use App\Service\PdfGenerator;
+
 
 final class UsersController extends AbstractController
 {
@@ -111,34 +115,31 @@ final class UsersController extends AbstractController
     #[IsGranted('ROLE_RECYCLING_INVESTOR')]
     #[IsGranted('ROLE_RESOURCE_INVESTOR')]
     #[Route('/profilee/{id}', name: 'app_profilee')]
-    public function profile(User $user): Response
+    public function profile(User $user, FriendshipService $friendshipService): Response
     {
-        $friendship = $this->em->getRepository(Friendship::class)->findOneBy(['user' => $user, 'friend' => $this->getUser()]);
-
-        if (!$friendship) {
-            $friendship = $this->em->getRepository(Friendship::class)->findOneBy(['friend' => $user, 'user' => $this->getUser()]);
-        }
-
-        $now = new \DateTime();
-
-        // Récupérer les demandes en attente qui ont expiré
-        $demandes = $this->getUser()->getDemandes();
-
-
-
-        foreach ($demandes as $demande) {
-            if ($demande->getStatus() == 'en cours' && $demande->getExpireDate() < new DateTime()) {
-                $demande->setStatus('terminé');
-            }
-            $this->em->persist($demande);
-            $this->em->flush();
-        }
+        $friendship = $friendshipService->getFriendship($user);
+        $demandes = $friendshipService->updateExpiredRequests();
 
         return $this->render('frontoffice/profile/profile.html.twig', [
             'user' => $user,
             'friendship' => $friendship,
             'demandes' => $demandes
         ]);
+    }
+
+    #[IsGranted('ROLE_AGRICULTURE')]
+    #[IsGranted('ROLE_RECYCLING_INVESTOR')]
+    #[IsGranted('ROLE_RESOURCE_INVESTOR')]
+    #[Route('/profilee/{id}/pdf', name: 'app_profilee_pdf')]
+    public function generateProfilePdf(User $user, PdfGenerator $pdfGenerator): Response
+    {
+        // No need to find user, the param converter does it for you
+
+        // Get current user for personalization
+        $currentUser = $this->getUser();
+
+        // Generate and return PDF
+        return $pdfGenerator->generateProfilePdf($user, $currentUser);
     }
 
     #[Route('/api/users', name: 'get_users', methods: ['GET'])]
@@ -196,4 +197,63 @@ final class UsersController extends AbstractController
 
         return $this->render('frontoffice/notification/notification.html.twig', []);
     }
+
+    #[Route('/search-users/badge', name: 'app_search_users')]
+    public function searchUsersBadge(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $query = $request->query->get('query');
+
+        if ($query === "") {
+            // If the search query is empty, return all users
+            $users = $userRepository->getAllUsersForMatching();
+        } else {
+            // Perform the search
+            $users = $userRepository->findBySearchQuery($query);
+        }
+
+        // Prepare and return the response in JSON format
+        $response = [];
+        foreach ($users as $user) {
+            $response[] = [
+                'id' => $user->getId(),
+                'nom' => $user->getNom(),
+                'prenom' => $user->getPrenom(),
+                'email' => $user->getEmail(),
+                'image' => $user->getImage(),
+                'score' => $user->getScore(),
+                'friendsCount' => $user->getFriendsCount(), // Add the friends count here
+                'score' => $user->getScore(),
+
+            ];
+        }
+
+        return new JsonResponse($response);
+    }
+
+    #[Route('/blankfilter', name: 'get_user', methods: ['GET'])]
+    public function blankfilter(UserRepository $userRepository): JsonResponse
+    {
+        $users = $userRepository->getAllUsersForMatching();
+
+        $response = [];
+
+        foreach ($users as $user) {
+            $response[] = [
+                'id' => $user->getId(),
+                'nom' => $user->getNom(),
+                'prenom' => $user->getPrenom(),
+                'email' => $user->getEmail(),
+                'image' => $user->getImage(),
+                'score' => $user->getScore(),
+                'friendsCount' => $user->getFriendsCount(), // Add the friends count here
+                'score' => $user->getScore(),
+
+            ];
+        }
+
+        return new JsonResponse($response);
+    }
+
+
+    
 }

@@ -1,0 +1,256 @@
+{% extends "frontOffice/base.html.twig" %}
+{% block title %}Prédiction et Infos sur la Maladie{% endblock %}
+
+{% block content %}
+<!-- Espace fixe en haut -->
+<div style="height: 100px;"></div>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="row justify-content-center w-100">
+    <div class="col-md-10">
+      <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+        <div class="card-header bg-white text-dark text-center py-3">
+          <h2 class="h4 m-0 fw-bold">🌱 Prédiction de Maladies de la Plante</h2>
+        </div>
+
+        <div class="card-body p-4">
+          <form id="predictionForm" action="{{ path('plante_predict') }}" method="post" enctype="multipart/form-data">
+            <!-- Zone de Drag-and-Drop -->
+            <div class="drop-zone text-center p-5 rounded border border-primary bg-light">
+              <p class="text-muted"><i class="fas fa-cloud-upload-alt fa-2x"></i></p>
+              <p class="fw-bold">Glissez-déposez une image ici ou cliquez pour sélectionner</p>
+              <input type="file" id="image" name="image" class="form-control d-none"
+                     accept="image/jpeg, image/png, image/jpg" required>
+              <div class="preview mt-3" id="imagePreview"></div>
+            </div>
+
+            <div class="text-center mt-3">
+              <button type="submit" id="submitBtn" class="btn btn-primary">🔍 Prédire</button>
+            </div>
+          </form>
+
+          {% if imageDataUrl is defined %}
+            <div class="text-center mt-4">
+              <img src="{{ imageDataUrl }}" alt="Image soumise" class="img-fluid rounded shadow"
+                   style="max-width: 250px; height: auto;">
+            </div>
+          {% endif %}
+
+          {% if prediction is defined %}
+            {% set formattedPrediction = prediction|replace({'___': ' '})|replace({'_': ' '}) %}
+            {% set parts = formattedPrediction|split(' ') %}
+            {% if parts|length > 1 and parts[0]|lower == parts[1]|lower %}
+              {% set finalPrediction = parts|slice(1) | join(' ') %}
+            {% else %}
+              {% set finalPrediction = formattedPrediction %}
+            {% endif %}
+            {% if 'healthy' in prediction|lower %}
+              <div class="alert alert-success text-center mt-4">
+                <h4>🩺 Résultat de la Prédiction</h4>
+                <p>Le modèle prédit : <strong>{{ finalPrediction }}</strong></p>
+                <p>Votre plante est en bonne santé et c'est très bien !</p>
+              </div>
+            {% else %}
+              <div class="alert alert-danger text-center mt-4">
+                <h4>🩺 Résultat de la Prédiction</h4>
+                <p>Le modèle prédit que la plante a une maladie : <strong>{{ finalPrediction }}</strong></p>
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {# Affichage des informations sur la maladie uniquement si la plante n'est pas healthy #}
+          {% if prediction is defined and not ('healthy' in prediction|lower) %}
+            {% if diseaseInfo is defined %}
+              {% if diseaseInfo is iterable %}
+                <div class="disease-info-box">
+                  <p><strong>Nom de la maladie :</strong><br> {{ diseaseInfo.nom|replace({'. ': '.<br>'})|raw }}</p>
+                  <p><strong>Description :</strong><br> {{ diseaseInfo.description|replace({'. ': '.<br>'})|raw }}</p>
+                  <p><strong>Traitements :</strong><br> {{ diseaseInfo.traitements|replace({'. ': '.<br>'})|raw }}</p>
+                </div>
+              {% else %}
+                <div class="disease-info-box">
+                  <p>{{ diseaseInfo|replace({'. ': '.<br>'})|raw }}</p>
+                </div>
+              {% endif %}
+            {% else %}
+              <p class="text-muted text-center">Aucune information disponible pour cette maladie.</p>
+            {% endif %}
+          {% endif %}
+
+          <!-- Barre de recherche toujours affichée -->
+          <div class="mt-5">
+            <h3 class="text-secondary font-weight-bold text-center">
+              <i class="fas fa-search"></i> Recherche sur la Maladie
+            </h3>
+            <hr class="mb-3">
+            <div class="input-group mb-3">
+              <input type="text" id="diseaseSearch" class="form-control" placeholder="Entrez le nom de la maladie..." required>
+              <button id="searchButton" class="btn btn-success">Rechercher</button>
+            </div>
+          </div>
+          <div id="diseaseInfoContainer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS pour styliser la zone de drag-and-drop et la box d'information -->
+<style>
+  .drop-zone {
+    width: 100%;
+    height: 300px;
+    border: 2px dashed #007bff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  .drop-zone:hover {
+    background-color: #e9f5ff;
+  }
+  .drop-zone img {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+  .disease-info-box {
+    background-color: #f8f9fa; /* gris très clair / blanc */
+    border: 1px solid #ced4da;
+    padding: 15px;
+    border-radius: 5px;
+    color: #333;
+    text-align: justify;
+    margin-bottom: 20px;
+  }
+  .disease-info-box p {
+    margin: 0 0 10px;
+    line-height: 1.5;
+  }
+</style>
+
+<!-- Inclusion de TensorFlow.js et MobileNet -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+
+<!-- JavaScript pour la gestion du drag-and-drop et le contrôle de l'image -->
+<script>
+  let model;
+
+  // Charger le modèle MobileNet dès le chargement de la page
+  async function loadModel() {
+    model = await mobilenet.load();
+    console.log("Modèle MobileNet chargé !");
+  }
+
+  // Fonction de contrôle de l'image : retourne true si l'image représente une plante
+  async function checkImage(file) {
+    if (!model) {
+      console.error("Le modèle n'est pas chargé !");
+      return false;
+    }
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    return new Promise((resolve) => {
+      img.onload = async () => {
+        const predictions = await model.classify(img);
+        console.log("🔍 Prédictions :", predictions);
+        const labels = predictions.map(p => p.className.toLowerCase());
+        const plantKeywords = [
+          "plant", "tree", "flower", "leaf", "tulip", "rose", "daisy", "cactus",
+          "sunflower", "strawberry", "cucumber", "corn", "pine", "orchid", "palm",
+          "vegetable", "fruit", "garden", "potato", "tomato", "pepper"
+        ];
+        const isPlant = labels.some(label =>
+          plantKeywords.some(keyword => label.includes(keyword))
+        );
+        resolve(isPlant);
+      };
+    });
+  }
+
+  // Fonction d'affichage de l'image dans le drop-zone (prévisualisation)
+  function previewImage(file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      document.getElementById("imagePreview").innerHTML =
+        `<img src="${event.target.result}" class="img-fluid shadow">`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const dropZone = document.querySelector('.drop-zone');
+  const imageInput = document.getElementById('image');
+  const submitBtn = document.getElementById('submitBtn');
+  const predictionForm = document.getElementById('predictionForm');
+
+  // Clique sur la zone pour ouvrir l'explorateur de fichiers
+  dropZone.addEventListener('click', () => imageInput.click());
+  // Survol du drop-zone
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('bg-primary', 'text-white');
+  });
+  // Quitter le drop-zone
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('bg-primary', 'text-white');
+  });
+  // Gestion du drop d'image : afficher la prévisualisation sans contrôle immédiat
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('bg-primary', 'text-white');
+    if (e.dataTransfer.files.length) {
+      imageInput.files = e.dataTransfer.files;
+      previewImage(e.dataTransfer.files[0]);
+    }
+  });
+  // Afficher la prévisualisation lors de la sélection via l'explorateur
+  imageInput.addEventListener('change', function() {
+    if (this.files[0]) {
+      previewImage(this.files[0]);
+    }
+  });
+  // Intercepter la soumission du formulaire pour vérifier l'image lors du clic sur "Prédire"
+  predictionForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!imageInput.files || !imageInput.files[0]) {
+      alert("Veuillez sélectionner une image.");
+      return;
+    }
+    const file = imageInput.files[0];
+    const isPlant = await checkImage(file);
+    if (isPlant) {
+      console.log("Image validée, soumission du formulaire.");
+      submitBtn.disabled = true;
+      predictionForm.submit();
+    } else {
+      alert("L'image ne semble pas être une plante. Veuillez choisir une image valide.");
+      imageInput.value = "";
+      document.getElementById("imagePreview").innerHTML = "";
+    }
+  });
+  // Recherche d'informations sur la maladie
+  document.getElementById('searchButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    const query = document.getElementById('diseaseSearch').value;
+    if(query.trim() === '') {
+      alert("Veuillez entrer le nom d'une maladie.");
+      return;
+    }
+    fetch('{{ path("search_disease") }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'disease_name=' + encodeURIComponent(query)
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('diseaseInfoContainer').innerHTML = html;
+    });
+  });
+  // Charger le modèle MobileNet
+  loadModel();
+</script>
+{% endblock %}

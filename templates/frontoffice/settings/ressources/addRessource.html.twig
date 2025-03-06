@@ -18,7 +18,7 @@ block content %}
           <div class="card-body p-lg-5 p-4 w-100 border-0">
             <form method="post" enctype="multipart/form-data">
               {{ form_start(form) }}
-              
+
               <div class="row">
                 <div class="col-lg-6 mb-3">
                   <div class="form-group">
@@ -71,6 +71,7 @@ block content %}
                 <div class="col-lg-6 mb-3">
                   <div class="form-group">
                     {{ form_row(form.images, {'attr': {'style': 'margin-top: -8px', 'value': action == 'Modifier' ? image : ''
+
                     }}) }}
                   </div>
                 </div>
@@ -81,6 +82,8 @@ block content %}
                   <button
                     type="submit"
                     class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block"
+                    onclick="return verifierTexte();"
+                    id="confirmButton"
                   >
                     Comfirmer
                   </button>
@@ -96,40 +99,72 @@ block content %}
 </div>
 
 <script>
-  async function verifierTexte() {
-      let description = document.getElementById("description").value;
-  
-      // Vérification de la longueur et de la répétition excessive du texte
-      if (description.length < 10) {
-          alert("La description est trop courte. Veuillez entrer plus de texte.");
-          return false;
+  document.addEventListener("DOMContentLoaded", function() {
+      const descriptionInput = document.getElementById("resource_description");
+      const confirmButton = document.getElementById("confirmButton");
+      const errorMessage = document.createElement("p");
+
+      // Ajouter un message d'erreur sous le champ de description
+      errorMessage.style.color = "red";
+      errorMessage.style.fontSize = "14px";
+      descriptionInput.parentNode.appendChild(errorMessage);
+
+      // Désactiver le bouton au début
+      confirmButton.disabled = true;
+
+      async function verifierTexte() {
+          let description = descriptionInput.value.trim();
+          errorMessage.textContent = ""; // Réinitialiser les messages
+
+          
+
+          // Appel API HuggingFace pour analyser le sentiment du texte
+          const response = await fetch('https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english', {
+              method: 'POST',
+              headers: {
+                  'Authorization': 'Bearer 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',  // Remplacez par votre clé API HuggingFace
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ inputs: description })
+          });
+
+          const result = await response.json();
+
+          // Vérifier si la réponse contient bien des données
+          if (!result || !result[0] || result[0].length === 0) {
+              errorMessage.textContent = "❌ Erreur lors de l'analyse du texte. Veuillez réessayer.";
+              confirmButton.disabled = true;
+              return false;
+          }
+
+          // Récupération des scores de sentiment
+          const negativeScore = result[0].find(item => item.label === "NEGATIVE")?.score || 0;
+          const positiveScore = result[0].find(item => item.label === "POSITIVE")?.score || 0;
+
+          // Bloquer la soumission si le texte est trop négatif
+          if (negativeScore > positiveScore) {
+              errorMessage.textContent = "❌ La description semble négative ou inappropriée. Veuillez reformuler.";
+              confirmButton.disabled = true;
+              return false;
+          }
+
+          // Si la description est correcte, activer le bouton et enlever le message d'erreur
+          errorMessage.textContent = "";
+          confirmButton.disabled = false;
+          return true;
       }
-  
-      if (/^(.)\1{4,}$/.test(description)) {
-          alert("Le texte contient des répétitions excessives. Veuillez reformuler.");
-          return false;
-      }
-  
-      // Appel API HuggingFace pour analyser le sentiment du texte
-      const response = await fetch('https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english', {
-          method: 'POST',
-          headers: {
-              'Authorization': 'Bearer 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',  // Remplacez par votre clé API HuggingFace
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ inputs: description })
+
+      // Vérifier la description à chaque modification
+      descriptionInput.addEventListener("input", verifierTexte);
+
+      document.querySelector("form").addEventListener("submit", async function(event) {
+          let isValid = await verifierTexte();
+          if (!isValid) {
+              event.preventDefault(); // Empêcher l'envoi du formulaire
+          }
       });
-  
-      const result = await response.json();
-  
-      // Analyser la réponse de l'API pour déterminer si le texte est approprié
-      if (result[0].label === "NEGATIVE") {
-          alert("Le texte semble négatif ou inapproprié. Veuillez reformuler.");
-          return false;
-      }
-  
-      // Si tout est ok, soumettre le formulaire
-      return true;
-  }
-  </script>
+  });
+</script>
+
+
 {% endblock %}

@@ -1,0 +1,182 @@
+{% extends "frontOffice/base.html.twig" %}
+
+{% block title %}Prédiction de Rendement Agricole{% endblock %}
+{% block stylesheets %}
+  {{ parent() }}
+  <style>
+    /* Styles personnalisés pour la modal */
+    .custom-modal .modal-content {
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .custom-modal .modal-header {
+      background-color: #4a90e2;
+      color: #fff;
+      border-bottom: none;
+      padding: 15px 20px;
+    }
+    .custom-modal .modal-header .btn-close {
+      filter: invert(1);
+    }
+    .custom-modal .modal-body {
+      padding: 20px;
+      font-size: 1.1rem;
+    }
+    .custom-modal .modal-footer {
+      background-color: #f7f7f7;
+      border-top: none;
+      justify-content: center;
+      padding: 15px 20px;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+<div class="main-content bg-lightblue right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      <div class="middle-wrap">
+        <div class="card w-100 border-0 bg-white shadow-xs p-0 mb-4">
+          <div class="card-body p-4 w-100 bg-current border-0 d-flex rounded-3">
+            <a href="{{ path('app_dashboard') }}" class="d-inline-block mt-2">
+              <i class="ti-arrow-left font-sm text-white"></i>
+            </a>
+            <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">
+              Prédiction de Rendement Agricole
+            </h4>
+          </div>
+          <div class="card-body p-lg-5 p-4 w-100 border-0">
+
+            {% if prediction is defined and prediction and prediction != 'Aucune prédiction disponible.' %}
+              <div class="modal fade" id="predictionModal" tabindex="-1" aria-labelledby="predictionModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="predictionModalLabel">
+                        Résultat de la Prédiction
+                      </h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>
+                        <strong>Le Rendement Estimé Agricole Est:</strong>
+                        {{ prediction|number_format(2, '.', ' ') }} tonnes par hectare
+                      </p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Fermer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                  // Récupération de la prédiction actuelle (échappée pour JS)
+                  var currentPrediction = "{{ prediction|escape('js') }}";
+                  // On récupère la dernière prédiction affichée stockée dans le localStorage
+                  var lastPrediction = localStorage.getItem('lastPrediction');
+
+                  // Si la prédiction actuelle est différente, on réinitialise le flag
+                  if (currentPrediction !== lastPrediction) {
+                    localStorage.removeItem('modalClosed');
+                    localStorage.setItem('lastPrediction', currentPrediction);
+                  }
+
+                  // Si la modal n'a pas déjà été fermée pour cette prédiction, on l'affiche
+                  if (!localStorage.getItem('modalClosed')) {
+                    var predictionModalEl = document.getElementById('predictionModal');
+                    if (predictionModalEl) {
+                      var predictionModal = new bootstrap.Modal(predictionModalEl, {
+                        backdrop: false
+                      });
+                      predictionModal.show();
+                      // À la fermeture de la modal, on enregistre le flag et on redirige vers la page de prédiction
+                      predictionModalEl.addEventListener('hidden.bs.modal', function () {
+                        localStorage.setItem('modalClosed', 'true');
+                        window.location.href = "{{ path('app_prediction') }}";
+                      });
+                    }
+                  }
+                });
+              </script>
+            {% endif %}
+
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            <div class="row">
+              <div class="col-lg-12 mb-3">
+                <div class="form-group">
+                  {{ form_label(form.Region, '<strong>Region</strong>', {'label_html': true}) }}
+                  {{ form_widget(form.Region, {'attr': {'class': 'form-control'}}) }}
+                  {{ form_errors(form.Region) }}
+                </div>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <div class="form-group">
+                  {{ form_label(form.Soil_Type, '<strong>Soil type</strong>', {'label_html': true}) }}
+                  {{ form_widget(form.Soil_Type, {'attr': {'class': 'form-control'}}) }}
+                  {{ form_errors(form.Soil_Type) }}
+                </div>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <div class="form-group">
+                  {{ form_label(form.Crop, '<strong>Crop</strong>', {'label_html': true}) }}
+                  {{ form_widget(form.Crop, {'attr': {'class': 'form-control'}}) }}
+                  {{ form_errors(form.Crop) }}
+                </div>
+              </div>
+              <div class="col-lg-6 mb-3">
+                <div class="form-group">
+                  {{ form_label(form.Rainfall_mm, '<strong>Rainfall mm</strong>', {'label_html': true}) }}
+                  {{ form_widget(form.Rainfall_mm, {'attr': {'class': 'form-control'}}) }}
+                  {{ form_errors(form.Rainfall_mm) }}
+                </div>
+              </div>
+              <div class="col-lg-6 mb-3">
+                <div class="form-group">
+                  {{ form_label(form.Temperature_Celsius, '<strong>Temperature celsius</strong>', {'label_html': true}) }}
+                  {{ form_widget(form.Temperature_Celsius, {'attr': {'class': 'form-control'}}) }}
+                  {{ form_errors(form.Temperature_Celsius) }}
+                </div>
+              </div>
+              <div class="col-lg-6 mb-3">
+                <div class="form-check">
+                  {{ form_widget(form.Fertilizer_Used) }}
+                  {{ form_label(form.Fertilizer_Used, '<strong>Engrais utilisé</strong>', {'label_html': true}) }}
+                  {{ form_errors(form.Fertilizer_Used) }}
+                </div>
+              </div>
+              <div class="col-lg-6 mb-3">
+                <div class="form-check">
+                  {{ form_widget(form.Irrigation_Used) }}
+                  {{ form_label(form.Irrigation_Used, '<strong>Irrigation utilisée</strong>', {'label_html': true}) }}
+                  {{ form_errors(form.Irrigation_Used) }}
+                </div>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <div class="form-group">
+                  {{ form_label(form.Weather_Condition, '<strong>Weather condition</strong>', {'label_html': true}) }}
+                  {{ form_widget(form.Weather_Condition, {'attr': {'class': 'form-control'}}) }}
+                  {{ form_errors(form.Weather_Condition) }}
+                </div>
+              </div>
+              <div class="col-lg-12 mb-3">
+                <div class="form-group">
+                  {{ form_label(form.Days_to_Harvest, '<strong>Days to harvest</strong>', {'label_html': true}) }}
+                  {{ form_widget(form.Days_to_Harvest, {'attr': {'class': 'form-control'}}) }}
+                  {{ form_errors(form.Days_to_Harvest) }}
+                </div>
+              </div>
+            </div>
+
+            {{ form_end(form) }}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

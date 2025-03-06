@@ -1,0 +1,165 @@
+{% extends "frontOffice/base.html.twig" %} {% block title %}Vidéos Agriculture
+TikTok{% endblock %} {% block content %}
+<div style="height: 100px"></div>
+
+<div class="horizontal-card">
+
+  <!-- Prévisualisation de la vidéo précédente -->
+  <div class="preview-card" id="prevPreview" onclick="goToPrevious()">
+    <!-- Le contenu sera injecté dynamiquement -->
+  </div>
+
+  <!-- Vidéo principale -->
+  <div class="main-video-card">
+    <video id="mainVideo" controls autoplay muted loop playsinline poster="">
+      <source id="videoSource" src="" type="video/mp4" />
+      Votre navigateur ne supporte pas la lecture de vidéo.
+    </video>
+  </div>
+
+  <!-- Prévisualisation de la vidéo suivante -->
+  <div class="preview-card" id="nextPreview" onclick="goToNext()">
+    <!-- Le contenu sera injecté dynamiquement -->
+  </div>
+</div>
+
+{% if nextCursor is not null %}
+<div class="text-center mt-4">
+  <a
+    href="{{ path('tiktok_videos', { cursor: nextCursor }) }}"
+    class="bg-current text-center text-white font-xsss fw-600 p-3 w280 rounded-3 d-inline-block"
+  >
+    Charger plus de vidéos
+  </a>
+</div>
+{% endif %}
+
+<style>
+  /* Conteneur horizontal */
+  .horizontal-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px auto;
+    max-width: 1000px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  /* Carte de la vidéo principale */
+  .main-video-card {
+    flex: 2;
+  }
+  .main-video-card video {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  /* Cartes de prévisualisation */
+  .preview-card {
+    flex: 1;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  .preview-card video {
+    width: 100%;
+    display: block;
+    border-radius: 8px;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+  }
+  .preview-card:hover video {
+    opacity: 1;
+  }
+  .preview-card .label {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #333;
+  }
+  .no-preview {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9em;
+    color: #777;
+  }
+  /* Adaptatif sur mobile */
+  @media (max-width: 768px) {
+    .horizontal-card {
+      flex-direction: column;
+    }
+    .preview-card {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Injection de la variable Twig "videos" sous forme de JSON
+  const videos = {{ videos|json_encode|raw }};
+  let currentIndex = 0;
+
+  function loadVideo(index) {
+    if (videos.length === 0) return;
+    currentIndex = index;
+    const videoData = videos[index];
+    const videoUrl = videoData.video_url || '';
+    const mainVideo = document.getElementById('mainVideo');
+    const videoSource = document.getElementById('videoSource');
+
+    if (videoUrl) {
+      videoSource.src = videoUrl;
+      mainVideo.poster = videoData.cover || '';
+      mainVideo.load();
+      mainVideo.play().catch(e => console.error(e));
+    } else {
+      mainVideo.outerHTML = '<div class="alert alert-warning text-center">Vidéo non disponible</div>';
+    }
+
+    // Mise à jour de la prévisualisation de la vidéo précédente
+    const prevPreview = document.getElementById('prevPreview');
+    if (index > 0) {
+      const prevData = videos[index - 1];
+      prevPreview.innerHTML = `<video src="${prevData.video_url || ''}" poster="${prevData.cover || ''}" muted playsinline loop></video>
+                               <div class="label">Précédent</div>`;
+    } else {
+      prevPreview.innerHTML = `<div class="no-preview">Aucune vidéo précédente</div>`;
+    }
+
+    // Mise à jour de la prévisualisation de la vidéo suivante
+    const nextPreview = document.getElementById('nextPreview');
+    if (index < videos.length - 1) {
+      const nextData = videos[index + 1];
+      nextPreview.innerHTML = `<video src="${nextData.video_url || ''}" poster="${nextData.cover || ''}" muted playsinline loop></video>
+                               <div class="label">Suivant</div>`;
+    } else {
+      nextPreview.innerHTML = `<div class="no-preview">Aucune vidéo suivante</div>`;
+    }
+  }
+
+  function goToPrevious() {
+    if (currentIndex > 0) {
+      loadVideo(currentIndex - 1);
+    }
+  }
+
+  function goToNext() {
+    if (currentIndex < videos.length - 1) {
+      loadVideo(currentIndex + 1);
+    }
+  }
+
+  // Charger la première vidéo au démarrage
+  loadVideo(0);
+</script>
+{% endblock %}

@@ -40,7 +40,7 @@ endblock %} {% block content %}
       <div class="row">
         <div
           class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3"
-          style="max-width: 700px;margin-left:150px"
+          style="max-width: 700px; margin-left: 150px"
         >
           <div class="card-body p-0 d-flex">
             <figure class="avatar me-3">
@@ -97,6 +97,26 @@ endblock %} {% block content %}
               post.type
             }}</span>
 
+            {# Sentiment Analysis Badge #}
+							<div class="ms-auto">
+								{% if post.sentiment == 'positive' %}
+									<span class="badge bg-success rounded-pill px-2 py-1">
+										<i class="feather-smile me-1"></i>
+										Happy
+									</span>
+								{% elseif post.sentiment == 'negative' %}
+									<span class="badge bg-danger rounded-pill px-2 py-1">
+										<i class="feather-frown me-1"></i>
+										Sad
+									</span>
+								{% else %}
+									<span class="badge bg-secondary rounded-pill px-2 py-1">
+										<i class="feather-meh me-1"></i>
+										Neutral
+									</span>
+								{% endif %}
+							</div>
+
             <!-- Post Title with "Title: " before it -->
             <p
               class="post-title"
@@ -122,6 +142,20 @@ endblock %} {% block content %}
             >
               {{ post.description }}
             </p>
+</div>
+
+						{% if post.aiGeneratedTip is defined and post.aiGeneratedTip is not empty %}
+							<div class="agricultural-tip-container mt-3 p-3" style="
+									        background-color: #f8f9fa;
+									        border-left: 4px solid #28a745;
+									        border-radius: 4px;
+									    ">
+								<h5 style="color: #28a745;">
+									<i class="fas fa-leaf mr-2"></i>
+									Conseil agricole</h5>
+								<p class="mb-0" style="font-style: italic;">{{ post.aiGeneratedTip }}</p>
+							</div>
+						{% endif %}
 
             {% if post.images | length > 1 %}
             <!-- Multiple Images Display -->
@@ -182,7 +216,8 @@ endblock %} {% block content %}
             {% endif %}
           </div>
 
-          {# <div class="card-body d-flex p-0 mt-3">
+         
+            {#
             <a
               href="#"
               class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3"
@@ -194,44 +229,203 @@ endblock %} {% block content %}
                 class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"
               ></i
               >2.8K Like
-            </a> #}
-
+            </a>
+            #}
+<div class="post-interactions d-flex justify-content-between align-items-center border-top pt-2">
             <div class="card-body d-flex p-0 mt-3">
-							<div class="post-reactions d-flex" data-post-id="{{ post.id }}">
-								<button type="button" class="btn btn-reaction like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3 {% if post.getUserReaction(app.user) == 'like' %}active{% endif %}" data-type="like">
-									<i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-									<span class="likes-count">{{ post.getLikesCount() }}</span>
-									Like
-								</button>
-								<button type="button" class="btn btn-reaction dislike-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-3 {% if post.getUserReaction(app.user) == 'dislike' %}active{% endif %}" data-type="dislike">
-									<i class="feather-thumbs-down text-white bg-red-gradiant me-1 btn-round-xs font-xss"></i>
-									<span class="dislikes-count">{{ post.getDislikesCount() }}</span>
-									Dislike
-								</button>
-							</div>
+              <div class="post-reactions d-flex" data-post-id="{{ post.id }}">
+                <div class="primary-reaction d-flex">
+                  {% set userReaction = app.user ?
+                  post.getUserReactionType(app.user) : null %}
 
-            <a
-              href="#"
-              class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
-              onclick="document.getElementById('comments-{{
-                post.id
-              }}').classList.toggle('d-none'); return false;"
-            >
-              <i
-                class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"
-              ></i>
-              {{ post.comments | length }} Comments
-            </a>
-            <a
-              href="#"
-              class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
-            >
-              <i
-                class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"
-              ></i>
-              <span class="d-none-xs">Share</span>
-            </a>
-          </div>
+                  <button
+                    type="button"
+                    id="main-reaction-btn-{{ post.id }}"
+                    class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2 {{
+                      userReaction ? 'active' : ''
+                    }}"
+                  >
+                    {% if userReaction %} {% if userReaction == 'like' %}
+                    <i
+                      class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Like {% elseif userReaction == 'bravo' %}
+                    <i
+                      class="feather-award text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Bravo {% elseif userReaction == 'soutien' %}
+                    <i
+                      class="feather-heart text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Soutien {% elseif userReaction == 'instructif' %}
+                    <i
+                      class="feather-info text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Instructif {% elseif userReaction == 'drole' %}
+                    <i
+                      class="bi bi-emoji-laughing text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Drôle {% else %}
+                    <i
+                      class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Like {% endif %} {% else %}
+                    <i
+                      class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    Like {% endif %}
+                  </button>
+                </div>
+              </div>
+
+              <div
+                class="emoji-wrap reaction-selector"
+                id="reaction-selector-{{ post.id }}"
+                style="display: none"
+              >
+                <ul class="emojis list-inline mb-0">
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'like' ? 'active' : ''
+                    }}"
+                    data-type="like"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="feather-thumbs-up text-white bg-primary-gradiant btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Like</span>
+                  </li>
+
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'bravo' ? 'active' : ''
+                    }}"
+                    data-type="bravo"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="feather-award text-white bg-primary-gradiant btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Bravo</span>
+                  </li>
+
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'soutien' ? 'active' : ''
+                    }}"
+                    data-type="soutien"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="feather-heart text-white bg-primary-gradiant btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Soutien</span>
+                  </li>
+
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'instructif' ? 'active' : ''
+                    }}"
+                    data-type="instructif"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="feather-info text-white bg-primary-gradiant btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Instructif</span>
+                  </li>
+
+                  <li
+                    class="emoji list-inline-item reaction-option {{
+                      userReaction == 'drole' ? 'active' : ''
+                    }}"
+                    data-type="drole"
+                    data-post-id="{{ post.id }}"
+                  >
+                    <i
+                      class="bi bi-emoji-laughing text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                    ></i>
+                    <span class="reaction-label">Drôle</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+           <a
+        href="#"
+        class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
+        onclick="document.getElementById('comments-{{ post.id }}').classList.toggle('d-none'); return false;"
+    >
+        <i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i>
+        {{ post.comments | length }} Comments
+    </a>
+    
+    <div class="dropdown">
+        <a 
+            href="#" 
+            id="dropdownMenu21-{{ post.id }}" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false" 
+            class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
+        >
+            <i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i>
+            <span class="d-none-xs">Share</span>
+        </a>
+        
+        <div 
+            class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" 
+            aria-labelledby="dropdownMenu21-{{ post.id }}"
+        >
+            <h4 class="fw-700 font-xss text-grey-900 d-flex align-items-center">
+                Share
+                <i class="feather-x ms-auto font-xssss btn-round-xs bg-greylight text-grey-900 me-2"></i>
+            </h4>
+            
+            <div class="card-body p-0 d-flex">
+                <ul class="d-flex align-items-center list-unstyled mb-0">
+                    <li class="me-1">
+                        <a 
+                            href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_post_detail', {'id': post.id})|url_encode }}" 
+                            target="_blank" 
+                            class="btn-round-lg bg-facebook"
+                        >
+                            <i class="font-xs ti-facebook text-white"></i>
+                        </a>
+                    </li>
+                    <li class="me-1">
+                        <a 
+                            href="https://www.linkedin.com/sharing/share-offsite/?url={{ url('app_post_detail', {'id': post.id})|url_encode }}" 
+                            target="_blank" 
+                            class="btn-round-lg bg-linkedin"
+                        >
+                            <i class="font-xs ti-linkedin text-white"></i>
+                        </a>
+                    </li>
+                    <li class="me-1">
+                        <a 
+                            href="https://api.whatsapp.com/send?text={{ post.title|url_encode ~ ' - ' ~ absolute_url(path('app_post_detail', {'id': post.id}))|url_encode }}" 
+                            target="_blank" 
+                            class="btn-round-lg bg-success"
+                        >
+                            <i class="font-xs feather-phone text-white"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a 
+                            href="#" 
+                            data-url="{{ absolute_url(path('app_post_detail', {'id': post.id})) }}" 
+                            class="btn-round-lg bg-black"
+                        >
+                            <i class="font-xs ti-link text-white"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 
           {# Comments Section #}
           <div id="comments-{{ post.id }}" class="d-none">
@@ -336,109 +530,216 @@ endblock %} {% block content %}
     </div>
   </div>
 </div>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".edit-btn").forEach((button) => {
-      button.addEventListener("click", function () {
-        let commentId = this.dataset.commentId;
-        let textElement = document.getElementById("comment-text-" + commentId);
-        let textarea = document.getElementById("edit-comment-" + commentId);
-        let saveButton = document.querySelector(
-          ".save-btn[data-comment-id='" + commentId + "']"
-        );
+ </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".edit-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          let commentId = this.dataset.commentId;
+          let textElement = document.getElementById(
+            "comment-text-" + commentId
+          );
+          let textarea = document.getElementById("edit-comment-" + commentId);
+          let saveButton = document.querySelector(
+            ".save-btn[data-comment-id='" + commentId + "']"
+          );
 
-        // Afficher le champ de texte et masquer l'affichage normal
-        textElement.classList.add("d-none");
-        textarea.classList.remove("d-none");
-        textarea.focus();
+          // Afficher le champ de texte et masquer l'affichage normal
+          textElement.classList.add("d-none");
+          textarea.classList.remove("d-none");
+          textarea.focus();
 
-        // Afficher le bouton "Save" et cacher "Edit"
-        this.classList.add("d-none");
-        saveButton.classList.remove("d-none");
+          // Afficher le bouton "Save" et cacher "Edit"
+          this.classList.add("d-none");
+          saveButton.classList.remove("d-none");
+        });
+      });
+
+      document.querySelectorAll(".save-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          let commentId = this.dataset.commentId;
+          let textarea = document.getElementById("edit-comment-" + commentId);
+          let newText = textarea.value;
+
+          // Envoi AJAX pour sauvegarder les modifications
+          fetch(
+            "{{ path('app_comment_edit', { id: 0 }) }}".replace("0", commentId),
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": "{{ csrf_token('edit_comment') }}",
+              },
+              body: JSON.stringify({ content: newText }),
+            }
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                // Mettre à jour le texte affiché
+                document.getElementById(
+                  "comment-text-" + commentId
+                ).innerHTML = `<p class="mb-0">${newText}</p>`;
+                document
+                  .getElementById("comment-text-" + commentId)
+                  .classList.remove("d-none");
+                textarea.classList.add("d-none");
+
+                // Réafficher "Edit" et cacher "Save"
+                document
+                  .querySelector(
+                    ".edit-btn[data-comment-id='" + commentId + "']"
+                  )
+                  .classList.remove("d-none");
+                button.classList.add("d-none");
+              } else {
+                alert("Erreur lors de la mise à jour.");
+              }
+            });
+        });
       });
     });
 
-    document.querySelectorAll(".save-btn").forEach((button) => {
-      button.addEventListener("click", function () {
-        let commentId = this.dataset.commentId;
-        let textarea = document.getElementById("edit-comment-" + commentId);
-        let newText = textarea.value;
+    // New sharing functionality
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(
+        function () {
+          // Optional: Show a success message
+          alert("Link copied to clipboard!");
+        },
+        function (err) {
+          console.error("Could not copy text: ", err);
+        }
+      );
+    }
 
-        // Envoi AJAX pour sauvegarder les modifications
-        fetch(
-          "{{ path('app_comment_edit', { id: 0 }) }}".replace("0", commentId),
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": "{{ csrf_token('edit_comment') }}",
-            },
-            body: JSON.stringify({ content: newText }),
+    // Close dropdown when X is clicked
+    const closeButton = document.querySelector(".feather-x");
+    if (closeButton) {
+      closeButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        const dropdown = document.getElementById("dropdownMenu21");
+        bootstrap.Dropdown.getInstance(dropdown).hide();
+      });
+    }
+
+    // Add click handler for the copy link button
+    const copyLinkButton = document.querySelector(".ti-link");
+    if (copyLinkButton) {
+      copyLinkButton.parentElement.addEventListener("click", function (e) {
+        e.preventDefault();
+        const url = this.getAttribute("data-url");
+        copyToClipboard(url);
+      });
+    }
+
+    // Toggle reaction selector
+    document
+      .querySelectorAll('[id^="main-reaction-btn-"]')
+      .forEach((button) => {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          const postId = this.id.replace("main-reaction-btn-", "");
+          const selector = document.getElementById(
+            `reaction-selector-${postId}`
+          );
+
+          if (selector.style.display === "flex") {
+            selector.style.display = "none";
+          } else {
+            selector.style.display = "flex";
           }
-        )
+        });
+      });
+
+    // Handle reactions
+    document.querySelectorAll(".reaction-option").forEach((button) => {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        const postId = this.dataset.postId;
+        const reactionType = this.dataset.type;
+        const selector = document.getElementById(`reaction-selector-${postId}`);
+
+        // Send AJAX request
+        fetch(`/post/${postId}/react`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: JSON.stringify({ type: reactionType }),
+        })
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              // Mettre à jour le texte affiché
-              document.getElementById(
-                "comment-text-" + commentId
-              ).innerHTML = `<p class="mb-0">${newText}</p>`;
-              document
-                .getElementById("comment-text-" + commentId)
-                .classList.remove("d-none");
-              textarea.classList.add("d-none");
+              // Update main button
+              const mainButton = document.getElementById(
+                `main-reaction-btn-${postId}`
+              );
+              mainButton.classList.add("active");
 
-              // Réafficher "Edit" et cacher "Save"
+              // Update icon and text based on reaction type
+              let iconClass, buttonText;
+
+              switch (reactionType) {
+                case "like":
+                  iconClass = "feather-thumbs-up";
+                  buttonText = "Like";
+                  break;
+                case "bravo":
+                  iconClass = "feather-award";
+                  buttonText = "Bravo";
+                  break;
+                case "soutien":
+                  iconClass = "feather-heart";
+                  buttonText = "Soutien";
+                  break;
+                case "instructif":
+                  iconClass = "feather-info";
+                  buttonText = "Instructif";
+                  break;
+                case "drole":
+                  iconClass = "bi bi-emoji-laughing";
+                  buttonText = "Drôle";
+                  break;
+                default:
+                  iconClass = "feather-thumbs-up";
+                  buttonText = "Like";
+              }
+
+              mainButton.innerHTML = `<i class="${iconClass} text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i> ${buttonText}`;
+
+              // Update active state on reaction buttons
               document
-                .querySelector(".edit-btn[data-comment-id='" + commentId + "']")
-                .classList.remove("d-none");
-              button.classList.add("d-none");
-            } else {
-              alert("Erreur lors de la mise à jour.");
+                .querySelectorAll(`.reaction-option[data-post-id="${postId}"]`)
+                .forEach((btn) => {
+                  if (btn.dataset.type === reactionType) {
+                    btn.classList.add("active");
+                  } else {
+                    btn.classList.remove("active");
+                  }
+                });
+
+              // Hide selector after selection
+              selector.style.display = "none";
             }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
           });
       });
     });
-  });
-  const reactionButtons = document.querySelectorAll('.btn-reaction');
 
-reactionButtons.forEach(button => {
-button.addEventListener('click', function () {
-const postId = this.closest('.post-reactions').dataset.postId;
-const reactionType = this.dataset.type;
-const postReactions = this.closest('.post-reactions');
+    // Close selector when clicking outside
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".post-reactions")) {
+        document.querySelectorAll(".reaction-selector").forEach((selector) => {
+          selector.style.display = "none";
+        });
+      }
+    });
+  </script>
 
-console.log(`Attempting to react to post ${postId} with ${reactionType}`);
-// Debug
-// Send AJAX request
-fetch (`/posts/${postId}/react`, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/x-www-form-urlencoded',
-'X-Requested-With': 'XMLHttpRequest'
-},
-body: `type=${reactionType}`
-}).then(response => response.json()).then(data => {
-console.log('Response data:', data);
-  // Update like/dislike counts
-postReactions.querySelector('.likes-count').textContent = data.likes;
-postReactions.querySelector('.dislikes-count').textContent = data.dislikes;
+  {% endblock %}
 
-// Update active state
-postReactions.querySelector('.like-button').classList.remove('active');
-postReactions.querySelector('.dislike-button').classList.remove('active');
-
-if (data.userReaction === 'like') {
-postReactions.querySelector('.like-button').classList.add('active');
-} else if (data.userReaction === 'dislike') {
-postReactions.querySelector('.dislike-button').classList.add('active');
-}
-}).catch(error => {
-console.error('Error:', error);
-});
-});
-});;
-</script>
-
-{% endblock %}

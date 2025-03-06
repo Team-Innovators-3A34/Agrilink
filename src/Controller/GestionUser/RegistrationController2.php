@@ -11,16 +11,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\NotificationService;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 
 
 class RegistrationController2 extends AbstractController
 {
     private $notificationService;
+    private HttpClientInterface $httpClient;
 
-    public function __construct(NotificationService $notificationService)
+    public function __construct(NotificationService $notificationService , HttpClientInterface $httpClient)
     {
         $this->notificationService = $notificationService;
+        $this->httpClient = $httpClient;
     }
 
     #[Route('/register', name: 'app_register')]
@@ -34,6 +37,7 @@ class RegistrationController2 extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $userType = $form->get('user_type')->getData();
+            $geoData = $this->getGeolocation();
 
             // Assign a role based on the user type
             switch ($userType) {
@@ -57,6 +61,11 @@ class RegistrationController2 extends AbstractController
             $user->setStatus('show');
             $user->setAccountVerification('pending');
 
+            $user->setLatitude($geoData['latitude']);
+            $user->setLongitude($geoData['longitude']);
+            $user->setCity($geoData['city']);
+            $user->setCountry($geoData['country']);
+
             $user->setCreateAt(new \DateTimeImmutable());
 
             $user->setIs2FA(false);
@@ -75,5 +84,33 @@ class RegistrationController2 extends AbstractController
         return $this->render('security/register.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    private function getGeolocation(): ?array
+    {
+        // Get the public IP
+        $response = $this->httpClient->request('GET', 'https://api64.ipify.org?format=json');
+        $data = $response->toArray();
+        $ip = $data['ip'] ?? null;
+
+        if (!$ip) {
+            return null;
+        }
+
+        // Get geolocation data
+        $geoResponse = $this->httpClient->request('GET', "http://ip-api.com/json/{$ip}");
+        $geoData = $geoResponse->toArray();
+
+        if ($geoData['status'] !== 'success') {
+            return null;
+        }
+
+        return [
+            'ip' => $ip,
+            'latitude' => $geoData['lat'],
+            'longitude' => $geoData['lon'],
+            'city' => $geoData['city'],
+            'country' => $geoData['country']
+        ];
     }
 }

@@ -45,22 +45,40 @@ endblock %} {% block content %}
                   </div>
                 </div>
                 <div class="col-lg-12 mb-3">
-                  {# <div class="form-group">
-                    {{ form_row(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Describe your post', 'required': false
+										{% if generated_tip is not defined or generated_tip is empty %}
+											<button type="button" class="btn btn-primary" id="generate-initial-tip">Générer un conseil agricole</button>
+										{% else %}
+											<div class="card mb-4">
+												<div class="card-header">
+													<h5>Conseil agricole du jour</h5>
+												</div>
+												<div class="card-body">
+													<blockquote id="ai-tip" class="blockquote mb-0">
+														{{ generated_tip }}
+													</blockquote>
+												</div>
+												<div class="card-footer">
+													<button type="button" class="btn btn-secondary" id="generate-new-tip">Générer un nouveau conseil</button>
+													<button type="button" class="btn btn-danger" id="remove-tip">Je ne veux pas de conseil</button>
+													<input type="hidden" name="ai_tip" id="ai_tip_input" value="{{ generated_tip }}">
+												</div>
+													</div>
+										{% endif %}
 
-                    }}) }} #}
-                    <div class="form-group">
+										{#   <div class="form-group">
+																																																																						                    {{ form_row(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Describe your post', 'required': false
+																																																																						                    }}) }}
+																																																																						                  </div> #}
+										<div class="form-group">
 											{{ form_label(form.description) }}
 											{{ form_widget(form.description) }}
 											<div class="error-message">
 												{{ form_errors(form.description) }}
 											</div>
-                  
-                </div>
-                <div class="col-lg-12 mb-3">
-                  <div class="form-group">
-                    {{ form_row(form.status, {'attr': {'class': 'form-control', 'placeholder': 'Upload image'
-
+										</div>
+										<div class="col-lg-12 mb-3">
+											<div class="form-group">
+												{{ form_row(form.status, {'attr': {'class': 'form-control', 'placeholder': 'Upload image'
 
 
 
@@ -97,7 +115,7 @@ endblock %} {% block content %}
                     type="submit"
                     class="bg-current text-center text-white font-xsss fw-600 p-3 w175 rounded-3 d-inline-block"
                   >
-                    Comfirmer
+                    Confirmer
                   </button>
                 </div>
               </div>
@@ -152,6 +170,78 @@ alert('Erreur: ' + data.error);
 }
 });
 });
+// NEW CODE: AI Tip functionality
+// Button to use the generated tip
+// Handle initial tip generation
+const generateNewTipBtn = document.getElementById('generate-new-tip');
+if (generateNewTipBtn) {
+console.log('Found generate-new-tip button');
+generateNewTipBtn.addEventListener('click', function (e) {
+console.log('New tip button clicked!');
+e.preventDefault();
+
+// Make an AJAX request to get a fresh tip
+fetch('{{ path('app_generate_tip') }}?refresh=true').then(response => response.json()).then(data => {
+console.log('Response received:', data);
+if (data.tip) { // Directly update the tip on the page without reloading
+document.getElementById('ai-tip').textContent = data.tip;
+document.getElementById('ai_tip_input').value = data.tip;
+console.log('Tip updated to:', data.tip);
+}
+}).catch(error => {
+console.error('Error:', error);
+});
+});
+} else {
+console.log('New tip button not found!');
+}
+const generateInitialTipBtn = document.getElementById('generate-initial-tip');
+if (generateInitialTipBtn) {
+generateInitialTipBtn.addEventListener('click', function () {
+window.location.href = '{{ path('app_generate_tip') }}';
+});
+}
+// Replace the use-tip button functionality with remove-tip
+const removeTipBtn = document.getElementById('remove-tip');
+if (removeTipBtn) {
+console.log('Found remove-tip button');
+removeTipBtn.addEventListener('click', function () {
+console.log('Remove tip button clicked!');
+
+// Clear the hidden input value
+document.getElementById('ai_tip_input').value = '';
+
+// Visual feedback
+this.classList.add('active');
+if (generateNewTipBtn) {
+generateNewTipBtn.classList.remove('active');
+}
+
+// Hide the tip display if it exists
+const tipElement = document.getElementById('ai-tip');
+if (tipElement) {
+tipElement.textContent = 'Aucun conseil sélectionné';
+tipElement.style.fontStyle = 'italic';
+tipElement.style.color = '#999';
+}
+
+console.log('Tip removed');
+});
+} else {
+console.log('Remove tip button not found!');
+}
+
+// Keep this for backward compatibility if you haven't removed the button yet
+const useTipBtn = document.getElementById('use-tip');
+if (useTipBtn) {
+useTipBtn.addEventListener('click', function () {
+const tip = document.getElementById('ai-tip').textContent.trim();
+const descriptionField = document.querySelector('{{ form.description.vars.id }}');
+if (descriptionField) {
+descriptionField.value = descriptionField.value + '\n\n' + tip;
+}
+});
+}
 									</script>
 								{% endblock %}
           </div>

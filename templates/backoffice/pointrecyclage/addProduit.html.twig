@@ -19,6 +19,7 @@ endblock %} {% block content %}
               <div class="form-group">
                 <label>Nom Produit *</label>
                 {{ form_widget(form.name, {'attr': {'class': 'form-control'
+
                 }}) }}
                 <div class="text-danger">
                   {{ form_errors(form.name) }}
@@ -29,31 +30,33 @@ endblock %} {% block content %}
               <div class="form-group">
                 <label>Quantite Produit *</label>
                 {{ form_widget(form.quantite, {'attr': {'class': 'form-control'
+
                 }}) }}
                 <div class="text-danger">
                   {{ form_errors(form.quantite) }}
                 </div>
               </div>
             </div>
-          
-             <div class="col-md-12">
+
+            <div class="col-md-12">
               <div class="form-group">
                 <label>Description Produit *</label>
                 {{ form_widget(form.description, {'attr': {'class': 'form-control'
+
                 }}) }}
                 <div class="text-danger">
                   {{ form_errors(form.description) }}
                 </div>
               </div>
             </div>
-              <div class="col-md-12">
+            <div class="col-md-12">
               <div class="form-group">
                 <label>Image</label>
                 {{ form_widget(form.image) }}
                 <div class="text-danger">
                   {{ form_errors(form.image) }}
                 </div>
-                  {% if (action == "edit") %}
+                {% if (action == "edit") %}
                 <p>Image actuelle :</p>
                 <img
                   src="{{ asset('uploads/images/' ~ form.vars.value.image) }}"
@@ -67,6 +70,7 @@ endblock %} {% block content %}
               <div class="form-group">
                 <label>Point de recyclage *</label>
                 {{ form_widget(form.pointderecyclage, {'attr': {'class': 'selectpicker form-control', 'data-style': 'py-0'
+
                 }}) }}
                 <div class="text-danger">
                   {{ form_errors(form.pointderecyclage) }}
@@ -75,7 +79,8 @@ endblock %} {% block content %}
             </div>
           </div>
           <button type="submit" class="btn btn-primary mr-2">
-            Ajouter Produit
+            {% if (action == "edit") %}Editer Produit{% elseif (action
+            =="add")%}Ajouter Produit{% endif %}
           </button>
           {#<button type="reset" class="btn btn-danger">Reset</button>#}
           {{ form_end(form) }}

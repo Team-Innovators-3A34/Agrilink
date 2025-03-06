@@ -131,7 +131,7 @@ class ReponsesController extends AbstractController
 
 
 
-
+    
 
 
 
@@ -225,26 +225,43 @@ class ReponsesController extends AbstractController
     //////////////////////////////////   UPDATE  Status ////////////////////////////////////////////////////////////
 
     #[Route('/reponses/update-status/{id}/{status}', name: 'update_reponse_status', methods: ['POST'])]
-    public function updateStatus(Request $request, Reponses $reponse, string $status, EntityManagerInterface $entityManager): Response
-    {
-        // Vérification que l'entité existe (ceci est normalement assuré par le ParamConverter)
-        if (!$reponse) {
-            $this->addFlash('error', 'Reponse introuvable.');
-            return $this->redirect($request->headers->get('referer'));
-        }
-
-        // Vérification du token CSRF pour la sécurité
-        if (!$this->isCsrfTokenValid('update_status' . $reponse->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Action non autorisée.');
-            return $this->redirect($request->headers->get('referer'));
-        }
-
-        // Mettre à jour le statut
-        $reponse->setStatus($status);
-        $entityManager->persist($reponse);
-        $entityManager->flush();
-
-
+public function updateStatus(Request $request, Reponses $reponse, string $status, EntityManagerInterface $entityManager): Response
+{
+    // Vérification que l'entité existe (ceci est normalement assuré par le ParamConverter)
+    if (!$reponse) {
+        $this->addFlash('error', 'Reponse introuvable.');
         return $this->redirect($request->headers->get('referer'));
     }
+
+    // Vérification du token CSRF pour la sécurité
+    if (!$this->isCsrfTokenValid('update_status' . $reponse->getId(), $request->request->get('_token'))) {
+        $this->addFlash('error', 'Action non autorisée.');
+        return $this->redirect($request->headers->get('referer'));
+    }
+
+    // Mettre à jour le statut
+    $reponse->setStatus($status);
+    $entityManager->persist($reponse);
+    $entityManager->flush();
+
+
+    return $this->redirect($request->headers->get('referer'));
 }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+

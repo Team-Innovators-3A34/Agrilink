@@ -94,37 +94,122 @@
         </div>
       </div>
     </div>
+    <div class="col-lg-8">
+      <div class="row">
+        <div class="col-lg-4 col-md-4">
+          <div class="card card-block card-stretch card-height">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-4 card-total-sale">
+                <div class="icon iq-icon-box-2 bg-info-light">
+                  <i class="ri-customer-service-line"></i>
+                </div>
+                <div>
+                  <p class="mb-2">Total Réclamations</p>
+                  <p>{{ stats.total }}</p>
+                </div>
+              </div>
+              <div class="iq-progress-bar mt-2">
+                <span
+                  class="bg-info iq-progress progress-1"
+                  data-percent="{{ stats.total }}"
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <div class="card card-block card-stretch card-height">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-4 card-total-sale">
+                <div class="icon iq-icon-box-2 bg-success-light">
+                  <i class="ri-checkbox-circle-line"></i>
+                </div>
+                <div>
+                  <p class="mb-2">Résolues</p>
+                  <p>{{ stats.resolved }}</p>
+                </div>
+              </div>
+              <div class="iq-progress-bar mt-2">
+                <span
+                  class="bg-success iq-progress progress-1"
+                  data-percent="{{ stats.resolved }}"
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <div class="card card-block card-stretch card-height">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-4 card-total-sale">
+                <div class="icon iq-icon-box-2 bg-warning-light">
+                  <i class="ri-alert-line"></i>
+                </div>
+                <div>
+                  <p class="mb-2">En attente</p>
+                  <p>{{ stats.pending }}</p>
+                </div>
+              </div>
+              <div class="iq-progress-bar mt-2">
+                <span
+                  class="bg-warning iq-progress progress-1"
+                  data-percent="{{ stats.pending }}"
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphique des réclamations -->
     <div class="col-lg-6">
       <div class="card card-block card-stretch card-height">
         <div class="card-header d-flex justify-content-between">
           <div class="header-title">
-            <h4 class="card-title">Overview</h4>
+            <h4 class="card-title">Statistiques des Réclamations</h4>
           </div>
           <div class="card-header-toolbar d-flex align-items-center">
             <div class="dropdown">
               <span
                 class="dropdown-toggle dropdown-bg btn"
-                id="dropdownMenuButton001"
+                id="dropdownMenuPeriod"
                 data-toggle="dropdown"
               >
-                This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                Ce Mois <i class="ri-arrow-down-s-line ml-1"></i>
               </span>
               <div
                 class="dropdown-menu dropdown-menu-right shadow-none"
-                aria-labelledby="dropdownMenuButton001"
+                aria-labelledby="dropdownMenuPeriod"
               >
-                <a class="dropdown-item" href="#">Year</a>
-                <a class="dropdown-item" href="#">Month</a>
-                <a class="dropdown-item" href="#">Week</a>
+                <a
+                  class="dropdown-item period-filter"
+                  href="#"
+                  data-period="year"
+                  >Année</a
+                >
+                <a
+                  class="dropdown-item period-filter"
+                  href="#"
+                  data-period="month"
+                  >Mois</a
+                >
+                <a
+                  class="dropdown-item period-filter"
+                  href="#"
+                  data-period="week"
+                  >Semaine</a
+                >
               </div>
             </div>
           </div>
         </div>
         <div class="card-body">
-          <div id="layout1-chart1"></div>
+          <div id="reclamations-chart"></div>
         </div>
       </div>
     </div>
+
     <div class="col-lg-6">
       <div class="card card-block card-stretch card-height">
         <div
@@ -186,6 +271,7 @@
             </div>
           </div>
         </div>
+
         <div class="card-body">
           <ul class="list-unstyled row top-product mb-0">
             <li class="col-lg-3">
@@ -450,4 +536,101 @@
   </div>
 </div>
 
-{% endblock %}
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Vérifier si les données existent avant de les traiter
+    const monthlyData = JSON.parse(
+      "{{ monthlyStats|json_encode()|raw }}" || "[]"
+    );
+
+    if (!Array.isArray(monthlyData)) {
+      console.error("Les données de statistiques mensuelles sont invalides.");
+      return;
+    }
+
+    // Configuration du graphique
+    const options = {
+      chart: {
+        type: "bar",
+        height: 350,
+        toolbar: { show: true },
+      },
+      series: [
+        {
+          name: "Réclamations",
+          data: monthlyData.map((item) => item.count),
+        },
+      ],
+      xaxis: {
+        categories: monthlyData.map((item) => item.month),
+        labels: {
+          style: {
+            colors: "#6B6F82",
+            fontSize: "12px",
+          },
+        },
+      },
+      colors: ["#3A57E8"],
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          horizontal: false,
+          columnWidth: "55%",
+        },
+      },
+      dataLabels: { enabled: false },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val + " réclamations";
+          },
+        },
+      },
+      grid: {
+        borderColor: "#F1F1F1",
+        strokeDashArray: 3,
+      },
+    };
+
+    const chartElement = document.querySelector("#reclamations-chart");
+    if (chartElement) {
+      const chart = new ApexCharts(chartElement, options);
+      chart.render();
+    } else {
+      console.error("L'élément #reclamations-chart est introuvable.");
+    }
+
+    // Gestion du changement de période
+    document.querySelectorAll(".period-filter").forEach((item) => {
+      item.addEventListener("click", function (e) {
+        e.preventDefault();
+        const period = this.dataset.period;
+        loadChartData(period);
+        updateButtonText(this.textContent);
+      });
+    });
+
+    function loadChartData(period) {
+      fetch(`/get-chart-data?period=${period}`)
+        .then((response) => response.json())
+        .then((data) => {
+          chart.updateSeries([{ data: data.map((item) => item.count) }]);
+        })
+        .catch((error) =>
+          console.error("Erreur lors du chargement des données :", error)
+        );
+    }
+
+    function updateButtonText(text) {
+      const dropdownButton = document.querySelector("#dropdownMenuPeriod");
+      if (dropdownButton) {
+        dropdownButton.innerHTML = `${text} <i class="ri-arrow-down-s-line ml-1"></i>`;
+      } else {
+        console.error("L'élément #dropdownMenuPeriod est introuvable.");
+      }
+    }
+  });
+</script>
+{% endblock %} {% endblock %}

@@ -61,9 +61,18 @@ class Reclamation
     private Collection $reponses;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: "id_user", referencedColumnName: "id", nullable: false, onDelete: "CASCADE")]
+    #[ORM\JoinColumn(name: "id_user", referencedColumnName: "id", nullable: false)]
     #[Assert\NotNull(message: "Veuillez associer un utilisateur.")]
     private ?User $id_user = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $archive = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $etat_rec = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $etat_user = null;
 
     public function __construct()
     {
@@ -187,6 +196,42 @@ class Reclamation
     public function setIdUser(?User $id_user): static
     {
         $this->id_user = $id_user;
+        return $this;
+    }
+
+    public function getArchive(): ?string
+    {
+        return $this->archive;
+    }
+
+    public function setArchive(?string $archive): static
+    {
+        $this->archive = $archive;
+
+        return $this;
+    }
+
+    public function getEtatRec(): ?string
+    {
+        return $this->etat_rec;
+    }
+
+    public function setEtatRec(?string $etat_rec): static
+    {
+        $this->etat_rec = $etat_rec;
+
+        return $this;
+    }
+
+    public function getEtatUser(): ?string
+    {
+        return $this->etat_user;
+    }
+
+    public function setEtatUser(?string $etat_user): static
+    {
+        $this->etat_user = $etat_user;
+
         return $this;
     }
 }

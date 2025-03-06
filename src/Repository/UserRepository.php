@@ -56,10 +56,41 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->createQueryBuilder('u')
             ->where('u.id IN (:ids)')
+            ->andWhere('u.roles IN (:roles)')
+            ->andWhere('u.accountVerification = :accountVerification')
+            ->andWhere('u.status = :status')
+            ->setParameter('roles', [
+                '["ROLE_AGRICULTURE","ROLE_USER"]',
+                '["ROLE_RESOURCE_INVESTOR","ROLE_USER"]',
+                '["ROLE_RECYCLING_INVESTOR","ROLE_USER"]'
+            ])
+            ->setParameter('status', 'show')
+            ->setParameter('accountVerification', 'approved')
             ->setParameter('ids', $userIds)
             ->getQuery()
             ->getResult();
     }
+
+    // In UserRepository.php
+    public function findBySearchQuery(string $query)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.nom LIKE :query OR u.prenom LIKE :query OR u.email LIKE :query')
+            ->andWhere('u.roles IN (:roles)')
+            ->andWhere('u.accountVerification = :accountVerification')
+            ->andWhere('u.status = :status')
+            ->setParameter('roles', [
+                '["ROLE_AGRICULTURE","ROLE_USER"]',
+                '["ROLE_RESOURCE_INVESTOR","ROLE_USER"]',
+                '["ROLE_RECYCLING_INVESTOR","ROLE_USER"]'
+            ])
+            ->setParameter('status', 'show')
+            ->setParameter('accountVerification', 'approved')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
 
 
     //    /**

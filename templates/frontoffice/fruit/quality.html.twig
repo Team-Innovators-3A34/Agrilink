@@ -1,0 +1,187 @@
+{% extends "frontOffice/base.html.twig" %}
+{% block title %}Prédiction de la Qualité du Fruit{% endblock %}
+
+{% block content %}
+<!-- Espace fixe en haut -->
+<div style="height: 10px;"></div>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="row justify-content-center w-100">
+    <div class="col-md-10">
+      <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+        <div class="card-header bg-white text-dark text-center py-3">
+          <h2 class="h4 m-0 fw-bold">🍏 Prédiction de la Qualité du Fruit</h2>
+        </div>
+        <div class="card-body p-4">
+          <form id="qualityForm" action="{{ path('quality_predict') }}" method="post" enctype="multipart/form-data">
+            <!-- Zone de Drag-and-Drop -->
+            <div class="drop-zone text-center p-5 rounded border border-primary bg-light">
+              <p class="text-muted"><i class="fas fa-cloud-upload-alt fa-2x"></i></p>
+              <p class="fw-bold">Glissez-déposez une image ici ou cliquez pour sélectionner</p>
+              <input type="file" id="qualityImage" name="file" class="form-control d-none"
+                     accept="image/jpeg, image/png, image/jpg" required>
+              <div class="preview mt-3" id="qualityImagePreview"></div>
+            </div>
+            <div class="text-center mt-3">
+              <button type="submit" id="qualitySubmitBtn" class="btn btn-primary" disabled>🔍 Prédire la Qualité</button>
+            </div>
+          </form>
+          
+          {% if imageDataUrl is defined %}
+            <div class="text-center mt-4">
+              <img src="{{ imageDataUrl }}" alt="Image soumise" class="img-fluid rounded shadow" style="max-width: 250px; height: auto;">
+            </div>
+          {% endif %}
+
+          {% if prediction is defined and prediction is not null %}
+            <div class="alert alert-info text-center mt-4">
+            <h4>Résultat de la Prédiction de Qualité</h4>
+            <p><strong>État :</strong> {{ prediction.model2_prediction }}</p>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS pour styliser la zone de drag-and-drop -->
+<style>
+  .drop-zone {
+    width: 100%;
+    height: 300px;
+    border: 2px dashed #007bff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  .drop-zone:hover {
+    background-color: #e9f5ff;
+  }
+  .drop-zone img {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+</style>
+
+<!-- Inclusion de TensorFlow.js et MobileNet -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+
+<script>
+  let model;
+  // Charger MobileNet dès le chargement de la page
+  async function loadModel() {
+    model = await mobilenet.load();
+    console.log("Modèle MobileNet chargé !");
+  }
+
+  // Vérifier l'image pour s'assurer qu'elle correspond à un fruit (ou légume) attendu
+  async function checkImage(file) {
+    if (!model) {
+      console.error("Le modèle n'est pas chargé !");
+      return false;
+    }
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    return new Promise((resolve) => {
+      img.onload = async () => {
+        const predictions = await model.classify(img);
+        console.log("🔍 Prédictions :", predictions);
+        // Liste de mots-clés valides adaptée au contexte qualité (classes_model2 par exemple)
+        const validKeywords = [
+          "apple", "banana", "bell pepper", "orange", "grapes"
+        ].map(keyword => keyword.toLowerCase());
+        const labels = predictions.map(p => p.className.toLowerCase());
+        const isValid = labels.some(label => validKeywords.some(keyword => label.includes(keyword)));
+        resolve(isValid);
+      };
+    });
+  }
+
+  // Prévisualiser l'image dans la zone de drop
+  function previewImage(file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      document.getElementById("qualityImagePreview").innerHTML =
+        `<img src="${event.target.result}" class="img-fluid shadow">`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const dropZone = document.querySelector('.drop-zone');
+  const imageInput = document.getElementById('qualityImage');
+  const submitBtn = document.getElementById('qualitySubmitBtn');
+  const qualityForm = document.getElementById('qualityForm');
+
+  // Ouvrir l'explorateur en cliquant sur la zone
+  dropZone.addEventListener('click', () => imageInput.click());
+  // Survol de la zone
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('bg-primary', 'text-white');
+  });
+  // Quitter la zone
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('bg-primary', 'text-white');
+  });
+  // Gérer le drop d'image et lancer la prévisualisation avec vérification
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('bg-primary', 'text-white');
+    if (e.dataTransfer.files.length) {
+      imageInput.files = e.dataTransfer.files;
+      previewImage(e.dataTransfer.files[0]);
+      checkImage(e.dataTransfer.files[0]).then(isValid => {
+        submitBtn.disabled = !isValid;
+        if (!isValid) {
+          alert("L'image ne semble pas être un fruit valide. Veuillez choisir une image appropriée.");
+          imageInput.value = "";
+          document.getElementById("qualityImagePreview").innerHTML = "";
+        }
+      });
+    }
+  });
+  // Prévisualisation lors de la sélection via l'explorateur
+  imageInput.addEventListener('change', function() {
+    if (this.files[0]) {
+      previewImage(this.files[0]);
+      checkImage(this.files[0]).then(isValid => {
+        submitBtn.disabled = !isValid;
+        if (!isValid) {
+          alert("L'image ne semble pas être un fruit valide. Veuillez choisir une image appropriée.");
+          this.value = "";
+          document.getElementById("qualityImagePreview").innerHTML = "";
+        }
+      });
+    }
+  });
+  // Vérification finale avant soumission du formulaire
+  qualityForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!imageInput.files || !imageInput.files[0]) {
+      alert("Veuillez sélectionner une image.");
+      return;
+    }
+    const file = imageInput.files[0];
+    const isValid = await checkImage(file);
+    if (isValid) {
+      console.log("Image validée, soumission du formulaire.");
+      submitBtn.disabled = true;
+      qualityForm.submit();
+    } else {
+      alert("L'image ne semble pas être un fruit valide. Veuillez choisir une image appropriée.");
+      imageInput.value = "";
+      document.getElementById("qualityImagePreview").innerHTML = "";
+    }
+  });
+
+  loadModel();
+</script>
+{% endblock %}

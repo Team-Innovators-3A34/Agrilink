@@ -55,8 +55,8 @@ class Event
     #[Assert\Regex(pattern: "/^-?\d+\.\d+$/", message: "Format de latitude invalide.")]
     private ?string $latitude = null;
 
-    #[ORM\ManyToOne(inversedBy: 'events', cascade: ['remove'])]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')] // Prevents deleting a category if it has events
     #[Assert\NotNull(message: "La catégorie est obligatoire.")]
     private ?Categorie $categorie = null;
 

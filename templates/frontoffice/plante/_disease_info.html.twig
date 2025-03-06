@@ -1,0 +1,8 @@
+<div class="disease-info">
+    <h2>Informations sur la Maladie : {{ diseaseName }}</h2>
+    {% if diseaseInfo %}
+        <p>{{ diseaseInfo|nl2br }}</p>
+    {% else %}
+        <p>Aucune information trouvée pour cette maladie.</p>
+    {% endif %}
+</div>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reclamation PDF</title>
+    <style>
+      /* Reset de base */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #ffffff;
+        padding: 25px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 30px;
+      }
+
+      h1 {
+        color: #2c3e50;
+        font-size: 24px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 3px solid #e74c3c;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      h2 {
+        color: #34495e;
+        font-size: 20px;
+        margin: 25px 0 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ecf0f1;
+      }
+
+      .info {
+        margin: 15px 0;
+        padding: 12px 20px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border-left: 4px solid #e74c3c;
+        display: flex;
+        gap: 10px;
+      }
+
+      .info strong {
+        color: #2c3e50;
+        min-width: 140px;
+        display: inline-block;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ecf0f1;
+      }
+
+      th {
+        background-color: #2c3e50;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 14px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      tr:hover {
+        background-color: #f1f4f7;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        color: #7f8c8d;
+        font-size: 12px;
+        border-top: 1px solid #ecf0f1;
+      }
+
+      p {
+        padding: 15px;
+        background: #f8d7da;
+        color: #721c24;
+        border-radius: 4px;
+        border: 1px solid #f5c6cb;
+        margin: 15px 0;
+      }
+
+      @media print {
+        body {
+          padding: 0;
+        }
+        .container {
+          box-shadow: none;
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Reclamation N :{{ reclamation.id }}</h1>
+
+      <div class="info">
+        <strong>Nom Utilisateur:</strong>
+        <span>{{ reclamation.getNomUser() }}</span>
+      </div>
+
+      <div class="info">
+        <strong>Email Utilisateur:</strong>
+        <span>{{ reclamation.getMailUser() }}</span>
+      </div>
+
+      <div class="info">
+        <strong>Titre:</strong>
+        <span>{{ reclamation.title }}</span>
+      </div>
+
+      <div class="info">
+        <strong>Contenu:</strong>
+        <span>{{ reclamation.content }}</span>
+      </div>
+
+      <div class="info">
+        <strong>Statut:</strong>
+        <span>{{ reclamation.status }}</span>
+      </div>
+
+      <div class="info">
+        <strong>Date:</strong>
+        <span>{{ reclamation.date|date('d/m/Y') }}</span>
+      </div>
+
+      <div class="info">
+        <strong>Priorite:</strong>
+        <span>{{ reclamation.getPriorite() }}</span>
+      </div>
+
+      <div class="info">
+        <strong>Type:</strong>
+        <span>{{ reclamation.type }}</span>
+      </div>
+
+      <h2>Reponses Associes</h2>
+
+      {% if reclamation.reponses is not empty %}
+      <table>
+        <thead>
+          <tr>
+            <th>Contenu</th>
+            <th>Solution</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Automatique</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reponse in reclamation.reponses %}
+          <tr>
+            <td>{{ reponse.content }}</td>
+            <td>{{ reponse.solution }}</td>
+            <td>{{ reponse.status }}</td>
+            <td>
+              {{ reponse.date ? reponse.date|date('d/m/Y H:i') : 'Non spécifiée' }}
+            </td>
+            <td>{{ reponse.isAuto ? "Oui" : "Non" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>Aucune reponse associee</p>
+      {% endif %}
+
+      <div class="footer">
+        Genere automatiquement par le systeme de gestion des reclamations<br />
+        {{ "now"|date('d/m/Y H:i') }}
+      </div>
+    </div>
+  </body>
+</html>

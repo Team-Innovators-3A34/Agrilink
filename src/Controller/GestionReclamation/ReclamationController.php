@@ -2,11 +2,14 @@
 
 namespace App\Controller\GestionReclamation;
 
+use App\Service\TranslationService;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Reponses;
 
+use App\Service\InfobipSmsSender;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\ReclamationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,8 +19,9 @@ use App\Form\ReponsesType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Service\NotificationService;
-
 use Knp\Snappy\Pdf;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 
 
@@ -54,6 +58,7 @@ final class ReclamationController extends AbstractController
         ]);
     }*/
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/dashboard/listReclamation', name: 'app_reclamation_list_dashboard', methods: ['GET'])]
     public function listReclamation(ReclamationRepository $reclamationRepository): Response
     {
@@ -119,77 +124,124 @@ final class ReclamationController extends AbstractController
     //////////////////////////////////   AJOUTER   ////////////////////////////////////////////////////////////
 
     #[Route('/settings/Claim', name: 'app_reclamation_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ValidatorInterface $validator): Response
-    {
+    public function new(
+        Request $request,
+        ValidatorInterface $validator,
+        HttpClientInterface $httpClient,
+        InfobipSmsSender $smsSender
+    ): Response {
         $reclamation = new Reclamation();
-
         $user = $this->getUser();
-        // Définir la valeur par défaut de id_user à 0
+
+        // Définition des valeurs par défaut
         $reclamation->setIdUser($user);
         $reclamation->setNomUser($user->getNom() . " " . $user->getPrenom());
         $reclamation->setMailUser($user->getEmail());
         $reclamation->setStatus("En cours");
         $reclamation->setDate(new \DateTime());
         $reclamation->setPriorite(0);
+        $reclamation->setArchive("non");
 
-        // Créer le formulaire
+        // Création du formulaire
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
 
-        // Validation explicite de l'entité avant de la persister
+        $wordsToMask = ['test', 'exemple']; // Ajoute d'autres mots si nécessaire
+
+        // Validation explicite de l'entité
         $errors = $validator->validate($reclamation);
 
-        if ($form->isSubmitted()) {
-            // Si des erreurs de validation existent
-            if (count($errors) > 0) {
-                return $this->render('frontOffice/settings/claim/newClaim.html.twig', [
-                    'form' => $form->createView(),
-                    'errors' => $errors,
-                    "action" => "Ajouter"  // Passer les erreurs à la vue
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                // Remplacer le contenu de la réclamation par des '*'
+                $content = $reclamation->getContent();
+                $maskedContent = preg_replace_callback(
+                    array_map(fn($word) => "/\b" . preg_quote($word, '/') . "\b/i", $wordsToMask),
+                    fn($matches) => str_repeat('*', strlen($matches[0])),
+                    $reclamation->getContent()
+                );
+
+
+                $reclamation->setContent($maskedContent); // Stocker le contenu masqué
+
+                // Appel API Flask pour analyser l'état de la réclamation (positive/negative)
+                $responseRec = $httpClient->request('POST', 'http://localhost:5001/predictetat_rec', [
+                    'json' => ['text' => $content] // Utiliser le contenu original pour l'analyse
                 ]);
+                $dataRec = $responseRec->toArray();
+                $etatRec = $dataRec['etat_rec'];
+                $reclamation->setEtatRec($etatRec);
+
+                // Appel API Flask pour analyser l'état émotionnel de l'utilisateur
+                $responseUser = $httpClient->request('POST', 'http://localhost:5001/predictetat_user', [
+                    'json' => ['texts' => [$content]] // Utiliser le contenu original pour l'analyse
+                ]);
+                $dataUser = $responseUser->toArray();
+                $etatUser = $dataUser['predictions'][0];
+                $reclamation->setEtatUser($etatUser);
+            } catch (\Exception $e) {
+                $this->addFlash('error', "Erreur lors de l'analyse de la réclamation : " . $e->getMessage());
+                $reclamation->setEtatRec("inconnu");
+                $reclamation->setEtatUser("inconnu");
             }
 
-            // Si le formulaire est valide
-            if ($form->isValid()) {
-                // Gestion de l'image
-                $imageFile = $form->get('image')->getData();
-                if ($imageFile) {
-                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                    $safeFilename = preg_replace('/[^a-zA-Z0-9-_]/', '_', $originalFilename);
-                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                    try {
-                        $imageFile->move(
-                            $this->getParameter('images_directory'),
-                            $newFilename
-                        );
-                    } catch (FileException $e) {
-                        // Gérer l'exception si nécessaire
-                    }
-
-                    // Enregistrer l'image dans l'entité
-                    $reclamation->setImage($newFilename);
+            // Gestion de l'image
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = preg_replace('/[^a-zA-Z0-9-_]/', '_', $originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                try {
+                    $imageFile->move($this->getParameter('images_directory'), $newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors du téléchargement de l’image.');
                 }
-
-                // Sauvegarder la réclamation dans la base de données
-                $this->entityManager->persist($reclamation);
-                $this->entityManager->flush();
-
-                // Envoyer une notification à l'administrateur
-                $this->notificationService->claimNotification($user);
-
-
-
-                return $this->redirectToRoute('app_profilee', ['id' => $this->getUser()->getId()]);
+                $reclamation->setImage($newFilename);
             }
+
+            // Sauvegarde de la réclamation
+            $this->entityManager->persist($reclamation);
+            $this->entityManager->flush();
+
+            // Notification à l'administrateur (optionnel)
+            $this->notificationService->claimNotification($user);
+
+            /*
+        // Envoi d'un SMS
+        $phoneNumber = $user->getTelephone();
+        if (!$phoneNumber) {
+            $this->addFlash('error', "Aucun numéro de téléphone valide n'a été trouvé pour l'utilisateur.");
+        } else {
+            // Formatage du numéro : s'il ne commence pas par "216" ou "+216", on lui ajoute "216"
+            $phoneNumber = trim($phoneNumber);
+            if (!(str_starts_with($phoneNumber, '216') || str_starts_with($phoneNumber, '+216'))) {
+                // Vous pouvez ajuster ici pour ajouter un "+" si nécessaire
+                $phoneNumber = '216' . $phoneNumber;
+            }
+
+            $smsMessage = "Bonjour " . $user->getNom() . ", votre réclamation a bien été enregistrée.";
+            try {
+                $smsResponse = $smsSender->sendSms($phoneNumber, $smsMessage);
+                // Pour déboguer, décommentez la ligne suivante :
+                // dd($smsResponse);
+            } catch (\Exception $e) {
+                $this->addFlash('error', "Le SMS de notification n'a pas pu être envoyé : " . $e->getMessage());
+            }
+        }
+        */
+
+            $this->addFlash("success", "Votre réclamation a été enregistrée avec succès.");
+            return $this->redirectToRoute('app_profilee', ['id' => $user->getId()]);
         }
 
         return $this->render('frontOffice/settings/claim/newClaim.html.twig', [
             'form' => $form->createView(),
-            'errors' => $errors,  // Passer les erreurs à la vue, même si elles sont vides
-            "action" => 'Ajouter'
+            'errors' => $errors,
+            'action' => 'Ajouter'
         ]);
     }
+
+
 
 
     //////////////////////////////////   UPDATE   ////////////////////////////////////////////////////////////
@@ -230,6 +282,7 @@ final class ReclamationController extends AbstractController
                     $reclamation->setImage($filename);
                 } catch (\Exception $e) {
                     // Gérer l'exception en cas d'erreur
+                    $this->addFlash('error', 'Échec du téléversement de l\'image.');
                 }
             } else {
                 // Conserver l'ancienne image si aucune nouvelle n'est téléversée
@@ -303,17 +356,71 @@ final class ReclamationController extends AbstractController
     //////////////////////////////////   SHOW RECLAMATION BACK  ////////////////////////////////////////////////////////////
 
     // Route de détails pour le back-end
-    #[Route('/dashboard/reclamationDetailsback/{id}', name: 'reclamationDetailsback', methods: ['GET'])]
-    public function reclamationDetailsback($id): Response
-    {
-        $reclamation = $this->reclamationRepository->find($id);
+    #[IsGranted('ROLE_ADMIN')]
 
+    #[Route('/dashboard/reclamationDetailsback/{id}', name: 'reclamationDetailsback', methods: ['GET'])]
+    public function reclamationDetailsback(Request $request, $id, TranslationService $translator): Response
+    {
+        // Récupération de la réclamation depuis le repository
+        $reclamation = $this->reclamationRepository->find($id);
         if (!$reclamation) {
-            return $this->redirectToRoute('app_reclamationback_list');  // Redirect if reclamation not found
+            return $this->redirectToRoute('app_reclamationback_list');
         }
 
-        return $this->render('backOffice/reclamations/detailReclamation.html.twig', [  // Assurez-vous que la vue est la bonne
-            'reclamation' => $reclamation,
+        // Récupération du paramètre de langue avec valeur par défaut vide (affichage en base)
+        $targetLanguage = $request->query->get('lang', '');
+        // La traduction est effectuée seulement si une langue cible est précisée
+        $useTranslation = ($targetLanguage !== '');
+
+        $translatedReclamation = [
+            'nomUser'  => $reclamation->getNomUser(),
+            'mailUser' => $reclamation->getMailUser(),
+            'title'    => $useTranslation
+                ? ($translator->translateText($reclamation->getTitle(), $targetLanguage) ?: $reclamation->getTitle())
+                : $reclamation->getTitle(),
+            'content'  => $useTranslation
+                ? ($translator->translateText($reclamation->getContent(), $targetLanguage) ?: $reclamation->getContent())
+                : $reclamation->getContent(),
+            'status'   => $useTranslation
+                ? ($translator->translateText($reclamation->getStatus(), $targetLanguage) ?: $reclamation->getStatus())
+                : $reclamation->getStatus(),
+            'date'     => $reclamation->getDate(),
+            'type'     => $reclamation->getType()
+                ? ($useTranslation
+                    ? ($translator->translateText($reclamation->getType()->getNom(), $targetLanguage) ?: $reclamation->getType()->getNom())
+                    : $reclamation->getType()->getNom())
+                : null,
+            'priorite' => $useTranslation
+                ? ($translator->translateText((string)$reclamation->getPriorite(), $targetLanguage) ?: $reclamation->getPriorite())
+                : $reclamation->getPriorite(),
+            'image'    => $reclamation->getImage(),
+        ];
+
+        // Traduction des réponses associées
+        $translatedResponses = [];
+        if (method_exists($reclamation, 'getReponses')) {
+            foreach ($reclamation->getReponses() as $response) {
+                $translatedResponses[] = [
+                    'content'  => $useTranslation
+                        ? ($translator->translateText($response->getContent(), $targetLanguage) ?: $response->getContent())
+                        : $response->getContent(),
+                    'solution' => $useTranslation
+                        ? ($translator->translateText($response->getSolution(), $targetLanguage) ?: $response->getSolution())
+                        : $response->getSolution(),
+                    'status'   => $useTranslation
+                        ? ($translator->translateText($response->getStatus(), $targetLanguage) ?: $response->getStatus())
+                        : $response->getStatus(),
+                    'date'     => $response->getDate(),
+                    'isAuto'   => $response->isAuto(),
+                ];
+            }
+        }
+
+        return $this->render('backOffice/reclamations/detailReclamation.html.twig', [
+            'reclamationId'         => $reclamation->getId(),
+            'translatedReclamation' => $translatedReclamation,
+            'translatedResponses'   => $translatedResponses,
+            'targetLanguage'        => $targetLanguage,
         ]);
     }
 
@@ -327,11 +434,13 @@ final class ReclamationController extends AbstractController
         $reclamation = $em->getRepository(Reclamation::class)->find($id);
 
         if (!$reclamation) {
+            $this->addFlash('error', 'Réclamation introuvable.');
             return $this->redirectToRoute('app_reclamation_list_dashboard');
         }
 
         // Vérification du token CSRF pour la sécurité
         if (!$this->isCsrfTokenValid('update_status' . $reclamation->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Action non autorisée.');
             return $this->redirectToRoute('app_reclamation_list_dashboard');
         }
 
@@ -340,6 +449,7 @@ final class ReclamationController extends AbstractController
         $em->persist($reclamation);
         $em->flush();
 
+        $this->addFlash('success', 'Le statut de la réclamation a été mis à jour avec succès.');
 
         return $this->redirectToRoute('app_reclamation_list_dashboard');
     }
@@ -400,6 +510,7 @@ final class ReclamationController extends AbstractController
 
 
     /////////////////////////////////////////  AFFICHAGE DES REPONSES DE RECLAMATION BACK  ///////////////////////////////////
+    #[IsGranted('ROLE_ADMIN')]
 
     #[Route('/dashboard/reclamation/{id}/reponses', name: 'reclamation_reponses')]
     public function reclamationReponses(int $id): Response
@@ -409,6 +520,7 @@ final class ReclamationController extends AbstractController
 
         // Vérifier si la réclamation existe
         if (!$reclamation) {
+            $this->addFlash('error', 'Réclamation non trouvée.');
             return $this->redirectToRoute('app_reclamationback_list');
         }
 
@@ -436,6 +548,7 @@ final class ReclamationController extends AbstractController
 
         // Vérifier si la réclamation existe
         if (!$reclamation) {
+            $this->addFlash('error', 'Réclamation non trouvée.');
             return $this->redirectToRoute('app_reclamation_list');
         }
 
@@ -461,7 +574,7 @@ final class ReclamationController extends AbstractController
         }
 
         // Générer la vue HTML
-        $html = $this->renderView('reclamation/pdf_template.html.twig', [
+        $html = $this->renderView('backOffice/reclamations/pdf_template.html.twig', [
             'reclamation' => $reclamation,
         ]);
 
@@ -472,6 +585,75 @@ final class ReclamationController extends AbstractController
         return new Response($pdf, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="reclamation_' . $id . '.pdf"',
+        ]);
+    }
+
+
+
+    ////////////////////////   AFFICHAGE DES RECLAMATION ARCHIVE  //////////////////////////////////
+    #[IsGranted('ROLE_ADMIN')]
+
+    #[Route('/dashboard/listReclamationArchive', name: 'app_reclamation_list-archive_dashboard', methods: ['GET'])]
+    public function listReclamationArchive(ReclamationRepository $reclamationRepository): Response
+    {
+        $reclamations = $reclamationRepository->findAll();
+        return $this->render('backOffice/reclamations/listReclamationArchive.html.twig', [
+            'reclamations' => $reclamations,
+        ]);
+    }
+
+
+
+
+
+
+    ////////////////////////  ARCHIVER     //////////////////////////
+
+    #[Route('/reclamation/{id}/archiver', name: 'reclamation_archiver', methods: ['POST'])]
+    public function archiver(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('archive' . $reclamation->getId(), $request->request->get('_token'))) {
+            $reclamation->setArchive('oui');
+            $entityManager->persist($reclamation);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_reclamation_list_dashboard'); // Remplace par le bon nom de ta route
+    }
+
+
+
+    ///////////////////////////////////   STAT DASHBOARD    ///////////////////////////////////////////////
+    #[IsGranted('ROLE_ADMIN')]
+
+    #[Route('/dashboard', name: 'app_admin_dashboard')]
+    public function adminDashboard(ReclamationRepository $reclamationRepo): Response
+    {
+        // Statistiques principales
+        $stats = [
+            'total' => $reclamationRepo->count([]),
+            'resolved' => $reclamationRepo->count(['status' => 'acceptée']),
+            'pending' => $reclamationRepo->count(['status' => 'En cours'])
+        ];
+
+        // Statistiques mensuelles formatées
+        $monthlyStats = $reclamationRepo->createQueryBuilder('r')
+            ->select("r.date as date, COUNT(r.id) as count")
+            ->groupBy('r.date')
+            ->orderBy('r.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        // Formater les résultats
+        $formattedStats = [];
+        foreach ($monthlyStats as $stat) {
+            $month = $stat['date']->format('Y-m'); // Formatez ici
+            $formattedStats[] = ['month' => $month, 'count' => $stat['count']];
+        }
+
+        return $this->render('backoffice/dashboard/dashboard.html.twig', [
+            'stats' => $stats,
+            'monthlyStats' => $formattedStats
         ]);
     }
 }
