@@ -1,0 +1,158 @@
+{% extends "frontOffice/base.html.twig" %}
+
+{% block title %}Liste des offres d'emploi{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Font Awesome pour les icônes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    /* Global layout */
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    .card {
+      border: none;
+    }
+    /* Style général pour la carte d'offre */
+    .job-post-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .job-post-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    /* En-tête avec dégradé */
+    .bg-gradient-primary {
+      background: linear-gradient(45deg, #007bff, #00d4ff);
+    }
+    /* Style des badges */
+    .job-badge {
+      font-size: 0.9rem;
+      margin-right: 8px;
+    }
+    /* Formulaire de filtre */
+    .filter-form input.form-control {
+      border-radius: 50px;
+      padding: 10px 20px;
+      border: 1px solid #ced4da;
+    }
+    .filter-form button.btn {
+      border-radius: 50px;
+      padding: 10px 20px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    /* Boutons */
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+    }
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: #0056b3;
+    }
+    .btn-secondary {
+      background-color: #6c757d;
+      border: none;
+    }
+    .btn-secondary:hover, .btn-secondary:focus {
+      background-color: #565e64;
+    }
+    /* Titres et texte */
+    .card-header h4 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .card-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<!-- Espace fixe en haut -->
+<div style="height: 100px;"></div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow-lg rounded-lg overflow-hidden mb-4">
+        <div class="card-header text-center py-4 bg-gradient-primary text-white">
+          <h2 class="h4 m-0">Offres d'emploi</h2>
+        </div>
+        <div class="card-body p-4">
+          <!-- Formulaire de filtre par pays -->
+          <form method="get" action="{{ path('jobs_list') }}" class="mb-4 filter-form">
+            <div class="form-row align-items-center">
+              <div class="col-md-9 mb-2">
+                <input type="text" class="form-control" id="country" name="country" placeholder="Filtrer par pays" value="{{ country }}">
+              </div>
+              <div class="col-md-3 mb-2">
+                <button type="submit" class="btn btn-primary btn-block">Filtrer</button>
+              </div>
+            </div>
+          </form>
+          
+          <div class="alert alert-info text-center">
+            Total d'offres : {{ totalCount }}
+          </div>
+          
+          <div class="row">
+            {% for job in jobs %}
+              <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card job-post-card h-100">
+                  <div class="card-header bg-gradient-primary text-white">
+                    <h4 class="card-title mb-0">{{ job.title }}</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="mb-3">
+                      {% if job.location == 'New York State' %}
+                        <span class="badge badge-danger job-badge">
+                          <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                        </span>
+                      {% else %}
+                        <span class="badge badge-danger job-badge">
+                          <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                        </span>
+                      {% endif %}
+                      {% if job.jobNumber is defined %}
+                        <span class="badge badge-secondary job-badge">
+                          <i class="fas fa-hashtag"></i> {{ job.jobNumber }}
+                        </span>
+                      {% endif %}
+                    </div>
+                    <p class="card-text">{{ job.snippet|raw }}</p>
+                  </div>
+                  <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ job.link }}" class="btn btn-primary btn-block" target="_blank">
+                      Voir l'offre <i class="fas fa-external-link-alt"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            {% else %}
+              <div class="col-12">
+                <div class="alert alert-warning text-center">
+                  Aucune offre trouvée.
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          
+          {% if currentPage * perPage < totalCount %}
+            <div class="row">
+              <div class="col-12 text-center">
+                <a href="{{ path('jobs_list', { 'page': currentPage + 1, 'country': country }) }}" class="btn btn-secondary">
+                  Voir plus <i class="fas fa-arrow-down"></i>
+                </a>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

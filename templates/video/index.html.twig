@@ -1,0 +1,25 @@
+{# templates/video/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Génération de Vidéo{% endblock %}
+
+{% block body %}
+    <h1>Générer une vidéo à partir d'une description</h1>
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <form method="post">
+        <div class="form-group">
+            <label for="description">Description de la vidéo</label>
+            <textarea name="description" id="description" rows="10" class="form-control" placeholder="Entrez la description de la vidéo..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Générer</button>
+    </form>
+
+    {% if result %}
+        <h2>Résultat de la génération :</h2>
+        <pre>{{ result|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+    {% endif %}
+{% endblock %}

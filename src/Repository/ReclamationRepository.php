@@ -28,6 +28,18 @@ class ReclamationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+    public function getMonthlyStats(): array
+{
+    return $this->createQueryBuilder('r')
+        ->select("DATE_FORMAT(r.date, '%Y-%m') as month, COUNT(r.id) as count")
+        ->groupBy('month')
+        ->orderBy('month', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
+
     //    /**
     //     * @return Reclamation[] Returns an array of Reclamation objects
     //     */

@@ -30,6 +30,10 @@ class UserType extends AbstractType
                 ],
             ])
             ->add('bio')
+            ->add('country')
+            ->add('city')
+            ->add('longitude')
+            ->add('latitude')
             ->add('image', FileType::class, [
                 'mapped' => false,
                 'required' => false,
@@ -43,9 +47,7 @@ class UserType extends AbstractType
                     'class' => 'input-file',
                 ],
                 'label' => false,
-            ])
-
-        ;
+            ])->add('is2FA');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

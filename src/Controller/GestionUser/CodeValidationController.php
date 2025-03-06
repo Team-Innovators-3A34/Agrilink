@@ -34,13 +34,10 @@ class CodeValidationController extends AbstractController
                 $this->addFlash('error', 'No user found with this email. Please recheck the email.');
                 return $this->redirectToRoute('app_send_code_validation');
             } else {
-                if ($user->getAccountVerification() == 'approved' && $user->getStatus() == 'approved') {
+                if ($user->getAccountVerification() == 'approved') {
                     $this->addFlash('success', 'Your account is active. Just Login.');
                     return $this->redirectToRoute('app_login');
-                } else if ($user->getStatus() == 'pending') {
-                    $this->addFlash('error', 'Your account is not approved. Wait for approval.');
-                    return $this->redirectToRoute('app_send_code_validation');
-                } else if ($user->getAccountVerification() == 'pending' && $user->getStatus() == 'approved') {
+                } else if ($user->getAccountVerification() == 'pending') {
                     $validationCode = rand(1000, 9999);
                     $user->setVerificationCode((string) $validationCode);
                     $user->setCodeExpirationDate(new \DateTime('+10 minutes'));
@@ -71,7 +68,9 @@ class CodeValidationController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             // Retrieve email from session
+
             $email = $request->getSession()->get('email_for_verification') ?? null;
+
 
             if (!$email) {
                 $this->addFlash('error', 'Email session expired');
@@ -95,21 +94,42 @@ class CodeValidationController extends AbstractController
                 return $this->redirectToRoute('app_send_code_validation');
             }
 
-            // Check if the code is correct and has not expired
-            $code = $user->getVerificationCode();
-            $expirationDate = $user->getCodeExpirationDate();
+            // Get the action from the request
+            if ($request->getSession()->get('action') == '2FA') {
+                // Check if the code is correct and has not expired
+                $code = $user->getCode2FA();
+                $expirationDate = $user->getCode2FAexpiry();
 
-            if ($code === $enteredOtp && new \DateTime() < $expirationDate) {
-                // Code is valid
-                $user->setAccountVerification('approved'); // Approve the user
-                $user->setVerificationCode(null); // Clear the verification code
-                $user->setCodeExpirationDate(null); // Clear the expiration date
-                $this->em->flush();
-                $this->addFlash('success', 'Account verified successfully!');
-                return $this->redirectToRoute('app_login');
-            } else {
-                // Code is invalid or expired
-                $this->addFlash('error', 'Invalid or expired code.');
+                if ($code === $enteredOtp && new \DateTime() < $expirationDate) {
+                    // Code is valid
+                    $user->setCode2FA(null); // Clear the 2FA code
+                    $user->setCode2FAexpiry(null); // Clear the expiration date
+                    $this->em->flush();
+                    if ($user->getRoles()[0] == 'ROLE_ADMIN') {
+                        return $this->redirectToRoute('app_dashboard');
+                    } else {
+                        return $this->redirectToRoute('app_login');
+                    }
+                } else {
+                    // Code is invalid or expired
+                    $this->addFlash('error', 'Invalid or expired code.');
+                }
+            } else {  // Check if the code is correct and has not expired
+                $code = $user->getVerificationCode();
+                $expirationDate = $user->getCodeExpirationDate();
+
+                if ($code === $enteredOtp && new \DateTime() < $expirationDate) {
+                    // Code is valid
+                    $user->setAccountVerification('approved'); // Approve the user
+                    $user->setVerificationCode(null); // Clear the verification code
+                    $user->setCodeExpirationDate(null); // Clear the expiration date
+                    $this->em->flush();
+                    $this->addFlash('success', 'Account verified successfully!');
+                    return $this->redirectToRoute('app_login');
+                } else {
+                    // Code is invalid or expired
+                    $this->addFlash('error', 'Invalid or expired code.');
+                }
             }
         }
 

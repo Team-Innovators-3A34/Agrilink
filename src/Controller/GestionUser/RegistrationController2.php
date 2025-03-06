@@ -27,12 +27,13 @@ class RegistrationController2 extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(RegistrationFormType::class, $user, [
+            'attr' => ['novalidate' => 'novalidate']
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Get the value of the "user_type" field
-            $userType = $form->get('user_type')->getData(); // Use the form field data
+            $userType = $form->get('user_type')->getData();
 
             // Assign a role based on the user type
             switch ($userType) {
@@ -50,23 +51,22 @@ class RegistrationController2 extends AbstractController
                     break;
             }
 
-            // Hash the password
             $plainPassword = $form->get('plainPassword')->getData();
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            // Set initial user status
-            $user->setStatus('pending');
+            $user->setStatus('show');
             $user->setAccountVerification('pending');
 
+            $user->setCreateAt(new \DateTimeImmutable());
 
-            // Save the user to the database
+            $user->setIs2FA(false);
+
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Send a notification to the admin
             $this->notificationService->registerNotification($user);
 
-            $this->addFlash('success', 'Your account has been created. Please wait for approval.');
+            $this->addFlash('success', 'Votre compte a été créé. Veuillez vous connecter pour que votre compte soit actif.');
 
             return $this->redirectToRoute('app_login');
         }

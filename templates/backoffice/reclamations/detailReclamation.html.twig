@@ -1,0 +1,179 @@
+{# templates/backOffice/reclamations/detailReclamation.html.twig #}
+{% extends 'backOffice/base.html.twig' %}
+
+{% block title %}Détail Réclamation{% endblock %}
+
+{% block styles %}
+  <style>
+    /* Styles personnalisés pour le sélecteur de langue */
+    .language-selector {
+      display: inline-block;
+      position: relative;
+    }
+    .language-selector .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      padding: 5px 10px;
+      color: #333;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .language-selector .dropdown-toggle:hover {
+      background-color: #f8f9fa;
+    }
+    .language-selector .dropdown-menu {
+      min-width: 200px;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 5px 0;
+    }
+    .language-selector .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 5px 15px;
+      color: #333;
+      text-decoration: none;
+    }
+    .language-selector .dropdown-item:hover {
+      background-color: #f8f9fa;
+    }
+    .language-selector .image-flag {
+      width: 24px;
+      height: auto;
+    }
+    .mr-2 {
+      margin-right: 0.5rem;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+        <div>
+          <h4 class="mb-3">Détails de la Réclamation</h4>
+          <p class="mb-0">
+            Les détails des réclamations permettent de gérer efficacement les retours des utilisateurs en fournissant des informations claires et structurées.
+          </p>
+        </div>
+        <!-- Sélecteur de langue -->
+        <div class="language-selector">
+          <a class="dropdown-toggle btn border add-btn" id="dropdownMenuLanguage" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% if targetLanguage is empty %}
+              <img src="{{ asset('images/11.png') }}" alt="img-flag" class="img-fluid image-flag mr-2">
+              -- Sélectionner --
+            {% elseif targetLanguage == 'en' %}
+              <img src="{{ asset('images/flag-01.png') }}" alt="img-flag" class="img-fluid image-flag mr-2">
+              English
+            {% elseif targetLanguage == 'fr' %}
+              <img src="{{ asset('images/11.png') }}" alt="img-flag" class="img-fluid image-flag mr-2">
+              French
+            {% elseif targetLanguage == 'es' %}
+              <img src="{{ asset('images/flag-03.png') }}" alt="img-flag" class="img-fluid image-flag mr-2">
+              Spanish
+            {% else %}
+              <img src="{{ asset('images/11.png') }}" alt="img-flag" class="img-fluid image-flag mr-2">
+              {{ targetLanguage }}
+            {% endif %}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLanguage">
+            <a class="dropdown-item" href="{{ path('reclamationDetailsback', { id: reclamationId, lang: 'en' }) }}">
+              <img src="{{ asset('images/flag-01.png') }}" alt="img-flag" class="img-fluid mr-2">English
+            </a>
+            <a class="dropdown-item" href="{{ path('reclamationDetailsback', { id: reclamationId, lang: 'fr' }) }}">
+              <img src="{{ asset('images/11.png') }}" alt="img-flag" class="img-fluid mr-2">French
+            </a>
+            <a class="dropdown-item" href="{{ path('reclamationDetailsback', { id: reclamationId, lang: 'es' }) }}">
+              <img src="{{ asset('images/flag-03.png') }}" alt="img-flag" class="img-fluid mr-2">Spanish
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow p-4">
+        <h3 class="mb-4">Informations sur la Réclamation</h3>
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th>Nom Utilisateur :</th>
+              <td>{{ translatedReclamation.nomUser }}</td>
+            </tr>
+            <tr>
+              <th>Email :</th>
+              <td>{{ translatedReclamation.mailUser }}</td>
+            </tr>
+            <tr>
+              <th>Titre :</th>
+              <td>{{ translatedReclamation.title }}</td>
+            </tr>
+            <tr>
+              <th>Contenu :</th>
+              <td>{{ translatedReclamation.content }}</td>
+            </tr>
+            <tr>
+              <th>Statut :</th>
+              <td>{{ translatedReclamation.status }}</td>
+            </tr>
+            <tr>
+              <th>Date :</th>
+              <td>{{ translatedReclamation.date ? translatedReclamation.date|date('d/m/Y H:i') : 'Non spécifiée' }}</td>
+            </tr>
+            <tr>
+              <th>Type :</th>
+              <td>{{ translatedReclamation.type }}</td>
+            </tr>
+            <tr>
+              <th>Priorité :</th>
+              <td>{{ translatedReclamation.priorite }}</td>
+            </tr>
+            <tr>
+              <th>Image :</th>
+              <td>
+                {% if translatedReclamation.image %}
+                  <img src="{{ asset('uploads/images/' ~ translatedReclamation.image) }}" alt="Image Réclamation" class="img-fluid" width="100">
+                {% else %}
+                  Aucune image
+                {% endif %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="mt-4">Réponses Associées</h3>
+        {% if translatedResponses is not empty %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Contenu</th>
+                <th>Solution</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Automatique</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for response in translatedResponses %}
+                <tr>
+                  <td>{{ response.content }}</td>
+                  <td>{{ response.solution }}</td>
+                  <td>{{ response.status }}</td>
+                  <td>{{ response.date ? response.date|date('d/m/Y H:i') : 'Non spécifiée' }}</td>
+                  <td>{{ response.isAuto ? 'Oui' : 'Non' }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>Aucune réponse pour cette réclamation.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

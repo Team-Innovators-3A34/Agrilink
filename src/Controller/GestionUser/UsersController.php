@@ -28,7 +28,7 @@ final class UsersController extends AbstractController
     #[Route('/dashboard/users', name: 'app_dashboard_users')]
     public function index(): Response
     {
-        $users = $this->em->getRepository(User::class)->findALL();
+        $users = $this->em->getRepository(User::class)->findBy(['status' => 'show']);
 
         return $this->render('backoffice/users/users.html.twig', [
             'users' => $users,
@@ -52,7 +52,7 @@ final class UsersController extends AbstractController
     public function deleteUsers(String $id): Response
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['id' => $id]);
-        $this->em->remove($user);
+        $user->setStatus('hide');
         $this->em->flush();
         return $this->redirectToRoute("app_dashboard_users");
     }
@@ -94,6 +94,15 @@ final class UsersController extends AbstractController
         $user = $this->em->getRepository(User::class)->findOneBy(['id' => $id]);
 
         return $this->render('backoffice/users/userDetail.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+
+    #[Route('/profilee/{id}', name: 'app_profilee')]
+    public function profile(User $user): Response
+    {
+        return $this->render('frontoffice/profile/profile.html.twig', [
             'user' => $user,
         ]);
     }

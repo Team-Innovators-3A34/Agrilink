@@ -1,0 +1,164 @@
+{% extends "frontOffice/base.html.twig" %}
+
+{% block title %}Agriculture News{% endblock %}
+
+{% block content %}
+  <!-- Espace fixe en haut -->
+  <div style="height: 100px;"></div>
+
+  <div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row justify-content-center w-100">
+      <div class="col-md-10">
+        <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+          <div class="card-header bg-white text-dark text-center py-3">
+            <h2 class="h4 m-0 fw-bold">Top Agriculture News</h2>
+          </div>
+          <div class="card-body p-4">
+            <div class="news-list" id="news-list">
+              {% for article in news %}
+                <div class="news-item">
+                  <h2><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h2>
+                  {% if article.thumbnail %}
+                    <img src="{{ article.thumbnail }}" alt="{{ article.title }}" class="news-image" />
+                  {% endif %}
+                  <p>{{ article.excerpt }}</p>
+                  <p class="date"><strong>Date:</strong> {{ article.date | date("Y-m-d H:i:s") }}</p>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="see-more-container">
+              <button id="load-more" class="button-see-more" data-page="2">Voir plus</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --text-color: #333;
+      --background-color: #f8f9fa;
+      --card-background: #fff;
+      --border-radius: 8px;
+    }
+
+    body {
+      background-color: var(--background-color);
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .news-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .news-item {
+      background-color: var(--card-background);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .news-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .news-item h2 {
+      font-size: 22px;
+      color: var(--secondary-color);
+      margin-bottom: 10px;
+    }
+
+    .news-item a {
+      text-decoration: none;
+      color: var(--primary-color);
+      transition: color 0.3s ease;
+    }
+
+    .news-item a:hover {
+      color: var(--secondary-color);
+    }
+
+    .news-item p {
+      font-size: 16px;
+      color: var(--text-color);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .news-item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--border-radius);
+      margin-bottom: 15px;
+    }
+
+    .news-item .date {
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+
+    .see-more-container {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .button-see-more {
+      display: inline-block;
+      padding: 12px 30px;
+      background-color: var(--primary-color);
+      color: #fff;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .button-see-more:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+
+    .button-see-more:active {
+      background-color: #1c5a85;
+    }
+
+    @media (max-width: 768px) {
+      .news-list {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+    }
+  </style>
+
+  <script>
+    document.getElementById('load-more').addEventListener('click', function() {
+      var button = this;
+      var page = button.getAttribute('data-page');
+
+      fetch('{{ path("load_more_news") }}?page=' + page)
+        .then(response => response.text())
+        .then(data => {
+          if (data.trim() === '') {
+            button.style.display = 'none';
+          } else {
+            var newsList = document.getElementById('news-list');
+            newsList.insertAdjacentHTML('beforeend', data);
+            button.setAttribute('data-page', parseInt(page) + 1);
+          }
+        })
+        .catch(error => console.error('Erreur:', error));
+    });
+  </script>
+{% endblock %}

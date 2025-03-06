@@ -1,0 +1,18 @@
+{# templates/tik_tok/_videos.html.twig #}
+{% if videos|length > 0 %}
+    <div class="row">
+        {% for video in videos %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="{{ video.cover }}" class="card-img-top" alt="{{ video.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                        <a href="{{ video.embed_url }}" target="_blank" class="btn btn-primary">Voir la vidéo</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-center">Aucune vidéo trouvée.</p>
+{% endif %}

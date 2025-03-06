@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>{% block title %} {% endblock %}</title>
     <base href="{{ app.request.schemeAndHttpHost }}/">
 
@@ -27,7 +27,7 @@
       <!-- navigation top-->
       <div class="nav-header bg-white shadow-xs border-0">
         <div class="nav-top">
-          <a href="index.html">
+          <a href="{{path("app_home")}}" >
             <img
               src="images/logo_agrilink.png"
               alt="Agrilink Logo"
@@ -35,9 +35,10 @@
                 max-width: 50px;
                 height: auto;
                 border-radius: 50%;
-                margin-left: 60px;
+                margin-left: 50px;
               "
             />
+
           </a>
           <a href="#" class="mob-menu ms-auto me-2 chat-active-btn"
             ><i
@@ -371,7 +372,7 @@
         </div>
 
         <a href="{{path("app_settings")}}" class="p-0 ms-3 menu-icon"
-          ><img src="{{ asset('uploads/images/' ~ app.user.image) }}" alt="user" class="w40 mt--1" style="border-radius: 50%;" />
+          ><img src="{{ asset('uploads/images/' ~ app.user.image) }}" alt="user" class="w40 mt--1" style="border-radius: 50%;max-height:40px" />
         </a>
       </div>
       <!-- navigation top -->
@@ -390,31 +391,31 @@
                 <li class="logo d-none d-xl-block d-lg-block"></li>
                 <li>
                   <a
-                  href="{{path("app_home")}}"
+                  href="{{path("app_prediction")}}"
                   class="nav-content-bttn open-font"
                     ><i
-                      class="feather-tv btn-round-md bg-blue-gradiant me-3"
+                      class="feather-tv btn-round-md bg-gold-gradiant me-3"
                     ></i
-                    ><span>Newsfeed</span></a
+                    ><span>Model Rendement</span></a
                   >
                 </li>
                 <li>
                   <a
-                    href="default-badge.html"
+                    href="{{path("plante_predict")}}"
                     class="nav-content-bttn open-font"
                     ><i
                       class="feather-award btn-round-md bg-red-gradiant me-3"
                     ></i
-                    ><span>Badges</span></a
+                    ><span>Model</span></a
                   >
                 </li>
 
                 <li>
-                  <a href="user-page.html" class="nav-content-bttn open-font"
+                    <a href="{{ path('app_profilee', {'id': app.user.id}) }}" class="nav-content-bttn open-font"
                     ><i
                       class="feather-user btn-round-md bg-primary-gradiant me-3"
                     ></i
-                    ><span>Author Profile </span></a
+                    ><span>Mon profile </span></a
                   >
                 </li>
               </ul>
@@ -429,19 +430,19 @@
               <ul class="mb-3">
                 <li>
                   <a
-                    href="default-email-box.html"
+                    href="{{path("tiktok_videos")}}"
                     class="nav-content-bttn open-font"
                     ><i class="font-xl text-current feather-inbox me-3"></i
-                    ><span>Email Box</span
+                    ><span>Short video</span
                     ><span class="circle-count bg-warning mt-1">584</span></a
                   >
                 </li>
                 <li>
                   <a
-                    href="default-hotel.html"
+                    href="{{path("fruit_index")}}"
                     class="nav-content-bttn open-font"
                     ><i class="font-xl text-current feather-refresh-cw me-3"></i
-                    ><span>Near Point</span></a
+                    ><span>Model Fruit</span></a
                   >
                 </li>
                 <li>
@@ -450,6 +451,30 @@
                     class="nav-content-bttn open-font"
                     ><i class="font-xl text-current feather-map-pin me-3"></i
                     ><span>Latest Event</span></a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="{{path("jobs_list")}}"
+                    class="nav-content-bttn open-font"
+                    ><i class="font-xl text-current feather-map-pin me-3"></i
+                    ><span>Job list</span></a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="{{path("facebook_posts")}}"
+                    class="nav-content-bttn open-font"
+                    ><i class="font-xl text-current feather-map-pin me-3"></i
+                    ><span>Facebook Post</span></a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="{{path("agriculture_news")}}"
+                    class="nav-content-bttn open-font"
+                    ><i class="font-xl text-current feather-map-pin me-3"></i
+                    ><span>Article</span></a
                   >
                 </li>
               </ul>
@@ -472,10 +497,10 @@
                 </li>
                 <li>
                   <a
-                    href="default-analytics.html"
+                    href="{{path("quality_index")}}"
                     class="nav-content-bttn open-font h-auto pt-2 pb-2"
                     ><i class="font-sm feather-pie-chart me-3 text-grey-500"></i
-                    ><span>Analytics</span></a
+                    ><span>Modele qualite</span></a
                   >
                 </li>
                 <li>
@@ -540,17 +565,18 @@
               CONTACTS
             </h4>
             <ul class="list-group list-group-flush">
+              {% for user in getApprovedUsers() %}
               <li
                 class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
               >
                 <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-8.png" alt="image" class="w35" />
+                  <img src="{{ asset('uploads/images/' ~ user.image) }}" alt="user" class="w40 mt--1" style="border-radius: 50%;max-height:40px" />
                 </figure>
                 <h3 class="fw-700 mb-0 mt-0">
                   <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Hurin Seary</a
+                    class="font-xssss text-grey-600 d-block text-dark "
+                    href="{{path('app_profilee', {'id': user.id})}}"
+                    >{{ user.nom }} {{ user.prenom }}</a
                   >
                 </h3>
                 <span
@@ -558,117 +584,8 @@
                   >2</span
                 >
               </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-7.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Victor Exrixon</a
-                  >
-                </h3>
-                <span class="bg-success ms-auto btn-round-xss"></span>
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-6.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Surfiya Zakir</a
-                  >
-                </h3>
-                <span class="bg-warning ms-auto btn-round-xss"></span>
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-5.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Goria Coast</a
-                  >
-                </h3>
-                <span class="bg-success ms-auto btn-round-xss"></span>
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-4.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Hurin Seary</a
-                  >
-                </h3>
-                <span
-                  class="badge mt-0 text-grey-500 badge-pill pe-0 font-xsssss"
-                  >4:09 pm</span
-                >
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-3.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >David Goria</a
-                  >
-                </h3>
-                <span
-                  class="badge mt-0 text-grey-500 badge-pill pe-0 font-xsssss"
-                  >2 days</span
-                >
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-2.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Seary Victor</a
-                  >
-                </h3>
-                <span class="bg-success ms-auto btn-round-xss"></span>
-              </li>
-              <li
-                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
-              >
-                <figure class="avatar float-left mb-0 me-2">
-                  <img src="images/user-12.png" alt="image" class="w35" />
-                </figure>
-                <h3 class="fw-700 mb-0 mt-0">
-                  <a
-                    class="font-xssss text-grey-600 d-block text-dark model-popup-chat"
-                    href="#"
-                    >Ana Seary</a
-                  >
-                </h3>
-                <span class="bg-success ms-auto btn-round-xss"></span>
-              </li>
+              {% endfor %}
+
             </ul>
           </div>
           <div

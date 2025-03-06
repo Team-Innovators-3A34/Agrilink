@@ -1,0 +1,107 @@
+{% extends "backOffice/base.html.twig" %} {% block title %}Claim Answer{%
+endblock %} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div
+        class="d-flex flex-wrap flex-wrap align-items-center justify-content-between mb-4"
+      >
+        <div>
+          <h4 class="mb-3">List Reponses</h4>
+          <p class="mb-0">
+            La liste des réclamations permet de gérer efficacement les retours <br>
+            des clients et d’organiser les réponses de manière claire et
+            structurée, offrant ainsi un suivi optimal pour chaque demande.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <table class="data-tables table mb-0 tbl-server-info">
+        <thead class="bg-white text-uppercase">
+          <tr class="ligth ligth-data">
+            <th>Contenu</th>
+            <th>Solution</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Automatique</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody class="ligth-body">
+          {% for reponse in reponses %}
+          <tr>
+            <td>{{ reponse.content }}</td>
+            <td>{{ reponse.solution }}</td>
+            <td>{{ reponse.status }}</td>
+            <td>
+              {{ reponse.date ? reponse.date|date('d/m/Y') : 'Non définie' }}
+            </td>
+            <td>{{ reponse.isAuto ? "Oui" : "Non" }}</td>
+
+            <td>
+              <!-- Icône de détails -->
+              <a
+                class="badge badge-info mr-2 p-2"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Détails"
+                href="{{ path('reponse_detail', { id: reponse.id }) }}"
+              >
+                <i class="ri-eye-line mr-0" style="font-size: 0.75rem"></i>
+              </a>
+
+              <!-- Icône de modifier -->
+              <a
+                class="badge bg-success mr-2 p-2"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Modifier"
+                href="{{ path('app_reponses_edit', { id: reponse.id }) }}"
+              >
+                <i
+                  class="ri-pencil-line mr-0 icon-action"
+                  style="font-size: 0.75rem"
+                ></i>
+              </a>
+
+              <!-- Icône de suppression -->
+              <form
+                method="post"
+                action="{{ path('reponse_delete', { id: reponse.id }) }}"
+                onsubmit="return confirm('Voulez-vous vraiment supprimer cette réponse ?');"
+                style="display: inline"
+              >
+                <input
+                  type="hidden"
+                  name="_token"
+                  value="{{ csrf_token('delete' ~ reponse.id) }}"
+                />
+                <button
+                  type="submit"
+                  class="badge bg-warning mr-2 p-2"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Supprimer"
+                  style="background: none; border: none; padding: 0"
+                >
+                  <i
+                    class="ri-delete-bin-line mr-0"
+                    style="font-size: 0.75rem"
+                  ></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-center">Aucune réponse trouvée.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

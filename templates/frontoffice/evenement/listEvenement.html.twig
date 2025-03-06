@@ -13,27 +13,41 @@ endblock %} {% block content %}
 
   .card-image img {
     width: 100%;
-    height: 200px; /* Set a fixed height for all images */
-    object-fit: cover; /* Ensures the image fills the area without distortion */
-    border-radius: 8px; /* Optional: to match your current rounded design */
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  /* Align buttons in the same row */
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
   }
 
   /* Button styles for applying (Green) */
   .bg-success {
-    background-color: #28a745 !important; /* Green color */
+    background-color: #28a745 !important;
     border-color: #28a745;
   }
 
   /* Button styles for disabled (Blue) */
   .bg-primary {
-    background-color: #007bff !important; /* Blue color */
+    background-color: #007bff !important;
     border-color: #007bff;
   }
 
   /* Optional: Disabled style with opacity */
   .bg-primary:disabled {
-    opacity: 0.65; /* Optional: Make the disabled button look slightly faded */
-    pointer-events: none; /* Prevent clicking when disabled */
+    opacity: 0.65;
+    pointer-events: none;
+  }
+
+  /* Danger style for full events */
+  .bg-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545;
   }
 </style>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -51,32 +65,57 @@ endblock %} {% block content %}
             <div id="map" style="height: 400px"></div>
             <script type="text/javascript">
               // Initialize the map and set its view to a default center and zoom level
-              var map = L.map('map').setView([36.752088, 10.206822], 6);
+              var map = L.map("map").setView([36.752088, 10.206822], 6);
 
               // Add OpenStreetMap tiles
-              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                  maxZoom: 19,
-                  attribution: '© OpenStreetMap'
+              L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: "© OpenStreetMap",
               }).addTo(map);
 
               // Build an array of markers using dynamic event data from Twig
               var eventsMarkers = [
-                  {% for event in events %}
-                  {
-                      lat: {{ event.latitude + 0 }},
-                      lng: {{ event.longitude + 0 }},
-                      nom: "{{ event.nom|escape('js') }}",
-                      adresse: "{{ event.adresse|escape('js') }}"
-                  }{% if not loop.last %},{% endif %}
-                  {% endfor %}
+                {% for event in events %}
+                {
+                  lat: {{ event.latitude + 0 }},
+                  lng: {{ event.longitude + 0 }},
+                  nom: "{{ event.nom|escape('js') }}",
+                  adresse: "{{ event.adresse|escape('js') }}",
+                  id: {{ event.id }},
+                }
+                {% if not loop.last %},{% endif %}
+                {% endfor %}
               ];
 
+              // Store marker objects to reference them later
+              var markerObjects = {};
+              var totalLat = 0;
+              var totalLng = 0;
+
               // Loop through the eventsMarkers array and add a marker for each event
-              eventsMarkers.forEach(function(markerData) {
-                  var marker = L.marker([markerData.lat, markerData.lng]).addTo(map);
-                  // Bind a popup to the marker with the event name and address
-                  marker.bindPopup("<b>" + markerData.nom + "</b><br>" + markerData.adresse);
+              eventsMarkers.forEach(function (markerData) {
+                var marker = L.marker([markerData.lat, markerData.lng]).addTo(map);
+                marker.bindPopup(
+                  "<b>" +
+                    markerData.nom +
+                    "</b><br>" +
+                    markerData.adresse
+                );
+
+                // Save the marker object
+                markerObjects[markerData.id] = marker;
+
+                // Calculate the sum of latitudes and longitudes
+                totalLat += markerData.lat;
+                totalLng += markerData.lng;
               });
+
+              // Calculate the average latitude and longitude for centering the map
+              var avgLat = totalLat / eventsMarkers.length;
+              var avgLng = totalLng / eventsMarkers.length;
+
+              // Set the map view to the calculated center
+              map.setView([avgLat, avgLng], 6);
             </script>
           </div>
 
@@ -115,7 +154,21 @@ endblock %} {% block content %}
                     </span>
                   </h2>
                 </div>
-                <div class="card-body p-0">
+                <span
+                  class="nbr-places text-muted"
+                  id="nbr-places-{{ event.id }}"
+                >
+                  {{ event.getNbrPlaces() }} places available
+                </span>
+                <div class="button-row">
+                  <button
+                    class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 text-white focus-map"
+                    style="background-color: #fe9431"
+                    data-event-id="{{ event.id }}"
+                  >
+                    <i class="ti-eye"></i>
+                  </button>
+
                   <button
                     id="apply-btn-{{ event.id }}"
                     type="button"
@@ -125,14 +178,14 @@ endblock %} {% block content %}
                     if
                     event.getParticipants().contains(app.user)
                     %}
-                    class="font-xsssss fw-700 ps-3 pe-3 lh-32 float-right mt-4 text-uppercase rounded-3 ls-2 bg-success d-inline-block text-white me-1 apply-btn"
+                    class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 bg-success d-inline-block text-white me-1 apply-btn"
                     disabled
                     aria-disabled="true"
                     title="You are already participating in this event."
                     {%
                     else
                     %}
-                    class="font-xsssss fw-700 ps-3 pe-3 lh-32 float-right mt-4 text-uppercase rounded-3 ls-2 bg-primary d-inline-block text-white me-1 apply-btn"
+                    class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 bg-primary d-inline-block text-white me-1 apply-btn"
                     {%
                     endif
                     %}
@@ -140,13 +193,6 @@ endblock %} {% block content %}
                     {% if event.getParticipants().contains(app.user) %} Already
                     In {% else %} Apply {% endif %}
                   </button>
-
-                  <span
-                    class="nbr-places text-muted"
-                    id="nbr-places-{{ event.id }}"
-                  >
-                    {{ event.getNbrPlaces() }} places available
-                  </span>
                 </div>
               </div>
             </div>
@@ -162,50 +208,39 @@ endblock %} {% block content %}
 <script>
   document.querySelectorAll(".apply-btn").forEach(function (button) {
     button.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevent the default behavior of the link
-
-      // Extract event ID and current number of places
+      event.preventDefault();
       const eventId = this.getAttribute("data-event-id");
       let nbrPlaces = parseInt(this.getAttribute("data-nbr-places"));
 
-      // Check if there are available places
       if (nbrPlaces > 0) {
-        // Decrement nbr_places
         nbrPlaces--;
-
-        // Update the UI
         this.setAttribute("data-nbr-places", nbrPlaces);
         document.getElementById(
           `nbr-places-${eventId}`
         ).textContent = `${nbrPlaces} places available`;
 
-        // Disable the button if no places are left
         if (nbrPlaces === 0) {
           this.disabled = true;
-          this.textContent = "No places left"; // Update button text
-          this.classList.remove("bg-primary"); // Remove the default 'apply' style
-          this.classList.add("bg-danger"); // Optional: change button style
+          this.textContent = "No places left";
+          this.classList.remove("bg-primary");
+          this.classList.add("bg-danger");
         }
 
-        // Change button to "Already applied" state
         this.disabled = true;
-        this.textContent = "Already In"; // Change button text to show user has applied
-        this.classList.remove("bg-primary"); // Remove the initial 'apply' style
-        this.classList.add("bg-success"); // Apply the success (green) style when disabled
+        this.textContent = "Already In";
+        this.classList.remove("bg-primary");
+        this.classList.add("bg-success");
 
-        // Send an AJAX request to the server to update the database
         fetch(`/update-event-places/${eventId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest", // To identify it as an AJAX request
+            "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({ nbr_places: nbrPlaces }),
         })
           .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to update places.");
-            }
+            if (!response.ok) throw new Error("Failed to update places.");
             return response.json();
           })
           .then((data) => {
@@ -216,6 +251,17 @@ endblock %} {% block content %}
           });
       } else {
         alert("No places available for this event.");
+      }
+    });
+  });
+
+  document.querySelectorAll(".focus-map").forEach(function (button) {
+    button.addEventListener("click", function () {
+      const eventId = this.getAttribute("data-event-id");
+      const marker = markerObjects[eventId];
+      if (marker) {
+        map.setView(marker.getLatLng(), 10);
+        marker.openPopup();
       }
     });
   });

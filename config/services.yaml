@@ -1,27 +1,54 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
   images_directory: "%kernel.project_dir%/public/uploads/images"
+  rapid_api_key: "%env(RAPID_API_KEY)%"
+  infobip_api_url: '%env(INFOBIP_API_URL)%'
+  infobip_api_key: '%env(INFOBIP_API_KEY)%'
+  infobip_sender: '%env(INFOBIP_SENDER)%'
+  rapid_api_key_translation: '%env(RAPID_API_KEY_TRANSLATION)%'
+  translation_api_url: '%env(TRANSLATION_API_URL)%'
+  translation_api_host: '%env(TRANSLATION_API_HOST)%'
 
 services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  # Importation automatique de tous les services du répertoire src/
+  # On exclut uniquement les dossiers ou fichiers non concernés
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+      - '../src/Service/InfobipSmsSender.php'  # Pour éviter le conflit d'auto-discovery
+
   App\Service\NotificationService: ~
 
-  # default configuration for services in *this* file
-  _defaults:
-    autowire: true # Automatically injects dependencies in your services.
-    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+  App\Service\InfobipSmsSender:
+    arguments:
+      $client: '@http_client'
+      $apiUrl: '%env(INFOBIP_API_URL)%'
+      $apiKey: '%env(INFOBIP_API_KEY)%'
+      $sender: '%env(INFOBIP_SENDER)%'
 
-  # makes classes in src/ available to be used as services
-  # this creates a service per class whose id is the fully-qualified class name
-  App\:
-    resource: "../src/"
-    exclude:
-      - "../src/DependencyInjection/"
-      - "../src/Entity/"
-      - "../src/Kernel.php"
+  App\Service\PredictService:
+        arguments:
+            $client: '@http_client'
 
-  # add more service definitions when explicit configuration is needed
-  # please note that last definitions always *replace* previous ones
+
+  App\Service\TranslationService:
+    arguments:
+      $apiUrl: '%translation_api_url%'
+      $apiKey: '%rapid_api_key_translation%'
+      $apiHost: '%translation_api_host%'
+
+
+
+  App\Controller\GestionReclamation\ReponsesController:
+    arguments:
+      $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface'
+      $rapidApiKey: '%env(RAPID_API_KEY)%'
+
+  App\Controller\GestionReclamation\PlanteController:
+    arguments:
+      $client: '@Symfony\Contracts\HttpClient\HttpClientInterface'
+      $rapidApiKey: '%env(RAPID_API_KEY)%'

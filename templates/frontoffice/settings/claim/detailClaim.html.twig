@@ -1,0 +1,157 @@
+{% extends "frontOffice/base.html.twig" %}
+
+{% block title %}Détails Réclamation{% endblock %}
+
+{% block content %}
+<!-- Espace fixe en haut -->
+<div style="height: 100px;"></div>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="row justify-content-center w-100" >
+    <div class="col-md-10" >
+      <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+        <div class="card-header bg-white text-dark text-center py-3">
+          <h2 class="h4 m-0 fw-bold">📜 Détails de la Réclamation</h2>
+        </div>
+
+        <div class="card-body p-4">
+          {% if reclamation is defined %}
+            <div class="mb-4">
+              <h3 class="text-primary font-weight-bold text-center">{{ reclamation.title }}</h3>
+              <hr class="mb-3">
+              <p><strong><i class="fas fa-user"></i> Nom Utilisateur :</strong> {{ reclamation.nomUser }}</p>
+              <p><strong><i class="fas fa-envelope"></i> Email :</strong> {{ reclamation.mailUser }}</p>
+              <p><strong><i class="fas fa-align-left"></i> Contenu :</strong> {{ reclamation.content }}</p>
+              <p>
+                <strong><i class="fas fa-tasks"></i> Statut :</strong>
+                <span class="badge {% if reclamation.status == 'En cours' %}badge-warning{% elseif reclamation.status == 'Terminé' %}badge-success{% else %}badge-danger{% endif %} p-2">
+                  {{ reclamation.status }}
+                </span>
+              </p>
+              <p><strong><i class="fas fa-calendar-alt"></i> Date :</strong> {{ reclamation.date ? reclamation.date|date('d/m/Y H:i') : 'Non spécifiée' }}</p>
+              <p><strong><i class="fas fa-tag"></i> Type :</strong> {{ reclamation.type.nom ?? 'Non spécifié' }}</p>
+              <p><strong><i class="fas fa-exclamation-circle"></i> Priorité :</strong> {{ reclamation.priorite ?? 'Non spécifiée' }}</p>
+              <p>
+                <strong><i class="fas fa-image"></i> Image :</strong>
+                <div class="mt-2 d-flex justify-content-center">
+                  {% if reclamation.image %}
+                    <img src="{{ asset('uploads/images/' ~ reclamation.image) }}" 
+                         alt="Image Réclamation" 
+                         class="img-fluid rounded shadow" 
+                         style="max-width: 250px; height: auto;">
+                  {% else %}
+                    <span class="text-muted">Aucune image</span>
+                  {% endif %}
+                </div>
+              </p>
+            </div>
+
+            <!-- Affichage des réponses associées -->
+            <div class="mt-5">
+              <h3 class="text-secondary font-weight-bold"><i class="fas fa-comments"></i> Réponses Associées</h3>
+              <hr class="mb-3">
+              {% if reclamation.reponses is not empty %}
+                <div class="list-group">
+                  {% for reponse in reclamation.reponses %}
+                    <div class="list-group-item list-group-item-action flex-column align-items-start border rounded-lg mb-2 shadow-sm">
+                      <p class="mb-1 text-dark"><strong>Content :</strong> {{ reponse.content }}</p>
+                      <p class="mb-1 text-dark"><strong>Solution :</strong> {{ reponse.solution }}</p>
+                      <p class="mb-1 text-dark"><strong>Status :</strong> {{ reponse.status }}</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                          <i class="fas fa-clock"></i> Posté le : {{ reponse.date ? reponse.date|date('d/m/Y H:i') : 'Non spécifiée' }}
+                        </small>
+                        <span class="badge badge-{% if reponse.isAuto %}info{% else %}dark{% endif %} p-2">
+                          {{ reponse.isAuto ? "Automatique" : "Manuel" }}
+                        </span>
+                      </div>
+                      {% if reponse.status == "En attente" %}
+                        <div class="mt-2">
+                          <button class="btn btn-success btn-sm update-status" 
+                                  data-id="{{ reponse.id }}" 
+                                  data-status="Satisfait"
+                                  data-token="{{ csrf_token('update_status' ~ reponse.id) }}">
+                            ✅ Satisfait
+                          </button>
+                          <button class="btn btn-danger btn-sm update-status" 
+                                  data-id="{{ reponse.id }}" 
+                                  data-status="Non satisfait"
+                                  data-token="{{ csrf_token('update_status' ~ reponse.id) }}">
+                            ❌ Non Satisfait
+                          </button>
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="alert alert-warning text-center">Aucune réponse associée à cette réclamation.</div>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="alert alert-danger text-center">Réclamation introuvable.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Ajustement dynamique de la hauteur du conteneur
+  function adjustHeight() {
+    let container = document.querySelector(".container");
+    if (container) {
+      let contentHeight = container.scrollHeight;
+      container.style.minHeight = contentHeight + "px";
+    }
+  }
+
+  adjustHeight();
+  let responseList = document.querySelector(".list-group");
+  if (responseList) {
+    let observer = new MutationObserver(adjustHeight);
+    observer.observe(responseList, { childList: true });
+  }
+
+  // Gestion des boutons de mise à jour du statut
+  document.querySelectorAll(".update-status").forEach(function(button) {
+    button.addEventListener("click", function() {
+      const id = this.getAttribute("data-id");
+      const status = this.getAttribute("data-status");
+      const token = this.getAttribute("data-token");
+      
+      if (!confirm("Confirmer la mise à jour du statut ?")) {
+        return;
+      }
+      
+      const url = `/reponses/update-status/${id}/${encodeURIComponent(status)}`;
+      
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `_token=${encodeURIComponent(token)}`
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error("Erreur dans la mise à jour");
+        }
+        return response.text();
+      })
+      .then(function(data) {
+        // Recharger la page après mise à jour
+        location.reload();
+      })
+      .catch(function(error) {
+        console.error("Erreur:", error);
+        alert("Une erreur s'est produite lors de la mise à jour du statut.");
+      });
+    });
+  });
+});
+</script>
+
+{% endblock %}

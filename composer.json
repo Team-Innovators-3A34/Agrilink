@@ -13,6 +13,7 @@
         "doctrine/orm": "^3.3",
         "elkuku/sf-startstop": "^0.2.0",
         "excelwebzone/recaptcha-bundle": "^1.5",
+        "knplabs/knp-snappy-bundle": "^1.10",
         "knpuniversity/oauth2-client-bundle": "^2.18",
         "league/oauth2-google": "^4.0",
         "lexik/jwt-authentication-bundle": "^2.18",
@@ -23,6 +24,7 @@
         "sendgrid/sendgrid": "^8.1",
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
+        "symfony/cache": "6.4.*",
         "symfony/console": "6.4.*",
         "symfony/doctrine-messenger": "6.4.*",
         "symfony/dotenv": "6.4.*",
@@ -36,7 +38,7 @@
         "symfony/mercure": "^0.6.5",
         "symfony/mercure-bundle": "^0.3.9",
         "symfony/mime": "6.4.*",
-        "symfony/monolog-bundle": "^3.0",
+        "symfony/monolog-bundle": "*",
         "symfony/notifier": "6.4.*",
         "symfony/process": "6.4.*",
         "symfony/property-access": "6.4.*",
@@ -54,7 +56,8 @@
         "symfony/web-link": "6.4.*",
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "twilio/sdk": "^8.3"
     },
     "config": {
         "allow-plugins": {

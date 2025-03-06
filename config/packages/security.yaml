@@ -17,7 +17,7 @@ security:
 
   firewalls:
     dev:
-      pattern: ^/(_(profiler|wdt)|css|images|js)/ # Disable security for assets
+      pattern: ^/(_(profiler|wdt)|css|images|js)/ 
       security: false
 
     main:
@@ -28,7 +28,7 @@ security:
         path: app_logout
       remember_me:
         secret: "%kernel.secret%"
-        lifetime: 86400 # Duration in seconds (1 day)
+        lifetime: 86400 
         always_remember_me: false
 
   

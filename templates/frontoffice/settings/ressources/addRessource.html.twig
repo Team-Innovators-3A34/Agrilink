@@ -1,0 +1,271 @@
+{% extends "frontOffice/base.html.twig" %}
+
+{% block title %}
+  {% if action == "Ajouter" %}
+    Ajouter
+  {% else %}
+    Modifier
+  {% endif %}
+  Ressource
+{% endblock %}
+
+{% block content %}
+<!-- Ajout d'un style pour cacher tout backdrop éventuel -->
+<style>
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  /* Amélioration du style de la modal */
+  .modal-content {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.5s ease-out;
+  }
+
+  .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    padding: 20px 25px;
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+    color: #007bff;
+  }
+
+  .modal-body {
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 25px;
+  }
+
+  .modal-body p,
+  .modal-body ul {
+    margin-bottom: 15px;
+  }
+
+  .modal-footer {
+    border-top: 2px solid #dee2e6;
+    padding: 15px 25px;
+  }
+
+  /* Animation de la modal */
+  @keyframes slideIn {
+    from {
+      transform: translateY(-50%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Amélioration du bouton "Continuer" */
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+
+  .form-check-label {
+    font-weight: 600;
+  }
+
+  .modal-dialog-centered {
+    max-width: 600px;
+  }
+
+</style>
+
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      <div class="middle-wrap">
+        <div class="card w-100 border-0 shadow-xs p-0 mb-4">
+          <div class="card-body p-4 w-100 border-0 d-flex rounded-3">
+            <a href="{{ path('app_my_resource') }}" class="d-inline-block mt-2">
+              <i class="ti-arrow-left font-sm"></i>
+            </a>
+            <h4 class="font-xs fw-600 ms-4 mb-0 mt-2">
+              {% if action == "Ajouter" %}
+                Ajouter
+              {% else %}
+                Modifier
+              {% endif %}
+              Ressource
+            </h4>
+          </div>
+          <div class="card-body p-lg-5 p-4 w-100 border-0">
+            {{ form_start(form, {'attr': {'id': 'resourceForm'}}) }}
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.name_r) }}
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.type) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.marque) }}
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.adresse) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.description) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.prix_location) }}
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.superficie) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    {{ form_row(form.status) }}
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="form-group">
+                    <label for="form_image" class="form-label">Image</label>
+                    {{ form_widget(form.image, {
+                      'attr': {
+                        'style': 'margin-top: -8px',
+                        'value': action == 'Modifier' ? image : ''
+                      }
+                    }) }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12 mb-0">
+                  <button type="submit" class="text-center font-xsss fw-600 p-3 w175 rounded-3 d-inline-block">
+                    Confirmer
+                  </button>
+                </div>
+              </div>
+            {{ form_end(form) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Modal des conditions d'utilisation bien centré #}
+<div class="modal fade" id="termsModal" data-bs-backdrop="false" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termsModalLabel">Conditions d'utilisation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p class="lead font-weight-bold text-center mb-4">
+          Conditions d'utilisation pour ajouter une ressource
+        </p>
+        <p>
+          En acceptant ces conditions, vous vous engagez à respecter les règles suivantes :
+        </p>
+        <ul class="list-unstyled">
+          <li class="mb-3">
+            <strong>1. Respect et Courtoisie :</strong>
+            <br>
+            Toute demande de ressource doit être formulée avec respect et courtoisie envers la personne à qui elle est adressée.
+          </li>
+          <li class="mb-3">
+            <strong>2. Clarté de la Demande :</strong>
+            <br>
+            Soyez clair(e) et précis(e) dans votre demande en spécifiant la ressource souhaitée et son utilisation.
+          </li>
+          <li class="mb-3">
+            <strong>3. Équité dans les Échanges :</strong>
+            <br>
+            Les demandes doivent être équilibrées. Si vous demandez une ressource, soyez prêt(e) à offrir une aide ou une compensation équitable si possible.
+          </li>
+          <li class="mb-3">
+            <strong>4. Respect du Temps de l'Autre :</strong>
+            <br>
+            Respectez le temps et l'effort de la personne à qui vous vous adressez. Ne demandez pas de ressources si vous savez que cela pourrait entraîner une gêne ou un surcroît de travail pour l'autre personne.
+          </li>
+          
+        </ul>
+
+        <p class="mt-4">
+          <strong>En cliquant sur "J'accepte", vous confirmez avoir lu et compris ces conditions.</strong>
+        </p>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="acceptTerms">
+        <label class="form-check-label" for="acceptTerms">
+          J'accepte les conditions
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" id="continueButton" disabled>Continuer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Script JavaScript pour gérer l'affichage du modal et la soumission du formulaire #}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.getElementById("resourceForm");
+  const termsModalElement = document.getElementById("termsModal");
+  const termsModal = new bootstrap.Modal(termsModalElement, { backdrop: false });
+  const acceptTerms = document.getElementById("acceptTerms");
+  const continueButton = document.getElementById("continueButton");
+  let formSubmitted = false;
+
+  form.addEventListener("submit", function(e) {
+    if ("{{ action }}" === "Ajouter" && !formSubmitted) {
+      e.preventDefault();
+      termsModal.show();
+    }
+  });
+
+  acceptTerms.addEventListener("change", function() {
+    continueButton.disabled = !this.checked;
+  });
+
+  continueButton.addEventListener("click", function() {
+    formSubmitted = true;
+    termsModal.hide();
+    form.submit();
+  });
+});
+</script>
+{% endblock %}

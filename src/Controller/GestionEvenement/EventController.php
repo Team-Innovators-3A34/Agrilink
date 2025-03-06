@@ -82,6 +82,8 @@ final class EventController extends AbstractController
 
         return $this->render('backOffice/evenement/addEvenement.html.twig', [
             "form" => $form->createView(),
+            "action" => "add",
+
         ]);
     }
 
@@ -146,6 +148,7 @@ final class EventController extends AbstractController
         return $this->render('backOffice/evenement/addEvenement.html.twig', [
             "form" => $form->createView(),
             "image" => $event->getImage(),
+            "action" => "edit",
         ]);
     }
 
@@ -209,7 +212,7 @@ final class EventController extends AbstractController
         }
 
         $event->addParticipant($this->getUser());
-        
+
         $data = json_decode($request->getContent(), true);
         $nbrPlaces = $data['nbr_places'] ?? null;
 
@@ -222,5 +225,17 @@ final class EventController extends AbstractController
         }
 
         return new JsonResponse(['error' => 'Invalid data'], 400);
+    }
+
+    #[Route('/leave-event/{id}', name: 'leave_event', methods: ['GET', 'POST'])]
+    public function leaveEvent(int $id, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    {
+        $event = $eventRepository->find($id);
+        $user = $this->getUser();
+        $event->removeParticipant($user);
+        $event->setNbrPlaces($event->getNbrPlaces() + 1);
+        $em->persist($event);
+        $em->flush();
+        return $this->redirectToRoute('app_profilee', ['id' => $user->getId()]);
     }
 }

@@ -100,11 +100,78 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
     private Collection $events;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $country = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $city = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $longitude = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $latitude = null;
+
+    /**
+     * @var Collection<int, Conversation>
+     */
+    #[ORM\ManyToMany(targetEntity: Conversation::class, mappedBy: 'personnes')]
+    private Collection $conversations;
+
+    /**
+     * @var Collection<int, Messages>
+     */
+    #[ORM\OneToMany(targetEntity: Messages::class, mappedBy: 'sender')]
+    private Collection $messages;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $failedLoginAttempts = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lockUntil = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createAt = null;
+
+    #[ORM\Column]
+    private ?bool $is2FA = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $code2FA = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $code2FAexpiry = null;
+
+    /**
+     * @var Collection<int, Ressources>
+     */
+    #[ORM\OneToMany(targetEntity: Ressources::class, mappedBy: 'userId')]
+    private Collection $ressources;
+
+    /**
+     * @var Collection<int, Demandes>
+     */
+    #[ORM\OneToMany(targetEntity: Demandes::class, mappedBy: 'userId')]
+    private Collection $demandes;
+
+    /**
+     * @var Collection<int, Reclamation>
+     */
+    #[ORM\OneToMany(targetEntity: Reclamation::class, mappedBy: 'id_user')]
+    private Collection $reclamations;
+
+
+
     public function __construct()
     {
         $this->notifications = new ArrayCollection();
         $this->toNotifications = new ArrayCollection();
         $this->events = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->ressources = new ArrayCollection();
+        $this->demandes = new ArrayCollection();
+        $this->reclamations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -413,6 +480,273 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->events->removeElement($event)) {
             $event->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): static
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?string $longitude): static
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?string $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Conversation>
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): static
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations->add($conversation);
+            $conversation->addPersonne($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): static
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removePersonne($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Messages>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Messages $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Messages $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getFailedLoginAttempts(): ?int
+    {
+        return $this->failedLoginAttempts;
+    }
+
+    public function setFailedLoginAttempts(?int $failedLoginAttempts): static
+    {
+        $this->failedLoginAttempts = $failedLoginAttempts;
+
+        return $this;
+    }
+
+    public function getLockUntil(): ?\DateTimeInterface
+    {
+        return $this->lockUntil;
+    }
+
+    public function setLockUntil(?\DateTimeInterface $lockUntil): static
+    {
+        $this->lockUntil = $lockUntil;
+
+        return $this;
+    }
+
+    public function getCreateAt(): ?\DateTimeImmutable
+    {
+        return $this->createAt;
+    }
+
+    public function setCreateAt(\DateTimeImmutable $createAt): static
+    {
+        $this->createAt = $createAt;
+
+        return $this;
+    }
+
+    public function is2FA(): ?bool
+    {
+        return $this->is2FA;
+    }
+
+    public function setIs2FA(bool $is2FA): static
+    {
+        $this->is2FA = $is2FA;
+
+        return $this;
+    }
+
+    public function getCode2FA(): ?string
+    {
+        return $this->code2FA;
+    }
+
+    public function setCode2FA(?string $code2FA): static
+    {
+        $this->code2FA = $code2FA;
+
+        return $this;
+    }
+
+    public function getCode2FAexpiry(): ?\DateTimeInterface
+    {
+        return $this->code2FAexpiry;
+    }
+
+    public function setCode2FAexpiry(?\DateTimeInterface $code2FAexpiry): static
+    {
+        $this->code2FAexpiry = $code2FAexpiry;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ressources>
+     */
+    public function getRessources(): Collection
+    {
+        return $this->ressources;
+    }
+
+    public function addRessource(Ressources $ressource): static
+    {
+        if (!$this->ressources->contains($ressource)) {
+            $this->ressources->add($ressource);
+            $ressource->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRessource(Ressources $ressource): static
+    {
+        if ($this->ressources->removeElement($ressource)) {
+            // set the owning side to null (unless already changed)
+            if ($ressource->getUserId() === $this) {
+                $ressource->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Demandes>
+     */
+    public function getDemandes(): Collection
+    {
+        return $this->demandes;
+    }
+
+    public function addDemande(Demandes $demande): static
+    {
+        if (!$this->demandes->contains($demande)) {
+            $this->demandes->add($demande);
+            $demande->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemande(Demandes $demande): static
+    {
+        if ($this->demandes->removeElement($demande)) {
+            // set the owning side to null (unless already changed)
+            if ($demande->getUserId() === $this) {
+                $demande->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Reclamation>
+     */
+    public function getReclamations(): Collection
+    {
+        return $this->reclamations;
+    }
+
+    public function addReclamation(Reclamation $reclamation): static
+    {
+        if (!$this->reclamations->contains($reclamation)) {
+            $this->reclamations->add($reclamation);
+            $reclamation->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReclamation(Reclamation $reclamation): static
+    {
+        if ($this->reclamations->removeElement($reclamation)) {
+            // set the owning side to null (unless already changed)
+            if ($reclamation->getIdUser() === $this) {
+                $reclamation->setIdUser(null);
+            }
         }
 
         return $this;
