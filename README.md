@@ -35,7 +35,7 @@ Chaque module dispose d'une API RESTful dédiée, enrichie par des modèles d'in
 ## Technologies & Topics
 
 * **Backend** : Symfony 6.4, PHP 8.1+
-* **Base de données** : MySQL / MariaDB
+* **Base de données** : MySQL 
 * **API** : REST, JSON
 * **IA** : intégration de modèles TensorFlow & PyTorch via API internes
 * **Front-end** : Twig, Bootstrap
