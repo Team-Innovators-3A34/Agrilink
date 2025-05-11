@@ -1,5 +1,6 @@
-**# Projet Agrilink**
-Gestion complète d'une exploitation agricole sous Symfony 6.4, intégrant 6 modules de gestion (utilisateurs, ressources, points de recyclage, événements, posts, réclamations) ainsi qu'une multitude d'API et de modèles d'IA.
+# Projet Agrilink Symfony
+
+Gestion web avancée pour l'agriculture via Symfony 6.4, avec 6 modules de gestion, de nombreux métiers API et une intégration étendue de modèles IA.
 
 ---
 
@@ -9,165 +10,148 @@ Gestion complète d'une exploitation agricole sous Symfony 6.4, intégrant 6 mod
 2. [Technologies & Topics](#technologies--topics)
 3. [Installation](#installation)
 4. [Configuration](#configuration)
-5. [Modules de gestion](#modules-de-gestion)
-
-   * [Utilisateurs](#utilisateurs)
-   * [Ressources](#ressources)
-   * [Points de recyclage](#points-de-recyclage)
-   * [Événements](#événements)
-   * [Posts](#posts)
-   * [Réclamations](#réclamations)
-6. [APIs & Modèles d'IA](#apis--modèles-dia)
-7. [Utilisation](#utilisation)
-8. [Contribution](#contribution)
-9. [Licence](#licence)
+5. [Fonctionnalités Métiers & APIs](#fonctionnalités-métiers--apis)
+6. [Modules de gestion](#modules-de-gestion)
+7. [IA & Modèles](#ia--modèles)
+8. [Utilisation](#utilisation)
+9. [Contribution](#contribution)
+10. [Licence](#licence)
 
 ---
 
 ## Description du projet
 
-AgriGestion est une application web développée en Symfony 6.4, conçue pour optimiser la gestion d'une exploitation agricole. Elle centralise les processus de gestion des utilisateurs, des ressources (matériel, semences, engrais), des points de recyclage, des événements (fêtes de la moisson, ateliers), de la publication de contenus (posts) et des réclamations.
-
-Chaque module dispose d'une API RESTful dédiée, enrichie par des modèles d'intelligence artificielle pour l'analyse et la recommandation (par exemple : classification d'image de récolte, prédiction de rendement) citeturn0file0.
+Agrilink Symfony est une plateforme web développée en Symfony 6.4, connectée à une base de données MySQL via Doctrine ORM. Elle permet une gestion agricole complète et intègre de multiples métiers avancés, APIs intelligentes et modèles d’IA pour l'optimisation de la productivité.
 
 ---
 
 ## Technologies & Topics
 
-* **Backend** : Symfony 6.4, PHP 8.1+
-* **Base de données** : MySQL 
-* **API** : REST, JSON
-* **IA** : intégration de modèles TensorFlow & PyTorch via API internes
+* **Backend** : PHP 8.1+, Symfony 6.4
+* **Base de données** : MySQL (XAMPP/phpMyAdmin)
+* **API** : REST/JSON
 * **Front-end** : Twig, Bootstrap
-* **Outils** : Composer, Symfony CLI, Docker (optionnel)
+* **Outils** : Composer, Symfony CLI, Webpack Encore
+* **IA** : TensorFlow, PyTorch, GPT2, RoBERTa
 
-**Topics GitHub** : symfony, agriculture, api, ai, recyclage, gestion citeturn0file1.
+**Topics** : symfony, agriculture, api, ia, recyclage, gestion, chatbot, calendar, map
 
 ---
 
 ## Installation
 
-1. **Cloner le dépôt** :
+```bash
+git clone https://github.com/votre-organisation/agrilink-symfony.git
+cd agrilink-symfony
+composer install
+```
 
-   ```bash
-   git clone https://github.com/votre-organisation/agrilink.git  
-   cd agrilink  
-   ```
-2. **Installer les dépendances PHP** :
+Configurer `.env.local` pour la base de données :
 
-   ```bash
-   composer install  
-   ```
-3. **Installer les dépendances front-end** (si nécessaire) :
+```dotenv
+DATABASE_URL="mysql://root:@127.0.0.1:3306/agrilink_db"
+```
 
-   ```bash
-   npm install  # ou yarn install  
-   ```
-4. **Préparer l'environnement** :
+Lancer le serveur Symfony :
 
-   * Dupliquer le fichier `.env` en `.env.local`
-   * Ajuster les variables :
-
-     ```dotenv
-     DATABASE_URL="mysql://user:pass@127.0.0.1:3306/agri_db"  
-     AI_API_KEY="votre_cle_api_ia"  
-     ```
+```bash
+symfony server:start
+```
 
 ---
 
 ## Configuration
 
-* Démarrer le serveur local Symfony :
+* Doctrine ORM
+* JWT Authentication pour APIs
+* Clés API IA pour modèles
 
-  ```bash
-  symfony server:start  
-  ```
-* Accéder à l'application : `http://127.0.0.1:8000`
-* Importer la base de données :
+---
 
-  ```bash
-  php bin/console doctrine:migrations:migrate  
-  ```
+## Fonctionnalités Métiers & APIs
+
+* Tri, recherche dynamique, multicritères (Ajax)
+* Archivage automatique
+* Réponse automatique aux utilisateurs
+* SMS (services 326/327)
+* Statistiques avancées & graphiques
+* Exportation en PDF personnalisé (iText)
+* Voice-to-text pour publication de contenu
+* Traduction automatique (multilingue)
+* Filtrage de "bad words" (cryptage)
+* Caméra : détection d'émotions + voix
+* Affichage : offres d'emploi, vidéos TikTok, articles agricoles
+* Partage social (Facebook, LinkedIn, WhatsApp)
+* Badges "positive", "negative", "neutral" (analyse RoBERTa)
+* Gestion avancée des commentaires (filtrage)
+
+Fonctionnalités additionnelles :
+
+* Calendrier des événements et demandes
+* Notifications temps réel (Websockets)
+* Système de badge
+* 2FA authentification, reset password, 3 time password
+* Remember Me
+* Google Meet / Mail intégration
+* Suggestion d'utilisateurs
+* Crop Recommendation (récoltes adaptées)
+* Map : OpenStreetMap ou Google Maps
 
 ---
 
 ## Modules de gestion
 
-Chaque module expose des endpoints CRUD et des fonctionnalités spécifiques :
-
-### Utilisateurs
-
-* Inscription, authentification JWT
-* Gestion des rôles (agriculteur, administrateur)
-
-### Ressources
-
-* Création & suivi du matériel agricole, semences, engrais
-* Statistiques d'utilisation et réapprovisionnement
-
-### Points de recyclage
-
-* Géolocalisation des points sur carte OpenStreetMap
-* Ajout / modification / suppression de points
-
-### Événements
-
-* Planification et gestion d'événements agricoles
-* Envoi de notifications aux participants
-
-### Posts
-
-* Publication d'articles et conseils agricoles
-* Modération et commentaires
-
-### Réclamations
-
-* Soumission et suivi des réclamations des utilisateurs
-* Statistiques et rapports
+1. **Utilisateurs** : inscription, vérification, connexion, authentification à deux facteurs
+2. **Ressources** : matériel agricole, gestion de stock
+3. **Points de recyclage** : création, gestion, localisation sur carte
+4. **Evénements** : planification, gestion calendrier, expiration automatique
+5. **Posts** : publications, modération, réactions
+6. **Réclamations** : soumission, classement positif/négatif, suivi des états
 
 ---
 
-## APIs & Modèles d'IA
+## IA & Modèles
 
-* **Endpoints REST** sécurisés par JWT
-* **IA d'analyse d'images** : classification des cultures via TensorFlow Serving
-* **IA prédictive** : estimation de rendement basée sur historique et conditions météo
-* **Chatbot agricole** : réponse aux questions des utilisateurs via GPT-API interne
+* Modèle de détection de maladies des plantes
+* Modèle détection maladies animales
+* Modèle d'émotions utilisateur
+* Modèle prédiction de rendement des terres
+* Modèle de contrôle d'image agricole
+* Modèle de détection du type de sol
+* Modèle d'état de fruits (Healthy/Rotten)
+* Modèle estimation des calories des fruits (pour 100g)
+* GPT2 chatbot pour conseils agricoles
+* Analyse de sentiment des posts (positive/neutral/negative)
 
 ---
 
 ## Utilisation
 
-1. Se connecter via `/login` (JWT)
-2. Appeler les endpoints API avec un outil comme Postman ou cURL
-3. Consulter le front-office pour visualiser les données
+* Accéder via `http://127.0.0.1:8000`
+* APIs REST disponibles sous `/api/`
+* Utilisation Postman ou Swagger pour explorer les endpoints
 
 ---
 
 ## Contribution
 
-Vos contributions sont les bienvenues !
+1. Fork
+2. Nouvelle branche :
 
-1. Fork ce dépôt
-2. Créez une branche feature :
+```bash
+git checkout -b feature/ma-fonctionnalite
+```
 
-   ```bash
-   git checkout -b feature/ma-fonctionnalite  
-   ```
-3. Committez vos changements :
+3. Commit :
 
-   ```bash
-   git commit -m "Ajout de X fonctionnalité"  
-   ```
-4. Poussez votre branche :
+```bash
+git commit -m "Ajout de fonctionnalité"
+```
 
-   ```bash
-   git push origin feature/ma-fonctionnalite  
-   ```
-5. Ouvrez une Pull Request
+4. Push et Pull Request
 
 ---
 
 ## Licence
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+MIT - Voir fichier [LICENSE](LICENSE)
