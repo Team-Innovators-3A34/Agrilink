@@ -1,6 +1,8 @@
 # Projet Agrilink Symfony
 
 Gestion web avancée pour l'agriculture via Symfony 6.4, avec 6 modules de gestion, de nombreux métiers API et une intégration étendue de modèles IA.
+For a quick demo of our application check this link https://res.cloudinary.com/dw8lxfsv0/video/upload/v1747124485/Agrilinkpromo2_zwzzci.mp4
+
 
 ---
 
